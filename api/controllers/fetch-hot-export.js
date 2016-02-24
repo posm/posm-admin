@@ -1,6 +1,7 @@
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var request = require('request');
+var progress = require('request-progress');
 var uuid = require('node-uuid');
 var settings = require('../../settings');
 
@@ -16,19 +17,22 @@ module.exports = function (req, res, next) {
     }
     var tarFilePath = settings.tmpDir + '/' + uuid.v1() + '.tar.gz';
     var tarStream = fs.createWriteStream(tarFilePath);
-    request(url)
-        .pipe(tarStream)
+    progress(request(url))
+        .on('progress', function (state) {
+            console.log(state);
+        })
         .on('error', function (err) {
             console.log(err);
         })
         .on('finish', function () {
             console.log('done');
-        });
+        })
+        .pipe(tarStream);
+
     res.status(201).json({
         status: 201,
         msg: 'Begun fetching a HOT Export tar.gz.',
         remoteUrl: url,
         tarFilePath: tarFilePath
-    })
-
+    });
 };

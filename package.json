@@ -33,6 +33,7 @@
     "mkdirp": "^0.5.1",
     "node-uuid": "^1.4.7",
     "request": "^2.69.0",
+    "request-progress": "^2.0.1",
     "serve-index": "^1.7.3",
     "tty.js": "^0.2.15"
   }
