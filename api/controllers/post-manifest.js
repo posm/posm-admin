@@ -41,7 +41,6 @@ module.exports = function (req, res, next) {
             	msg: 'Successfully wrote manifest.json to deployments directory.',
             	path: manifestPath
             });
-            return;
     	});
     });
 };
