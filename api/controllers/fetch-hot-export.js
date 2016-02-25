@@ -2,7 +2,8 @@ var spawn = require('child_process').spawn;
 var fs = require('fs');
 var uuid = require('node-uuid');
 var settings = require('../../settings');
-var shPath = __dirname + '/../../scripts/fetch-hot-export.sh';
+var fetch = __dirname + '/../../scripts/hot-export/fetch.sh';
+var move = __dirname + '/../../scripts/hot-export/move.sh';
 
 module.exports = function (req, res, next) {
     // We get the url from a url query param or a url field in a JSON POST.
@@ -15,13 +16,14 @@ module.exports = function (req, res, next) {
         return;
     }
 
-    var tmpDir = settings.tmpDir + '/' + uuid.v1();
-    var shProc = spawn(shPath, [url, tmpDir]);
-    shProc.stderr.on('data', function (data) {
+    var id = uuid.v1();
+    var tmpDir = settings.tmpDir + '/' + id;
+    var fetchProc = spawn(fetch, [url, tmpDir]);
+    fetchProc.stderr.on('data', function (data) {
         console.log(data.toString());
     });
-    shProc.stdout.on('close', function (code) {
-        console.log(code);
+    fetchProc.stdout.on('close', function (code) {
+        moveToDeploymentsDir(tmpDir);
     });
     //shProc.stderr.pipe(process.stderr);
 
@@ -29,6 +31,33 @@ module.exports = function (req, res, next) {
         status: 201,
         msg: 'Begun fetching a HOT Export tar.gz.',
         remoteUrl: url,
-        tmpDir: tmpDir
+        tmpDir: tmpDir,
+        uuid: id
     });
 };
+
+function moveToDeploymentsDir(tmpDir) {
+    fs.readFile(tmpDir + '/manifest.json', 'utf8', function (err, data) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        var manifest = JSON.parse(data);
+        if (typeof manifest === 'object') {
+            var name = manifest.name;
+            if (typeof name !== 'string') {
+                console.error('no name');
+                return;
+            }
+            var deploymentDir = settings.deploymentsDir + '/' + name;
+            var moveProc = spawn(move, [tmpDir, deploymentDir]);
+            moveProc.stdout.on('data', function (data) {
+                console.log(data.toString());
+            });
+            moveProc.stdout.on('close', function (code) {
+                console.log(code);
+
+            });
+        }
+    });
+}
