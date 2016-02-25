@@ -2,8 +2,8 @@ var spawn = require('child_process').spawn;
 var fs = require('fs');
 var uuid = require('node-uuid');
 var settings = require('../../settings');
-var fetch = __dirname + '/../../scripts/hot-export/fetch.sh';
-var move = __dirname + '/../../scripts/hot-export/move.sh';
+var fetchSh = __dirname + '/../../scripts/hot-export-fetch.sh';
+var moveSh = __dirname + '/../../scripts/hot-export-move.sh';
 
 module.exports = function (req, res, next) {
     // We get the url from a url query param or a url field in a JSON POST.
@@ -18,7 +18,7 @@ module.exports = function (req, res, next) {
 
     var id = uuid.v1();
     var tmpDir = settings.tmpDir + '/' + id;
-    var fetchProc = spawn(fetch, [url, tmpDir]);
+    var fetchProc = spawn(fetchSh, [url, tmpDir]);
     fetchProc.stderr.on('data', function (data) {
         console.log(data.toString());
     });
@@ -50,7 +50,7 @@ function moveToDeploymentsDir(tmpDir) {
                 return;
             }
             var deploymentDir = settings.deploymentsDir + '/' + name;
-            var moveProc = spawn(move, [tmpDir, deploymentDir]);
+            var moveProc = spawn(moveSh, [tmpDir, deploymentDir]);
             moveProc.stdout.on('data', function (data) {
                 console.log(data.toString());
             });
