@@ -69,7 +69,8 @@ module.exports = function (io, fullDeploy) {
                 var name = manifest.name;
                 if (typeof name !== 'string') {
                     var msg = 'Your tar.gz manfiest.json is missing a name field';
-                    io.emit('fetch-hot-export ' + id, {
+                    io.emit(id, {
+                        controller: 'fetch-hot-export',
                         error: true,
                         msg: msg
                     });

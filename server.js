@@ -1,18 +1,12 @@
-var tty = require('tty.js');
 var express = require('express');
 var directory = require('serve-index');
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var routes = require('./api/routes');
 var settings = require('./settings');
-
-var app = tty.createServer({
-    shell: 'bash',
-    users: {
-        posm: 'posm'
-    },
-    port: settings.port
-});
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 // Enable CORS always.
 app.use(cors());
@@ -24,6 +18,9 @@ app.use('/posm-admin/pages', express.static(__dirname + '/pages'));
 app.use('/posm-admin/pages', directory(__dirname + '/pages'));
 
 // API Routes.
-app.use('/posm-admin', routes(app.io));
+app.use('/posm-admin', routes(io));
 
-app.listen();
+var port = process.env.PORT || settings.port;
+http.listen(port, function() {
+    console.log('posm-admin listening on port ' + port);
+});
