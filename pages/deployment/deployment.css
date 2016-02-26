@@ -10,7 +10,7 @@
     background-color: #B02129 !important;
 }
 
-.hot-card h2 {
+.hot-card .hot-red h2 {
     color: white;
 }
 
@@ -19,4 +19,15 @@
     background-image: url('images/hot-logo.png');
     background-position: 98% 70%;
     background-repeat: no-repeat;
+}
+
+.console-output pre {
+    padding: 4px 16px 16px 16px;
+    overflow: scroll;
+    height: 400px;
+    background-color: rgba(117, 117, 117, 0.1);
+    color: rgb(55, 71, 79);
+    margin: 0;
+    font-family:Consolas,Monaco,'Andale Mono',monospace;
+    font-size: 14px;
 }
