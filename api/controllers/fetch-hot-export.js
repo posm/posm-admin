@@ -27,12 +27,12 @@ module.exports = function (io, fullDeploy) {
                 script: 'hot-export-fetch.sh',
                 output: data.toString()
             });
-            console.log(data.toString());
+            //console.log(data.toString());
         });
         fetchProc.stdout.on('close', function (code) {
             moveToDeploymentsDir(tmpDir, id);
         });
-        //shProc.stderr.pipe(process.stderr);
+        fetchProc.stderr.pipe(process.stderr);
 
         if (typeof res !== 'undefined') {
             if (fullDeploy) {
