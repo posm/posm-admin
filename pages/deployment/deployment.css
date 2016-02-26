@@ -1,3 +1,8 @@
+.posm-drawer-header {
+    background-color: white;
+    padding: 16px;
+}
+
 .hot-card .hot-export-url {
     padding: 0 40px 8px 40px;
 }
