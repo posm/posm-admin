@@ -1,6 +1,7 @@
 var router = require('express').Router({ mergeParams: true });
 var postManifest = require('./controllers/post-manifest');
 var fetchHotExport = require('./controllers/fetch-hot-export');
+var xls2xform = require('./controllers/xls2xform');
 
 /**
  * Takes a socket io instance so we have a hold of it.

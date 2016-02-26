@@ -35,9 +35,14 @@ module.exports = function (io, fullDeploy) {
         //shProc.stderr.pipe(process.stderr);
 
         if (typeof res !== 'undefined') {
+            if (fullDeploy) {
+                var msg = 'Doing a full deployment starting with fetchign a HOT Export tar.gz.';
+            } else {
+                var msg = 'Fetching a HOT Export tar.gz.';
+            }
             res.status(201).json({
                 status: 201,
-                msg: 'Begun fetching a HOT Export tar.gz.',
+                msg: msg,
                 remoteUrl: url,
                 tmpDir: tmpDir,
                 uuid: id
@@ -48,6 +53,14 @@ module.exports = function (io, fullDeploy) {
     function moveToDeploymentsDir(tmpDir, id) {
         fs.readFile(tmpDir + '/manifest.json', 'utf8', function (err, data) {
             if (err) {
+                // no manifest.json - probably the tar.gz is not there or is missing manifest.json
+                if (err.errno === -2) { //ENOENT
+                    io.emit('fetch-hot-export ' + id, {
+                        error: true,
+                        msg: 'The HOT Export is invalid. Check that the tar.gz downloads and is valid.',
+                        err: err
+                    });
+                }
                 console.error(err);
                 return;
             }
@@ -76,11 +89,12 @@ module.exports = function (io, fullDeploy) {
                     io.emit(id, {
                         controller: 'fetch-hot-export',
                         close: true,
-                        code: code
+                        code: code,
+                        deployment: name
                     });
                     console.log(code);
                     if (fullDeploy) {
-                        xls2xform(io, fullDeploy)();
+                        xls2xform(io, name)();
                     }
                 });
             }
