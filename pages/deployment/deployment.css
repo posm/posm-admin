@@ -3,30 +3,7 @@
     padding: 16px;
 }
 
-.hot-card .hot-export-url {
-    padding: 0 40px 8px 40px;
-}
-
-.hot-card .hot-export-url .mdl-textfield {
-    width: 100%;
-}
-
-.hot-card .hot-red {
-    background-color: #B02129 !important;
-}
-
-.hot-card .hot-red h2 {
-    color: white;
-}
-
-.hot-card .mdl-card__title {
-    min-height: 200px;
-    background-image: url('images/hot-logo.png');
-    background-position: 98% 70%;
-    background-repeat: no-repeat;
-}
-
-.console-output pre {
+.posm-console-output pre {
     padding: 4px 16px 16px 16px;
     overflow: scroll;
     height: 400px;
