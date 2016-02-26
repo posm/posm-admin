@@ -30,7 +30,7 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="../../mdl/material.min.css">
+    <link rel="stylesheet" href="../../libs/mdl/material.min.css">
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../deployment.css">
     <link rel="stylesheet" href="fetch-hot-export.css">
@@ -99,17 +99,20 @@
             <div class="mdl-card__title mdl-card--expand hot-red">
               <h2 class="mdl-card__title-text">HOT Export Tool - Export URL</h2>
             </div>
-            <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+            <div id="instructions-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
               Enter the URL of the HOT Export tar.gz to begin the deployment.
             </div>
-            <form class="hot-export-url" action="#">
+            <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+              <div class="mdl-spinner mdl-js-spinner is-active"></div>&nbsp;<span id="supporting-msg-txt"></span>
+            </div>
+            <form class="hot-export-url">
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" id="sample3">
-                <label class="mdl-textfield__label" for="sample3">HOT Export URL</label>
+                <input class="mdl-textfield__input" type="text" id="hot-export-url-input">
+                <label class="mdl-textfield__label" for="hot-export-url-input">HOT Export URL</label>
               </div>
             </form>
             <div class="mdl-card__actions mdl-card--border">
-              <a href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect">Fetch</a>
+              <button id="hot-export-url-fetch-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Fetch</button>
             </div>
           </div>
 
@@ -129,7 +132,13 @@ This is test console output.
       </main>
     </div>
 
-    <script src="../../mdl/material.min.js"></script>
+    <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+
+    <script src="../../libs/jquery/jquery-2.1.1.min.js"></script>
+    <script src="../../libs/mdl/material.min.js"></script>
     <script src="fetch-hot-export.js"></script>
   </body>
 </html>
