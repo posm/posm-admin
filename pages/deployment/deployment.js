@@ -13,3 +13,11 @@ POSM.deployment.getParam = function (name) {
         results = regex.exec(location.search);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
+
+POSM.deployment.updateLinksWithDeployment = function () {
+    var deploymentName = POSM.deployment.getParam('deployment');
+    $('.deployment-title').html(manifest.title);
+    $('a[href*="/deployment/"]').each(function () {
+        $(this).attr('href', $(this).attr('href') + '?deployment=' + manifest.name);
+    });
+};

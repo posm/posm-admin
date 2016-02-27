@@ -13,7 +13,7 @@ $(function () {
     listenForStatusUpdates(socket, deploymentName);
 
     // Handle click of the action button.
-    handleActionButton();
+    handleActionButton(deploymentName);
 
 
 
@@ -38,7 +38,30 @@ $(function () {
     }
 
     function listenForStatusUpdates(socket, deploymentName) {
+        socket.on('deployments/' + deploymentName, function (iomsg) {
+            console.log(iomsg);
+            if (iomsg.output) {
+                $('#console').append(iomsg.output);
+            }
 
+            // done
+            if (iomsg.close) {
+                var $instructionsDiv = $('#instructions-div');
+                $instructionsDiv.show();
+                $('#supporting-msg-div').hide();
+                // false means the scripts exited without trouble
+                if (iomsg.code === false) {
+                    $instructionsDiv.html('The .xlsx files have been converted to XForm XML and moved to OpenMapKit Server. Press CONVERT AND MOVE to redo.');
+                } else {
+                    $instructionsDiv.html('There was a problem with fetching and unpacking the HOT Export tar.gz.');
+                }
+            }
+
+            // status update
+            if (iomsg.status) {
+                updateUIFromStatus(iomsg.status);
+            }
+        });
     }
 
     function updateUIFromStatus(status) {
@@ -57,11 +80,9 @@ $(function () {
         }
     }
 
-    function handleActionButton() {
+    function handleActionButton(deploymentName) {
         $('#action-btn').click(function (evt) {
-            var postJson = {};
-            postJson.url = $('#hot-export-url-input').val();
-            $.post('/posm-admin/fetch-hot-export', postJson)
+            $.post('/posm-admin/xls2xform', {deployment: deploymentName})
                 .done(function (data) {
 
                     $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
@@ -77,17 +98,8 @@ $(function () {
                     $('#instructions-div').hide();
                     $('#supporting-msg-txt').html(data.msg);
 
-                    socket.on(data.uuid, function (iomsg) {
-                        console.log(iomsg);
-                        if (iomsg.output) {
-                            $('#console').append(iomsg.output);
-                        }
-                        if (iomsg.close) {
-                            if (iomsg.code === false) {
+                    listenForStatusUpdates(socket, data.deployment);
 
-                            }
-                        }
-                    });
                 });
             evt.preventDefault();
         });

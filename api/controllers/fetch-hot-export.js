@@ -9,7 +9,7 @@ var moveSh = __dirname + '/../../scripts/hot-export-move.sh';
 module.exports = function (io, deploymentsStatus, fullDeploy) {
     return function (req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
-        var url = req.query.url || req.body.url;
+        var url = req.body.url || req.query.url;
         if (typeof url !== 'string' && typeof res !== 'undefined') {
             res.status(400).json({
                 status: 400,
@@ -87,12 +87,17 @@ module.exports = function (io, deploymentsStatus, fullDeploy) {
                     });
                 });
                 moveProc.stdout.on('close', function (code) {
-                    deploymentsStatus[name] = {'fetch-hot-export': 'done'};
+                    if (code === false) {
+                        deploymentsStatus[name] = {'fetch-hot-export': 'done'};
+                    } else {
+                        deploymentsStatus[name] = {'fetch-hot-export': 'error'};
+                    }
                     io.emit(id, {
                         controller: 'fetch-hot-export',
                         close: true,
                         code: code,
-                        manifest: manifest
+                        manifest: manifest,
+                        status: deploymentsStatus[name]
                     });
                     console.log(code);
                     if (fullDeploy) {
