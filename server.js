@@ -17,8 +17,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use('/posm-admin/pages', express.static(__dirname + '/pages'));
 app.use('/posm-admin/pages', directory(__dirname + '/pages'));
 
+// TODO Persist this object.
+var deploymentsStatus = {};
+
 // API Routes.
-app.use('/posm-admin', routes(io));
+app.use('/posm-admin', routes(io, deploymentsStatus));
 
 var port = process.env.PORT || settings.port;
 http.listen(port, function() {

@@ -6,7 +6,7 @@ var xls2xform = require('./xls2xform');
 var fetchSh = __dirname + '/../../scripts/hot-export-fetch.sh';
 var moveSh = __dirname + '/../../scripts/hot-export-move.sh';
 
-module.exports = function (io, fullDeploy) {
+module.exports = function (io, deploymentsStatus, fullDeploy) {
     return function (req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.query.url || req.body.url;
@@ -87,6 +87,7 @@ module.exports = function (io, fullDeploy) {
                     });
                 });
                 moveProc.stdout.on('close', function (code) {
+                    deploymentsStatus[name] = {'fetch-hot-export': 'done'};
                     io.emit(id, {
                         controller: 'fetch-hot-export',
                         close: true,
@@ -95,7 +96,7 @@ module.exports = function (io, fullDeploy) {
                     });
                     console.log(code);
                     if (fullDeploy) {
-                        xls2xform(io, name)();
+                        xls2xform(io, deploymentsStatus, name)();
                     }
                 });
             }

@@ -1,4 +1,5 @@
 var router = require('express').Router({ mergeParams: true });
+var getStatus = require('./controllers/get-status');
 var postManifest = require('./controllers/post-manifest');
 var fetchHotExport = require('./controllers/fetch-hot-export');
 var xls2xform = require('./controllers/xls2xform');
@@ -8,9 +9,16 @@ var xls2xform = require('./controllers/xls2xform');
  * Returns the router.
  *
  * @param io - socket.io instance
+ * @param deploymentsStatus - status of the deployments
  * @returns router - the router
  */
-module.exports = function(io) {
+module.exports = function(io, deploymentsStatus) {
+
+	/**
+	 * End point to query the status of a deployment
+	 * or get the status of all of the deployments.
+	 */
+	router.route('/status').get(getStatus(io, deploymentsStatus));
 
 	/**
 	 * Accepts a manifest in a POST and write
@@ -25,8 +33,8 @@ module.exports = function(io) {
      * single API call.
      */
     router.route('/full-deploy')
-        .get(fetchHotExport(io, true))
-        .post(fetchHotExport(io, true));
+        .get(fetchHotExport(io, deploymentsStatus, true))
+        .post(fetchHotExport(io, deploymentsStatus, true));
 
     /**
      * You can provide a URL to a HOT Export tar.gz
@@ -38,8 +46,8 @@ module.exports = function(io) {
      * deployments directory and stops there.
      */
     router.route('/fetch-hot-export')
-        .get(fetchHotExport(io))
-        .post(fetchHotExport(io));
+        .get(fetchHotExport(io, deploymentsStatus))
+        .post(fetchHotExport(io, deploymentsStatus));
 
     /**
      * Converts xlsx files in a deployment to an XForm.
@@ -47,8 +55,8 @@ module.exports = function(io) {
      * OpenMapKit Server.
      */
     router.route('/xls2xform')
-        .get(xls2xform(io))
-        .post(xls2xform(io));
+        .get(xls2xform(io, deploymentsStatus))
+        .post(xls2xform(io, deploymentsStatus));
 
 	return router;
 };
