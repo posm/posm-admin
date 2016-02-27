@@ -10,34 +10,51 @@ $(function () {
     checkStatus(deploymentName);
 
     // Listen for updates on the status from socket.io
-    listenStatus(socket, deploymentName);
+    listenForStatusUpdates(socket, deploymentName);
 
     // Handle click of the action button.
     handleActionButton();
 
-
-    $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
-        message: {message: 'message'},
-        timeout: 3000,
-        actionHandler: function (event) {
-            // TODO Cancel
-        },
-        actionText: 'Cancel'
-    });
 
 
     function checkStatus(deploymentName) {
         if (typeof deploymentName !== 'string') return;
         var url = '/posm-admin/status?deployment=' + deploymentName;
         $.get(url, function (data) {
-            console.log(data);
+            updateUIFromStatus(data);
         }).fail(function() {
-
+            // QUICK FIX: .showSnackbar is not always a function ???
+            setTimeout(function () {
+                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                    message: 'There is no deployment with the name: ' + deploymentName,
+                    timeout: 100000,
+                    actionHandler: function (event) {
+                        window.location = '/posm-admin/deployment/'
+                    },
+                    actionText: 'Start over'
+                });
+            }, 500);
         });
     }
 
-    function listenStatus(socket, deploymentName) {
+    function listenForStatusUpdates(socket, deploymentName) {
 
+    }
+
+    function updateUIFromStatus(status) {
+        var keys = Object.keys(status);
+        for (var i = 0, len = keys.length; i < len; i++) {
+            var key = keys[i];
+            var val = status[key];
+            // it was a success
+            if (val === 'done') {
+                $('a[href*="/'+key+'/"]>i').html('check_circle');
+            }
+            // it was a failure
+            else {
+                $('a[href*="/'+key+'/"]>i').html('error');
+            }
+        }
     }
 
     function handleActionButton() {
