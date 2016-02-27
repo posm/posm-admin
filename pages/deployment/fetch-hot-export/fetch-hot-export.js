@@ -10,7 +10,7 @@ $(function () {
 
                 $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
                     message: data.msg,
-                    timeout: 5000,
+                    timeout: 3000,
                     actionHandler: function (event) {
                         // TODO Cancel
                     },
@@ -34,7 +34,7 @@ $(function () {
                         // false means the scripts exited without trouble
                         if (iomsg.code === false) {
                             $('#instructions-div').html('HOT Export tar.gz has been fetched and unpacked. Press fetch to redo.');
-                            $('a[href$="fetch-hot-export/"]>i').html('check_circle');
+                            $('a[href*="/fetch-hot-export/"]>i').html('check_circle');
                             var manifest = iomsg.manifest;
                             if (manifest) {
                                 receiveManifest(manifest);
