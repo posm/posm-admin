@@ -91,7 +91,7 @@ module.exports = function (io, fullDeploy) {
                         controller: 'fetch-hot-export',
                         close: true,
                         code: code,
-                        deployment: name
+                        manifest: manifest
                     });
                     console.log(code);
                     if (fullDeploy) {

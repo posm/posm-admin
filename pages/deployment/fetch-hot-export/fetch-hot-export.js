@@ -34,8 +34,14 @@ $(function () {
                         // false means the scripts exited without trouble
                         if (iomsg.code === false) {
                             $('#instructions-div').html('HOT Export tar.gz has been fetched and unpacked. Press fetch to redo.');
+                            $('a[href$="fetch-hot-export/"]>i').html('check_circle');
+                            var manifest = iomsg.manifest;
+                            if (manifest) {
+                                receiveManifest(manifest);
+                            }
                         } else {
                             $('#instructions-div').html('There was a problem with fetching and unpacking the HOT Export tar.gz.');
+                            $('a[href$="fetch-hot-export/"]>i').html('error');
                         }
                     }
 
@@ -43,6 +49,13 @@ $(function () {
             });
         evt.preventDefault();
     });
+
+    function receiveManifest(manifest) {
+        $('.deployment-title').html(manifest.title);
+        $('a[href*="/deployment/"]').each(function () {
+            $(this).attr('href', $(this).attr('href') + '?deployment=' + manifest.name);
+        });
+        window.history.replaceState({} , manifest.title, window.location.href.split('?')[0] + '?deployment=' + manifest.name);
+    }
+
 });
-
-
