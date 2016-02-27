@@ -26,19 +26,11 @@ $(function () {
                     if (iomsg.output) {
                         $('#console').append(iomsg.output);
                     }
-
-                    // done
                     if (iomsg.close) {
-                        $('#instructions-div').show();
-                        $('#supporting-msg-div').hide();
-                        // false means the scripts exited without trouble
                         if (iomsg.code === false) {
-                            $('#instructions-div').html('HOT Export tar.gz has been fetched and unpacked. Press fetch to redo.');
-                        } else {
-                            $('#instructions-div').html('There was a problem with fetching and unpacking the HOT Export tar.gz.');
+
                         }
                     }
-
                 });
             });
         evt.preventDefault();

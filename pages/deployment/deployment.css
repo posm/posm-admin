@@ -13,3 +13,7 @@
     font-family:Consolas,Monaco,'Andale Mono',monospace;
     font-size: 14px;
 }
+
+#supporting-msg-div {
+    display: none;
+}
