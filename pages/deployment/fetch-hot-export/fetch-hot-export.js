@@ -17,8 +17,9 @@ $(function () {
                     actionText: 'Cancel'
                 });
 
+                var $instructionsDiv = $('#instructions-div');
                 $('#supporting-msg-div').show();
-                $('#instructions-div').hide();
+                $instructionsDiv.hide();
                 $('#supporting-msg-txt').html(data.msg);
 
                 socket.on(data.uuid, function (iomsg) {
@@ -29,7 +30,7 @@ $(function () {
 
                     // done
                     if (iomsg.close) {
-                        $('#instructions-div').show();
+                        $instructionsDiv.show();
                         $('#supporting-msg-div').hide();
                         // false means the scripts exited without trouble
                         if (iomsg.code === false) {
