@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>POSM Convert XLS to XForm</title>
+    <title>POSM Populate API DB</title>
 
     <!-- Add to homescreen for Chrome on Android -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -14,7 +14,7 @@
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="POSM Deployment">
+    <meta name="apple-mobile-web-app-title" content="POSM Populate API DB">
     <link rel="apple-touch-icon-precomposed" href="../images/ios-desktop.png">
 
     <!-- Tile icon for Win8 (144x144 + tile color) -->
@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="../../libs/mdl/material.min.css">
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../deployment.css">
-    <link rel="stylesheet" href="xls2xform.css">
+    <link rel="stylesheet" href="api-db.css">
     <style>
     #view-source {
       position: fixed;
@@ -97,7 +97,7 @@
 
           <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
             <div class="mdl-card__title mdl-card--expand posm-grey">
-              <h2 class="mdl-card__title-text">Convert XLS to XForm</h2>
+              <h2 class="mdl-card__title-text">Populate API DB</h2>
             </div>
             <div id="instructions-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
               Convert all of the .xlsx files in the deployment to XForm XML using pyxform. Then, place them in the deployments directory of OpenMapKit Server.
@@ -133,6 +133,6 @@
     <script src="../../libs/mdl/material.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../deployment.js"></script>
-    <script src="xls2xform.js"></script>
+    <script src="api-db.js"></script>
   </body>
 </html>
