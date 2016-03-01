@@ -31,7 +31,7 @@ module.exports = function (io, deploymentsStatus, deploymentName) {
             if (code === false) {
                 deploymentsStatus[deployment].xls2xform = 'done';
             } else {
-                deploymentsStatus[deployment].xls2xform = 'done';
+                deploymentsStatus[deployment].xls2xform = 'error';
             }
             io.emit('deployments/' + deployment, {
                 controller: 'xls2xform',
