@@ -1,7 +1,7 @@
 $(function () {
 
     // init socket.io
-    var socket = io.connect();
+    var socket = io.connect({path:'/posm-admin/socket.io'});
 
     // Get deployment name.
     var deploymentName = POSM.deployment.getParam('deployment');
@@ -12,8 +12,10 @@ $(function () {
     // Listen for updates on the status from socket.io
     listenForStatusUpdates(socket, deploymentName);
 
-    // Handle click of the action button.
-    handleActionButton(deploymentName);
+    // Handle click of the action buttons.
+    handleResetButton(deploymentName);
+    handlePopulateButton(deploymentName);
+    handleResetAndPopulateButton(deploymentName);
 
 
 
@@ -51,9 +53,9 @@ $(function () {
                 $('#supporting-msg-div').hide();
                 // false means the scripts exited without trouble
                 if (iomsg.code === false) {
-                    $instructionsDiv.html('The .xlsx files have been converted to XForm XML and moved to OpenMapKit Server. Press CONVERT AND MOVE to redo.');
+                    $instructionsDiv.html('operation complete');
                 } else {
-                    $instructionsDiv.html('There was a problem with fetching and unpacking the HOT Export tar.gz.');
+                    $instructionsDiv.html('error');
                 }
             }
 
@@ -80,19 +82,10 @@ $(function () {
         }
     }
 
-    function handleActionButton(deploymentName) {
-        $('#action-btn').click(function (evt) {
-            $.post('/posm-admin/xls2xform', {deployment: deploymentName})
+    function handleResetButton(deploymentName) {
+        $('#reset-btn').click(function (evt) {
+            $.post('/posm-admin/api-db/reset', {deployment: deploymentName})
                 .done(function (data) {
-
-                    $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
-                        message: data.msg,
-                        timeout: 5000,
-                        actionHandler: function (event) {
-                            // TODO Cancel
-                        },
-                        actionText: 'Cancel'
-                    });
 
                     $('#supporting-msg-div').show();
                     $('#instructions-div').hide();
@@ -103,6 +96,14 @@ $(function () {
                 });
             evt.preventDefault();
         });
+    }
+
+    function handlePopulateButton(deploymentName) {
+
+    }
+
+    function handleResetAndPopulateButton(deploymentName) {
+        
     }
 
 });

@@ -1,7 +1,7 @@
 $(function () {
 
     // init socket.io
-    var socket = io.connect();
+    var socket = io.connect({path:'/posm-admin/socket.io'});
 
     // Get deployment name.
     var deploymentName = POSM.deployment.getParam('deployment');

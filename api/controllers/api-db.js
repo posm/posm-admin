@@ -5,14 +5,15 @@ var apidbDropCreateSh = __dirname + '/../../scripts/api-db-drop-create.sh';
 var apidbInitSh = __dirname + '/../../scripts/api-db-init.sh';
 var apidbPopulateSh = __dirname + '/../../scripts/api-db-populate.sh';
 
-module.exports = function (io, deploymentsStatus, fullDeploy) {
+module.exports = function (io, deploymentsStatus, fullDeployName) {
 
 	function reset(req, res, next) {
 		// If we don't specify a deployment, that's ok, we just do it with 'undefined'.
 		// This reset is not dependent on knowing what deployment is associated.
-		var deployment = deploymentName || req.body.deployment || req.query.deployment || 'undefined';
+		var deployment = fullDeployName || req.body.deployment || req.query.deployment || 'undefined';
 		
-		var apidbDropCreateProc = spawn(apidbDropCreateSh, []);
+		// sudo -u postgres /opt/admin/posm-admin/scripts/api-db-drop-create.sh
+		var apidbDropCreateProc = spawn('sudo', ['-u', 'postgres', apidbDropCreateSh]);
 		apidbDropCreateProc.stdout.on('data', function (data) {
             io.emit('deployments/' + deployment, {
                 controller: 'api-db',
@@ -22,7 +23,7 @@ module.exports = function (io, deploymentsStatus, fullDeploy) {
             console.log(data.toString());
         });
         apidbDropCreateProc.stdout.on('close', function (code) {
-            var apidbInitProc = spawn(apidbInitSh, []);
+            var apidbInitProc = spawn('sudo', ['-u', 'osm', apidbInitSh]);
             apidbInitProc.stdout.on('data', function (data) {
 	            io.emit('deployments/' + deployment, {
 	                controller: 'api-db',
@@ -40,6 +41,7 @@ module.exports = function (io, deploymentsStatus, fullDeploy) {
 	        	}
 	        	io.emit('deployments/' + deployment, {
 	        		controller: 'api-db',
+	        		method: 'reset',
 	        		close: true,
 	        		code: code,
 	        		deployment: deployment,

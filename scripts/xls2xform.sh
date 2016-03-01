@@ -16,4 +16,4 @@ do
     python $1 $xlsx $xml
 done
 
-echo "xls2xform.sh : The .xlsx files in the deployment have been converted to XForm XML and placed in the forms directory of OpenMapKit Server."
+echo "xls2xform.sh : .xlsx file converted to XForms XML"
