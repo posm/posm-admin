@@ -1,6 +1,6 @@
 $(function () {
     // init socket.io
-    var socket = io.connect();
+    var socket = io.connect({path:'/posm-admin/socket.io'});
 
     $('#action-btn').click(function (evt) {
         var postJson = {};
