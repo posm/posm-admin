@@ -8,10 +8,10 @@ var xls2xformPy = omkServerPath + '/api/odk/pyxform/pyxform/xls2xform.py';
 module.exports = function (io, deploymentsStatus, deploymentName) {
     return function (req, res, next) {
         var deployment = deploymentName || req.body.deployment || req.query.deployment;
-        if (typeof deployment !== 'string' && typeof deployment !== 'undefined') {
+        if (typeof deployment !== 'string') {
             res.status(400).json({
                 status: 400,
-                msg: 'You must provide a URL to a hot export tar.gz. This can be a url query parameter or url string in a JSON POST.'
+                msg: "You must provide a deployment name. This can be in a {deployment: '<name>'} object in a JSON POST or a deployment=<name> query parameter in a GET."
             });
             return;
         }

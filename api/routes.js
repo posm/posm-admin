@@ -3,6 +3,7 @@ var getStatus = require('./controllers/get-status');
 var postManifest = require('./controllers/post-manifest');
 var fetchHotExport = require('./controllers/fetch-hot-export');
 var xls2xform = require('./controllers/xls2xform');
+var apidb = require('./controllers/api-db');
 
 /**
  * Takes a socket io instance so we have a hold of it.
@@ -57,6 +58,18 @@ module.exports = function(io, deploymentsStatus) {
     router.route('/xls2xform')
         .get(xls2xform(io, deploymentsStatus))
         .post(xls2xform(io, deploymentsStatus));
+
+    router.route('/api-db/reset')
+        .get(apidb(io, deploymentsStatus).reset)
+        .post(apidb(io, deploymentsStatus).reset);
+
+    router.route('/api-db/populate')
+        .get(apidb(io, deploymentsStatus).populate)
+        .post(apidb(io, deploymentsStatus).populate);
+
+    router.route('/api-db/reset-and-populate')
+        .get(apidb(io, deploymentsStatus).resetAndPopulate)
+        .post(apidb(io, deploymentsStatus).resetAndPopulate);
 
 	return router;
 };
