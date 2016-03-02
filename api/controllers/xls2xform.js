@@ -5,9 +5,9 @@ var omkFormsDir = omkServerPath + '/data/forms';
 var xls2xformSh = __dirname + '/../../scripts/xls2xform.sh';
 var xls2xformPy = omkServerPath + '/api/odk/pyxform/pyxform/xls2xform.py';
 
-module.exports = function (io, deploymentsStatus, fullDeployName) {
+module.exports = function (io, deploymentsStatus, deployName) {
     return function (req, res, next) {
-        var deployment = fullDeployName || req.body.deployment || req.query.deployment;
+        var deployment = deployName || req.body.deployment || req.query.deployment;
         if (typeof deployment !== 'string') {
             res.status(400).json({
                 status: 400,

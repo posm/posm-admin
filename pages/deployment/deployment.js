@@ -16,8 +16,13 @@ POSM.deployment.getParam = function (name) {
 
 POSM.deployment.updateLinksWithDeployment = function () {
     var deploymentName = POSM.deployment.getParam('deployment');
-    $('.deployment-title').html(manifest.title);
+    // $('.deployment-title').html(manifest.title);
     $('a[href*="/deployment/"]').each(function () {
-        $(this).attr('href', $(this).attr('href') + '?deployment=' + manifest.name);
+        $(this).attr('href', $(this).attr('href') + '?deployment=' + deploymentName);
     });
 };
+
+// Do this on each deployment page when the DOM is ready.
+$(function() {
+	POSM.deployment.updateLinksWithDeployment();
+});

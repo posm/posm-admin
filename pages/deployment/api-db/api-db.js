@@ -99,11 +99,35 @@ $(function () {
     }
 
     function handlePopulateButton(deploymentName) {
+        $('#populate-btn').click(function (evt) {
+            $.post('/posm-admin/api-db/populate', {deployment: deploymentName})
+                .done(function (data) {
 
+                    $('#supporting-msg-div').show();
+                    $('#instructions-div').hide();
+                    $('#supporting-msg-txt').html(data.msg);
+
+                    listenForStatusUpdates(socket, data.deployment);
+
+                });
+            evt.preventDefault();
+        });
     }
 
     function handleResetAndPopulateButton(deploymentName) {
-        
+        $('#reset-and-populate-btn').click(function (evt) {
+            $.post('/posm-admin/api-db/reset-and-populate', {deployment: deploymentName})
+                .done(function (data) {
+
+                    $('#supporting-msg-div').show();
+                    $('#instructions-div').hide();
+                    $('#supporting-msg-txt').html(data.msg);
+
+                    listenForStatusUpdates(socket, data.deployment);
+
+                });
+            evt.preventDefault();
+        });
     }
 
 });
