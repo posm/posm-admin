@@ -34,14 +34,20 @@ module.exports = function (io, deploymentsStatus, deployName) {
 
         apidbDropCreateProc.stdout.on('close', function (code) {
             var apidbInitProc = spawn('sudo', ['-u', 'osm', apidbInitSh])
-            apidbInitProc.stdout.on('data', function (data) {
-	            io.emit('deployments/' + deployment, {
+            function alertSocket(data) {
+            	io.emit('deployments/' + deployment, {
 	                controller: 'api-db',
 	                method: 'reset',
 	                script: 'api-db-init.sh',
 	                output: data.toString()
 	            });
 	            console.log(data.toString());
+            }
+            apidbInitProc.stdout.on('data', function (data) {
+	        	alertSocket(data);
+	        });
+	        apidbInitProc.stderr.on('data', function (data) {
+	        	alertSocket(data);
 	        });
 	        apidbInitProc.stdout.on('close', function (code) {
 	        	if (!deploymentsStatus[deployment]) deploymentsStatus[deployment] = {};
