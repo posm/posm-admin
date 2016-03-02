@@ -27,7 +27,6 @@ $(function () {
                     if (iomsg.output) {
                         $('#console').append(iomsg.output);
                     }
-
                     // done
                     if (iomsg.close) {
                         $instructionsDiv.show();

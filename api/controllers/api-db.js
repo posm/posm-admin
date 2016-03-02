@@ -33,7 +33,7 @@ module.exports = function (io, deploymentsStatus, deployName) {
         });
 
         apidbDropCreateProc.stdout.on('close', function (code) {
-            var apidbInitProc = spawn('sudo', ['-u', 'osm', apidbInitSh])
+            var apidbInitProc = spawn('sudo', ['-u', 'osm', apidbInitSh]);
             function alertSocket(data) {
             	io.emit('deployments/' + deployment, {
 	                controller: 'api-db',
