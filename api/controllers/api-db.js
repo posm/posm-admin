@@ -82,9 +82,8 @@ module.exports = function (io, deploymentsStatus, deployName) {
 	function populate(req, res, next) {
 		var deployment = deployName || req.body.deployment || req.query.deployment || 'undefined';
 		var deploymentContentsDir = settings.deploymentsDir + '/' + deployment + '/contents';
-		console.log('deploymentContentsDir: ' + deploymentContentsDir);
 
-		var apidbPopulateProc = spawn('sudo', ['-u', 'osm', apidbPopulateSh, deploymentContentsDir])
+		var apidbPopulateProc = spawn('sudo', ['-u', 'osm', apidbPopulateSh, deploymentContentsDir]);
 		
 		function alertSocket(data) {
 			io.emit('deployments/' + deployment, {
@@ -119,6 +118,14 @@ module.exports = function (io, deploymentsStatus, deployName) {
         		status: deploymentsStatus[deployment]
         	});
         });
+
+        if (typeof res !== 'undefined') {
+            res.status(200).json({
+                status: 200,
+                deployment: deployment,
+                msg: 'Populating API DB.'
+            });
+        }
 	}
 
 	function resetAndPopulate(req, res, next) {
