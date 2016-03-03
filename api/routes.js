@@ -4,22 +4,23 @@ var postManifest = require('./controllers/post-manifest');
 var fetchHotExport = require('./controllers/fetch-hot-export');
 var xls2xform = require('./controllers/xls2xform');
 var apidb = require('./controllers/api-db');
+var renderdb = require('./controllers/render-db');
 
 /**
  * Takes a socket io instance so we have a hold of it.
  * Returns the router.
  *
  * @param io - socket.io instance
- * @param deploymentsStatus - status of the deployments
+ * @param status - status of the deployments & operations
  * @returns router - the router
  */
-module.exports = function(io, deploymentsStatus) {
+module.exports = function(io, status) {
 
 	/**
 	 * End point to query the status of a deployment
 	 * or get the status of all of the deployments.
 	 */
-	router.route('/status').get(getStatus(io, deploymentsStatus));
+	router.route('/status').get(getStatus(io, status));
 
 	/**
 	 * Accepts a manifest in a POST and write
@@ -34,8 +35,8 @@ module.exports = function(io, deploymentsStatus) {
      * single API call.
      */
     router.route('/full-deploy')
-        .get(fetchHotExport(io, deploymentsStatus, true))
-        .post(fetchHotExport(io, deploymentsStatus, true));
+        .get(fetchHotExport(io, status, true))
+        .post(fetchHotExport(io, status, true));
 
     /**
      * You can provide a URL to a HOT Export tar.gz
@@ -47,8 +48,8 @@ module.exports = function(io, deploymentsStatus) {
      * deployments directory and stops there.
      */
     router.route('/fetch-hot-export')
-        .get(fetchHotExport(io, deploymentsStatus))
-        .post(fetchHotExport(io, deploymentsStatus));
+        .get(fetchHotExport(io, status))
+        .post(fetchHotExport(io, status));
 
     /**
      * Converts xlsx files in a deployment to an XForm.
@@ -56,20 +57,28 @@ module.exports = function(io, deploymentsStatus) {
      * OpenMapKit Server.
      */
     router.route('/xls2xform')
-        .get(xls2xform(io, deploymentsStatus))
-        .post(xls2xform(io, deploymentsStatus));
+        .get(xls2xform(io, status))
+        .post(xls2xform(io, status));
 
     router.route('/api-db/reset')
-        .get(apidb(io, deploymentsStatus).reset)
-        .post(apidb(io, deploymentsStatus).reset);
+        .get(apidb(io, status).reset)
+        .post(apidb(io, status).reset);
 
     router.route('/api-db/populate')
-        .get(apidb(io, deploymentsStatus).populate)
-        .post(apidb(io, deploymentsStatus).populate);
+        .get(apidb(io, status).populate)
+        .post(apidb(io, status).populate);
 
     router.route('/api-db/reset-and-populate')
-        .get(apidb(io, deploymentsStatus).resetAndPopulate)
-        .post(apidb(io, deploymentsStatus).resetAndPopulate);
+        .get(apidb(io, status).resetAndPopulate)
+        .post(apidb(io, status).resetAndPopulate);
+
+	router.route('/render-db/api2pbf')
+		.get(renderdb(io, status).api2pbf)
+        .post(renderdb(io, status).api2pbf);
+
+	router.route('/render-db/pbf2render')
+        .get(renderdb(io, status).pbf2render)
+        .post(renderdb(io, status).pbf2render);
 
 	return router;
 };
