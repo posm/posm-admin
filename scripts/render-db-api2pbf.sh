@@ -15,4 +15,5 @@ osmosis --read-apidb \
     validateSchemaVersion=no \
     --write-pbf file=$file_path
 
+echo "PBF dump written to: $file_path"
 echo "EXECUTED: render-db-api2pbf.sh"

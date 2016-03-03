@@ -70,14 +70,14 @@ module.exports = function (io, status) {
             console.log(data.toString());
         }
 
-        renderdbApi2PbfProc.stdout.on('data', function (data) {
+        renderdbPbf2RenderProc.stdout.on('data', function (data) {
             alertSocket(data);
         });
-        renderdbApi2PbfProc.stderr.on('data', function (data) {
+        renderdbPbf2RenderProc.stderr.on('data', function (data) {
             alertSocket(data);
         });
 
-        renderdbApi2PbfProc.stderr.on('close', function (code) {
+        renderdbPbf2RenderProc.stderr.on('close', function (code) {
             if (code === false) {
                 status['render-db'].pbf2render = 'done';
             } else {
