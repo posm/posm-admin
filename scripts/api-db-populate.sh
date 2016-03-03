@@ -13,4 +13,4 @@ psql -d osm -c "select setval('current_ways_id_seq', (select max(way_id) from wa
 psql -d osm -c "select setval('current_relations_id_seq', (select max(relation_id) from relations))"
 psql -d osm -c "select setval('users_id_seq', (select max(id) from users))"
 
-echo "api-db-populate.sh : OSM PBF files imported. API DB sequences set."
+echo "EXECUTED: api-db-populate.sh"

@@ -13,4 +13,4 @@ osm2pgsql \
 -C $mem \
 --number-processes $(nproc) $1
 
-echo "Imported PBF into Rendering DB."
+echo "EXECUTED: render-db-pbf2render.sh"

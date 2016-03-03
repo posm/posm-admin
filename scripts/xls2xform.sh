@@ -16,4 +16,4 @@ do
     python $1 $xlsx $xml
 done
 
-echo "xls2xform.sh : .xlsx file converted to XForms XML"
+echo "EXECUTED: xls2xform.sh"
