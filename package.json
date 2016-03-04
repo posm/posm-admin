@@ -29,6 +29,7 @@
     "body-parser": "^1.15.0",
     "cors": "^2.7.1",
     "express": "^4.13.4",
+    "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "node-uuid": "^1.4.7",
     "serve-index": "^1.7.3",

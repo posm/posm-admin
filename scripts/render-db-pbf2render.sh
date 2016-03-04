@@ -3,7 +3,7 @@
 api_db_dumps_dir=/opt/data/api-db-dumps/
 
 # file in dumps dir with latest timestamp
-newest_dump=$(ls -r -1 $api_db_dumps_dir | head -n 1)
+newest_dump=$(ls -r $api_db_dumps_dir | head -1)
 newest_dump_path=$api_db_dumps_dir$newest_dump
 
 mem=$(awk 'NR == 1 { print int($2*.9/1024) } ' /proc/meminfo)
