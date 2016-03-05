@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var argv = require('minimist')(process.argv.slice(2));
+var spawn = require('child_process').spawn;
 
 var TESSERA_CONF_DIR = '/etc/tessera.conf.d';
 var FP_CONF_PATH = '/opt/fp/fp-web/config/providers.json';
@@ -23,7 +24,7 @@ module.exports = tesseraFieldPapersReset;
 
 function tesseraFieldPapersReset(manifestPath, cb) {
 
-    // TODO Read current conf from file first.
+    // TODO Read current conf from file first?
     var fpConf = {};
 
     fs.readFile(manifestPath, 'utf-8', function (err, data) {
@@ -61,16 +62,62 @@ function tesseraFieldPapersReset(manifestPath, cb) {
 
                 // handle MBTiles
                 writeTesseraConf(manifest, manifestPath, filePath, 'mbtiles');
-                writeFieldPapersConf(manifest, filePath);
+                buildFieldPapersConf(manifest, filePath);
 
             } else if (properties.type.toLowerCase().indexOf('mapnik/xml') > -1) {
 
                 // handle Mapnik XML
                 //writeTesseraConf(manifest, manifestPath, filePath, 'mapnik');
-                //writeFieldPapersConf(manifest, filePath);
+                //buildFieldPapersConf(manifest, filePath);
 
             }
         }
+
+        // Write field papers conf file
+        writeFieldPapersConf();
+
+        function consoleCb(data, script) {
+            if (typeof cb === 'function') {
+                cb({
+                    output: data.toString(),
+                    script: script
+                });
+            }
+            console.log(data.toString());
+        }
+
+        // Restart tessera
+        var tesseraProc = spawn('sudo', ['service', 'tessera', 'restart']);
+        tesseraProc.stdout.on('data', function (data) {
+            consoleCb(data, 'sudo service tessera restart');
+        });
+        tesseraProc.stderr.on('data', function (data) {
+            consoleCb(data, 'sudo service tessera restart');
+        });
+        tesseraProc.stderr.on('close', function (code) {
+
+            // Restart field papers
+            var fpProc = spawn('sudo', ['service', 'fp-web', 'restart']);
+            fpProc.stdout.on('data', function (data) {
+                consoleCb(data, 'sudo service fp-web restart');
+            });
+            fpProc.stderr.on('data', function (data) {
+                consoleCb(data, 'sudo service fp-web restart');
+            });
+            fpProc.stderr.on('close', function (code) {
+                var msg = 'Completed resetting configs for tessera and field papers. Reset services.';
+                if (typeof cb === 'function') {
+                    cb({
+                        done: true,
+                        code: code,
+                        msg: msg
+                    });
+                }
+                console.log(msg);
+            });
+
+        });
+
 
     });
 
@@ -80,24 +127,13 @@ function tesseraFieldPapersReset(manifestPath, cb) {
         var v = protocol + '://' + path.parse(manifestPath).dir + '/' + filePath;
         var conf = {};
         conf[k] = v;
-        var confJSON =  JSON.stringify(conf);
+        var confJSON =  JSON.stringify(conf, null, 2);
         var confPath = TESSERA_CONF_DIR + '/' + fileName + '.json';
-        fs.writeFile(confPath, confJSON, function(err) {
-            if (err) {
-                var errObj = {
-                    err: err,
-                    msg: 'There was a problem writing a tessera conf file.'
-                };
-                if (typeof cb === 'function') {
-                    cb(errObj);
-                } else {
-                    console.error(errObj);
-                }
-            }
-        });
+        fs.writeFileSync(confPath, confJSON);
+        console.log('wrote tessera config: ' + confPath);
     }
 
-    function writeFieldPapersConf(manifest, filePath) {
+    function buildFieldPapersConf(manifest, filePath) {
         var tileSet = manifest.contents[filePath];
         var name = path.parse(filePath).base.split('.')[0];
         var fpTileSet = fpConf[name] = {};
@@ -105,19 +141,10 @@ function tesseraFieldPapersReset(manifestPath, cb) {
         fpTileSet.template = POSM_BASE_URL + '/tiles/' + manifest.name + '/' + name + '/{z}/{x}/{y}.png';
         fpTileSet.minzoom = tileSet.minzoom || 0;
         fpTileSet.maxzoom = tileSet.maxzoom || 25;
+    }
 
-        fs.writeFile(FP_CONF_PATH, JSON.stringify(fpConf), function(err) {
-            if (err) {
-                var errObj = {
-                    err: err,
-                    msg: 'There was a problem writing the field papers conf file.'
-                };
-                if (typeof cb === 'function') {
-                    cb(errObj);
-                } else {
-                    console.error(errObj);
-                }
-            }
-        });
+    function writeFieldPapersConf() {
+        fs.writeFileSync(FP_CONF_PATH, JSON.stringify(fpConf, null, 2));
+        console.log('wrote field papers config: ' + FP_CONF_PATH);
     }
 }
