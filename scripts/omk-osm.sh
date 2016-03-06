@@ -15,7 +15,7 @@ convert_pbf_to_xml() {
 
     # Buildings
     echo ''
-    echo '==> omk-osm.sh: Creating buildings OSM XML for OpenMapKit using Osmosis.'
+    echo '==> omk-osm.sh: Creating buildings OSM XML for OpenMapKit'
     echo ''
     osmosis --read-pbf $pbf \
         --tf accept-ways building=* \
@@ -24,7 +24,7 @@ convert_pbf_to_xml() {
 
     # POIs
     echo ''
-    echo '==> omk-osm.sh: Creating POIs OSM XML for OpenMapKit using Osmosis.'
+    echo '==> omk-osm.sh: Creating POIs OSM XML for OpenMapKit'
     echo ''
     osmosis --read-pbf $pbf \
         --tf accept-ways building=* \
@@ -41,3 +41,5 @@ do
         convert_pbf_to_xml $key
     fi
 done
+
+echo "==> omk-osm.sh: END"

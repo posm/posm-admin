@@ -46,7 +46,7 @@
       "args": "--node-key keyList='amenity,name,shop,highway,natural,landmark,tourism'",
       "source": "osm/huaquillas.pbf"
     },
-    "missing-maps.mbtiles": {
+    "huaquillas-posm.mbtiles": {
       "type": "MBTiles",
       "minZoom": 14,
       "maxZoom": 20,
