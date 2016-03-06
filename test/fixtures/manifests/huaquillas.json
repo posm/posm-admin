@@ -36,17 +36,17 @@
     }
   },
   "derivatives": {
-    "Buildings.osm": {
+    "huaquillas-buildings.osm": {
       "type": "OSM/XML",
-      "args": "--tf accept-ways building=*",
+      "args": "--tf accept-ways building=* --used-node",
       "source": "osm/huaquillas.pbf"
     },
-    "POIs.osm": {
+    "huaquillas-pois.osm": {
       "type": "OSM/XML",
       "args": "--node-key keyList='amenity,name,shop,highway,natural,landmark,tourism'",
       "source": "osm/huaquillas.pbf"
     },
-    "MissingMaps.mbtiles": {
+    "missing-maps.mbtiles": {
       "type": "MBTiles",
       "minZoom": 14,
       "maxZoom": 20,
