@@ -1,0 +1,56 @@
+{
+  "title": "Huaquillas, El Oro, Ecuador",
+  "name": "huaquillas",
+  "description": "Huaquillas is a town on the border of Peru. The American Red Cross is doing a pilot survey of this area in March 2015.",
+  "bbox": [-80.250,-3.502,-80.194,-3.456],
+  "contents": {
+    "osm/huaquillas.pbf": {
+      "type": "OSM/PBF"
+    },
+    "styles/mm.xml": {
+      "type": "Mapnik/XML"
+    },
+    "tiles/osm_huaquillas_z14-20.mbtiles": {
+      "type": "MBTiles",
+      "minzoom": 14,
+      "maxzoom": 20,
+      "source": "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    },
+    "tiles/sat_huaquillas_z14-20.mbtiles": {
+      "type": "MBTiles",
+      "minzoom": 14,
+      "maxzoom": 17,
+      "source": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+    },
+    "odk/buildings.xls": {
+      "type": "XLSForm"
+    },
+    "odk/buildings_with_pois.xls": {
+      "type": "XLSForm"
+    },
+    "odk/building_placeholders.xls": {
+      "type": "XLSForm"
+    },
+    "odk/pois.xls": {
+      "type": "XLSForm"
+    }
+  },
+  "derivatives": {
+    "Buildings.osm": {
+      "type": "OSM/XML",
+      "args": "--tf accept-ways building=*",
+      "source": "osm/huaquillas.pbf"
+    },
+    "POIs.osm": {
+      "type": "OSM/XML",
+      "args": "--node-key keyList='amenity,name,shop,highway,natural,landmark,tourism'",
+      "source": "osm/huaquillas.pbf"
+    },
+    "MissingMaps.mbtiles": {
+      "type": "MBTiles",
+      "minZoom": 14,
+      "maxZoom": 19,
+      "source": "mapnik://styles/mm.xml"
+    }
+  }
+}
