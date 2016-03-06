@@ -26,7 +26,7 @@ echo ''
 
 tl copy \
   mapnik://$POSM_MAPNIK_XML \
-  mbtiles:///opt/data/tiles/$deployment_name-posm.mbtiles \
+  mbtiles://$derivatives_path/$deployment_name-posm.mbtiles \
   -b $bbox_str \
   -z $DEFAULT_MIN_ZOOM \
   -Z $DEFAULT_MAX_ZOOM
