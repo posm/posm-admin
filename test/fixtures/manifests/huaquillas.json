@@ -16,7 +16,7 @@
       "maxzoom": 20,
       "source": "http://tile.openstreetmap.org/{z}/{x}/{y}.png"
     },
-    "tiles/sat_huaquillas_z14-20.mbtiles": {
+    "tiles/sat_huaquillas_z14-17.mbtiles": {
       "type": "MBTiles",
       "minzoom": 14,
       "maxzoom": 17,
@@ -49,7 +49,7 @@
     "MissingMaps.mbtiles": {
       "type": "MBTiles",
       "minZoom": 14,
-      "maxZoom": 19,
+      "maxZoom": 20,
       "source": "mapnik://styles/mm.xml"
     }
   }
