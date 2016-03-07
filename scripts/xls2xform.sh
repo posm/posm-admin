@@ -4,6 +4,9 @@
 # $3 - OMK forms dir
 for xlsx in $(find $2 -iname '*.xlsx')
 do
+    echo "==> xls2xform.sh: Converting XLSX to XForm XML."
+    echo "      xlsx:  "$xlsx
+
     # Copy the xlsx file into the forms dir
     cp $xlsx $3
 
@@ -11,9 +14,10 @@ do
     xlsxFileName=$(basename $xlsx)
     fileNameNoExt=${xlsxFileName%.*}
     xml=$3'/'$fileNameNoExt'.xml'
+    echo "      xform: "$xml
 
     # Execute pyxform xml2xform.py
     python $1 $xlsx $xml
 done
 
-echo "EXECUTED: xls2xform.sh"
+echo "==> xls2xform.sh: END"

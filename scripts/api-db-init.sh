@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo "==> api-db-init.sh : Initializing API DB with rake db:migrate."
+echo
+
 # FIXME Temporary hard- coding of environment variables.
 set -a
 RAILS_ENV="production"
@@ -12,4 +15,4 @@ cd /opt/osm/osm-web && bundle exec rake db:migrate
 
 set +a
 
-echo "api-db-init.sh : The API DB has been initialized with rake db:migrate."
+echo "==> api-db-init.sh : END"

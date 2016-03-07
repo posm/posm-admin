@@ -8,6 +8,9 @@ newest_dump_path=$api_db_dumps_dir$newest_dump
 
 mem=$(awk 'NR == 1 { print int($2*.9/1024) } ' /proc/meminfo)
 
+echo "==> render-db-pbf2render.sh: Building Render DB from PBF dump via osm2pgsql."
+echo
+
 osm2pgsql \
     --create \
     --hstore-all \
@@ -20,4 +23,5 @@ osm2pgsql \
     -C $mem \
     --number-processes $(nproc) $newest_dump_path
 
-echo "EXECUTED: render-db-pbf2render.sh"
+echo
+echo "==> render-db-pbf2render.sh: END"

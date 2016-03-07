@@ -8,6 +8,10 @@ timestamp_pbf() {
 
 file_path=$api_db_dumps_dir$(timestamp_pbf)
 
+echo "==> render-db-api2pbf.sh: Dumping the API DB to a PBF."
+echo "        Path: $file_path"
+echo
+
 osmosis --read-apidb \
     database=osm \
     user=osm \
@@ -15,5 +19,7 @@ osmosis --read-apidb \
     validateSchemaVersion=no \
     --write-pbf file=$file_path
 
+echo
 echo "PBF dump written to: $file_path"
-echo "EXECUTED: render-db-api2pbf.sh"
+echo
+echo "==> render-db-api2pbf.sh: END"
