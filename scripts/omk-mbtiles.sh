@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # $1 - the path of the deployment
 
+# sudo -u gis /opt/admin/posm-admin/scripts/omk-mbtiles.sh /opt/data/deployments/dvizarasekwa
+
 POSM_MAPNIK_XML=/opt/gis/posm-carto/project.xml
 DEFAULT_MIN_ZOOM=13
 DEFAULT_MAX_ZOOM=20
@@ -11,6 +13,7 @@ derivatives_path=$deployment_path/derivatives
 deployment_name=$(cat $manifest_path | jq -r '.name')
 
 mkdir -p $derivatives_path
+chmod -R a+rwx $derivatives_path
 
 bbox_left=$(cat $manifest_path | jq '.bbox[0]')
 bbox_bottom=$(cat $manifest_path | jq '.bbox[1]')
