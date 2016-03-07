@@ -43,3 +43,4 @@ do
 done
 
 echo "==> omk-osm.sh: END"
+echo

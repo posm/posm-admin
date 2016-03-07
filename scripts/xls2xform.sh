@@ -15,9 +15,11 @@ do
     fileNameNoExt=${xlsxFileName%.*}
     xml=$3'/'$fileNameNoExt'.xml'
     echo "      xform: "$xml
+    echo
 
     # Execute pyxform xml2xform.py
     python $1 $xlsx $xml
 done
 
 echo "==> xls2xform.sh: END"
+echo

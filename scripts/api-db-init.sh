@@ -16,3 +16,4 @@ cd /opt/osm/osm-web && bundle exec rake db:migrate
 set +a
 
 echo "==> api-db-init.sh : END"
+echo

@@ -3,9 +3,14 @@
 # Puts the contents in a contents directory.
 # args: tmpDir, deploymentDir
 echo "==> hot-export-move.sh: Moving deployment from temporary directory to the deployments directory."
+echo "      temp dir:       "$1
+echo "      deployment dir: "$2
 echo
+
+rm -rf $2
 mkdir -p $2/contents
 mv $1/* $2
 rm -rf $1
 
 echo "==> hot-export-move.sh: END"
+echo

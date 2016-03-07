@@ -20,3 +20,4 @@ psql -d osm -c "select setval('users_id_seq', (select max(id) from users))"
 echo "Sequences set."
 
 echo "==> api-db-populate.sh: END"
+echo

@@ -37,3 +37,4 @@ tl copy \
   -Z $DEFAULT_MAX_ZOOM
 
 echo "==> omk-mbtiles.sh: END"
+echo

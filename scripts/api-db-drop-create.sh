@@ -17,3 +17,4 @@ psql -d osm -c "CREATE FUNCTION tile_for_point(int4, int4) RETURNS int8 AS '/opt
 psql -d osm -c "CREATE FUNCTION xid_to_int4(xid) RETURNS int4 AS '/opt/osm/osm-web/db/functions/libpgosm', 'xid_to_int4' LANGUAGE C STRICT"
 
 echo "==> api-db-drop-create.sh: END"
+echo
