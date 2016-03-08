@@ -42,3 +42,5 @@ sudo -u gis $scripts_dir/render-db-pbf2render.sh
 manifest_path=$deployment_dir/manifest.json
 ./tessera-fp-reset.js $manifest_path
 
+# Create OSM XML layers for OpenMapKit
+./omk-osm.sh $deployment_dir

@@ -1,45 +1,40 @@
 #!/usr/bin/env bash
 
 # $1 - the path of the deployment
-deployment_path=$1
+deployment_dir=$1
 manifest_path=$1/manifest.json
-derivatives_path=$deployment_path/derivatives
-mkdir -p $derivatives_path
 deployment_name=$(cat $manifest_path | jq -r '.name')
 
 convert_pbf_to_xml() {
-    pbf=$deployment_path/contents/$1
-    derivatives=$deployment_path/derivatives
-    buildings_xml=$derivatives/$deployment_name-buildings.osm
-    pois_xml=$derivatives/$deployment_name-pois.osm
+    filename=$(basename "$1")
+    pbf_name="${filename%.*}" # the name of the pbf without extension
+
+    buildings_xml=$pbf_name-buildings.osm
+    pois_xml=$pbf_name-pois.osm
 
     # Buildings
     echo ''
     echo '==> omk-osm.sh: Creating buildings OSM XML for OpenMapKit'
     echo ''
-    osmosis --read-pbf $pbf \
+    osmosis --read-pbf $1 \
         --tf accept-ways building=* \
         --used-node \
-        --write-xml $buildings_xml
+        --write-xml $deployment_dir/$buildings_xml
 
     # POIs
     echo ''
     echo '==> omk-osm.sh: Creating POIs OSM XML for OpenMapKit'
     echo ''
-    osmosis --read-pbf $pbf \
+    osmosis --read-pbf $1 \
         --tf accept-ways building=* \
         --used-node \
-        --write-xml $buildings_xml
+        --write-xml $deployment_dir/$pois_xml
 
 }
 
-contents_keys=$(cat $manifest_path | jq -r '.contents | keys | .[]')
-for key in $contents_keys
+for pbf in $(find $deployment_dir -iname '*.pbf')
 do
-    type=$(cat $manifest_path | jq -r '.contents | .["'$key'"].type')
-    if [ $type = 'OSM/PBF' ]; then
-        convert_pbf_to_xml $key
-    fi
+	convert_pbf_to_xml $pbf
 done
 
 echo "==> omk-osm.sh: END"
