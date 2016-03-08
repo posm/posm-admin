@@ -44,3 +44,6 @@ manifest_path=$deployment_dir/manifest.json
 
 # Create OSM XML layers for OpenMapKit
 ./omk-osm.sh $deployment_dir
+
+# Create POSM MBTiles for OpenMapKit
+sudo -u gis $scripts_dir/omk-mbtiles.sh $deployment_dir
