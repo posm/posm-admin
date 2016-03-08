@@ -26,8 +26,7 @@ convert_pbf_to_xml() {
     echo '==> omk-osm.sh: Creating POIs OSM XML for OpenMapKit'
     echo ''
     osmosis --read-pbf $1 \
-        --tf accept-ways building=* \
-        --used-node \
+        --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \
         --write-xml $deployment_dir/$pois_xml
 
 }
