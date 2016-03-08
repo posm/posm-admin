@@ -1,5 +1,13 @@
 #!/bin/sh
 
+# Initializes an API DB
+# intended to be run as osm
+
+if [ $(whoami) != "osm" ]; then
+  >&2 echo $0 is intended to run as osm
+  exit 1
+fi
+
 echo "==> api-db-init.sh : Initializing API DB with rake db:migrate."
 echo
 
