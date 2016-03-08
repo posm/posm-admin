@@ -27,7 +27,7 @@ scripts_dir=/opt/admin/posm-admin/scripts/
 sudo -u postgres $scripts_dir/api-db-drop-create.sh
 
 # Init API DB
-sudo -u osm $scripts_dir/api-db-init.sh
+sudo -u osm $scripts_dir/osm_api-db-init.sh
 
 # Populate API DB
 sudo -u osm $scripts_dir/api-db-populate.sh $deployment_dir

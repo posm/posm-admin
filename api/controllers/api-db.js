@@ -2,7 +2,7 @@ var spawn = require('child_process').spawn;
 var fs = require('fs');
 var settings = require('../../settings');
 var apidbDropCreateSh = __dirname + '/../../scripts/api-db-drop-create.sh';
-var apidbInitSh = __dirname + '/../../scripts/api-db-init.sh';
+var apidbInitSh = __dirname + '/../../scripts/osm_api-db-init.sh';
 var apidbPopulateSh = __dirname + '/../../scripts/api-db-populate.sh';
 
 module.exports = function (io, deploymentsStatus, deployName) {
