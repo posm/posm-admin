@@ -1,4 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+if [ $(whoami) != "postgres" ]; then
+  >&2 echo $0 is intended to run as postgres
+  exit 1
+fi
 
 echo "==> api-db-drop-create.sh: Dropping and re-creating the API DB."
 echo

@@ -1,9 +1,9 @@
 var spawn = require('child_process').spawn;
 var fs = require('fs');
 var settings = require('../../settings');
-var apidbDropCreateSh = __dirname + '/../../scripts/api-db-drop-create.sh';
+var apidbDropCreateSh = __dirname + '/../../scripts/postgres_api-db-drop-create.sh';
 var apidbInitSh = __dirname + '/../../scripts/osm_api-db-init.sh';
-var apidbPopulateSh = __dirname + '/../../scripts/api-db-populate.sh';
+var apidbPopulateSh = __dirname + '/../../scripts/osm_api-db-populate.sh';
 
 module.exports = function (io, deploymentsStatus, deployName) {
 
@@ -11,10 +11,10 @@ module.exports = function (io, deploymentsStatus, deployName) {
 		// If we don't specify a deployment, that's ok, we just do it with 'undefined'.
 		// This reset is not dependent on knowing what deployment is associated.
 		var deployment = deployName || req.body.deployment || req.query.deployment || 'undefined';
-		
-		// sudo -u postgres /opt/admin/posm-admin/scripts/api-db-drop-create.sh
+
+		// sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
 		var apidbDropCreateProc = spawn('sudo', ['-u', 'postgres', apidbDropCreateSh]);
-		
+
 		function alertSocket(data) {
 			io.emit('deployments/' + deployment, {
                 controller: 'api-db',

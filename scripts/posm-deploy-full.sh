@@ -24,13 +24,13 @@ omk_forms_dir=$omk_dir/data/forms
 
 # Drop and create API DB
 scripts_dir=/opt/admin/posm-admin/scripts/
-sudo -u postgres $scripts_dir/api-db-drop-create.sh
+sudo -u postgres $scripts_dir/postgres_api-db-drop-create.sh
 
 # Init API DB
 sudo -u osm $scripts_dir/osm_api-db-init.sh
 
 # Populate API DB
-sudo -u osm $scripts_dir/api-db-populate.sh $deployment_dir
+sudo -u osm $scripts_dir/osm_api-db-populate.sh $deployment_dir
 
 # Dump API DB to a PBF (Osmosis)
 sudo -u osm $scripts_dir/render-db-api2pbf.sh
