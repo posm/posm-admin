@@ -23,6 +23,8 @@ module.exports = tesseraFieldPapersReset;
 //tesseraFieldPapersReset('/opt/data/deployments/dvizarasekwa/manifest.json');
 
 function tesseraFieldPapersReset(manifestPath, cb) {
+    console.log('==> tessera-fp-reset.js');
+    console.log('       manifest path: ' + manifestPath + '\n');
 
     // TODO Read current conf from file first?
     var fpConf = {};

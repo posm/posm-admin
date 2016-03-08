@@ -40,7 +40,5 @@ sudo -u gis $scripts_dir/render-db-pbf2render.sh
 
 # Reset configs for tessera and field papers. Reset services.
 manifest_path=$deployment_dir/manifest.json
-echo "==> tessera-fp-reset.js"
-echo "      manifest path: "$manifest_path
-#./tessera-fp-reset.js $manifest_path
+./tessera-fp-reset.js $manifest_path
 
