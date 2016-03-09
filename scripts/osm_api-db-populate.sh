@@ -1,10 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 # args: deploymentContentsDir
 
 if [ $(whoami) != "osm" ]; then
   >&2 echo $0 is intended to run as osm
   exit 1
 fi
+
+set -a
+
+source /opt/osm/osm-web/.env
+
+set +a
 
 echo "==> api-db-populate.sh: Populating API DB and setting sequences."
 echo "      deployment dir: $1"
