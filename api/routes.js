@@ -1,6 +1,7 @@
 var router = require('express').Router({ mergeParams: true });
 var getStatus = require('./controllers/get-status');
 var postManifest = require('./controllers/post-manifest');
+var fullDeploy = require('./controllers/full-deploy');
 var fetchHotExport = require('./controllers/fetch-hot-export');
 var xls2xform = require('./controllers/xls2xform');
 var apidb = require('./controllers/api-db');
@@ -15,6 +16,13 @@ var renderdb = require('./controllers/render-db');
  * @returns router - the router
  */
 module.exports = function(io, status) {
+
+	/**
+	 * Root posm-admin route brings you to the full deploy page.
+	 */
+	router.route('/').get(function (req, res, next) {
+		res.redirect('/posm-admin/pages/deployment/full-deploy');
+	});
 
 	/**
 	 * End point to query the status of a deployment
@@ -35,8 +43,8 @@ module.exports = function(io, status) {
      * single API call.
      */
     router.route('/full-deploy')
-        .get(fetchHotExport(io, status, true))
-        .post(fetchHotExport(io, status, true));
+        .get(fullDeploy(io, status))
+        .post(fullDeploy(io, status));
 
     /**
      * You can provide a URL to a HOT Export tar.gz
