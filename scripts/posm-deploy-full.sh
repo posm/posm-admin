@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-hot_export_url='http://ec2-52-32-62-7.us-west-2.compute.amazonaws.com/downloads/28adf408-f91f-407f-b40b-993ab983c3cd/huaquillas-bundle.tar.gz'
+hot_export_url=$1
 
 # Fetch HOT Export
 uuid=$(uuidgen)
