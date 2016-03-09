@@ -16,11 +16,11 @@ echo "==> api-db-populate.sh: Populating API DB and setting sequences."
 echo "      deployment dir: $1"
 echo
 
-for pbf in $(find $1 -iname '*.pbf'); do
+for pbf in $(find $1 -iname '*.pbf' | head -1); do
 	osmosis --read-pbf-fast $pbf \
   		--log-progress \
   		--write-apidb password=openstreetmap database=osm validateSchemaVersion=no
-  	echo "osmosis import with $pbf"
+  echo "osmosis import with $pbf"
 done
 
 psql -d osm -c "select setval('changesets_id_seq', (select max(id) from changesets))"
