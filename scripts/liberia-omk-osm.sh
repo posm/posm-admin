@@ -25,7 +25,7 @@ convert_pbf_to_xml() {
     osmosis --read-pbf $1 \
         --tf accept-ways building=* \
         --used-node \
-        --bounding-box left=$left bottom=$bottom right=$right top=$top \
+        --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations \
         --write-xml $deployment_dir/$buildings_xml
 
     # POIs
@@ -34,7 +34,7 @@ convert_pbf_to_xml() {
     echo ''
     osmosis --read-pbf $1 \
         --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \
-        --bounding-box left=$left bottom=$bottom right=$right top=$top \
+        --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations \
         --write-xml $deployment_dir/$pois_xml
 
 }
