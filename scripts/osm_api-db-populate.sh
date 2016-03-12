@@ -1,5 +1,5 @@
 #!/bin/bash
-# args: deploymentContentsDir
+# args: aoi dir
 
 if [ $(whoami) != "osm" ]; then
   >&2 echo $0 is intended to run as osm

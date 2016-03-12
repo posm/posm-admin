@@ -26,7 +26,7 @@ convert_pbf_to_xml() {
     echo '==> omk-osm.sh: Creating POIs OSM XML for OpenMapKit'
     echo ''
     osmosis --read-pbf $1 \
-        --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \
+        --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \ # TODO: find a way to just get any node with a tag
         --write-xml $deployment_dir/$pois_xml
 
 }
