@@ -13,7 +13,7 @@ source /opt/osm/osm-web/.env
 set +a
 
 echo "==> api-db-populate.sh: Populating API DB and setting sequences."
-echo "      deployment dir: $1"
+echo "      aoi dir: $1"
 echo
 
 for pbf in $(find $1 -iname '*.pbf' | head -1); do

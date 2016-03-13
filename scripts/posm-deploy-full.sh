@@ -44,7 +44,7 @@ sudo -u osm $scripts_dir/render-db-api2pbf.sh
 sudo -u gis $scripts_dir/render-db-pbf2render.sh
 
 # Reset configs for tessera and field papers. Reset services.
-# ./tessera-fp-reset.js /opt/data/aoi/huaquillas/manifest.json
+# /opt/admin/posm-admin/scripts/tessera-fp-reset.js /opt/data/aoi/huaquillas/manifest.json
 ./tessera-fp-reset.js $aoi_dir/manifest.json
 
 # Create OSM XML layers for OpenMapKit
