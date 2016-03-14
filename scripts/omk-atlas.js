@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var DEPLOYMENTS_DIR = '/opt/data/deployments';
-var SCRIPTS_DIR = '/opt/admin/posm-admin/scripts/';
+var OSM_OMK_OSM_SH = __dirname + '/osm_omk-osm.sh';
 
 var fs = require('fs');
 var path = require('path');
@@ -14,7 +14,7 @@ var mkdirp = require('mkdirp');
  * The url argument should be the url of the map.geojson
  * for a given Field Papers atlas.
  *
- * ./omk-atlas.js
+ * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/5b3s1bbl.geojson
  */
 if (typeof argv === 'object') {
     var fpUrl = argv._[0] || argv.u || argv.url;
@@ -44,7 +44,7 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
             console.log('omk-atlas.js: Sucessfully created deployment dir: ' + dir);
 
             // Write manifest
-            var jsonFileName = dir + '/manifest.json';
+            var jsonFileName = dir + '/fp.geojson';
             var json = JSON.stringify(atlasGeoJSON, null, 2);
             fs.writeFile(jsonFileName, json, function (err) {
                 if (err) {
@@ -52,9 +52,9 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
                     return;
                 }
 
-                extractOsmXml();
-                renderPosmCartoMBTiles();
-                copyAOIMBTilesToAtlasMBTiles();
+                extractOsmXml(dir, atlasGeoJSON);
+                renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON);
 
             });
 
@@ -65,14 +65,50 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
     }
 };
 
-function extractOsmXml() {
+function extractOsmXml(dir, atlasGeoJSON) {
+    var features = atlasGeoJSON.features;
+
+    // get the title for file names
+    var title = features[0].properties.title;
+
+    // skip second feature - it is the index page
+
+    // the rest of the features are pages
+    for (var i = 2, len = features.length; i < len; i++) {
+        var f = features[i];
+
+        // osm file name
+        var fileName = title + ' ' + f.properties.page_number + '.osm';
+
+        // bbox
+        var left = f.geometry.coordinates[0][0][0];
+        var bottom = f.geometry.coordinates[0][0][1];
+        var right = f.geometry.coordinates[0][3][0];
+        var top = f.geometry.coordinates[0][1][1];
+
+        // create osm xml for bbox
+        var omkProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
+                                                    fileName,
+                                                    left,
+                                                    bottom,
+                                                    right,
+                                                    top]);
+
+        //omkProc.stdout.on('data', function (data) {
+        //    console.log(data.toString());
+        //});
+        
+        omkProc.stderr.on('data', function (data) {
+            console.log(data.toString());
+        });
+
+    }
+}
+
+function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
 
 }
 
-function renderPosmCartoMBTiles() {
-
-}
-
-function copyAOIMBTilesToAtlasMBTiles() {
+function copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON) {
 
 }
