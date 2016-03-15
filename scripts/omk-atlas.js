@@ -2,6 +2,8 @@
 
 var DEPLOYMENTS_DIR = '/opt/data/deployments';
 var OSM_OMK_OSM_SH = __dirname + '/osm_omk-osm.sh';
+var GIS_OMK_POSM_MBTILES_SH = __dirname + '/gis_omk-posm-mbtiles.sh';
+var GIS_OMK_AOI_MBTILES_SH = __dirname + '/gis_omk-aoi-mbtiles.sh';
 
 var fs = require('fs');
 var path = require('path');
@@ -52,9 +54,9 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
                     return;
                 }
 
-                extractOsmXml(dir, atlasGeoJSON);
+                //extractOsmXml(dir, atlasGeoJSON);
                 renderPosmCartoMBTiles(dir, atlasGeoJSON);
-                copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON);
+                //copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON);
 
             });
 
@@ -68,7 +70,7 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
 function extractOsmXml(dir, atlasGeoJSON) {
     var features = atlasGeoJSON.features;
 
-    // get the title for file names
+    // get the title from the atlas feature for file names
     var title = features[0].properties.title;
 
     // skip second feature - it is the index page
@@ -81,30 +83,60 @@ function extractOsmXml(dir, atlasGeoJSON) {
         var fileName = title + ' ' + f.properties.page_number + '.osm';
         var filePath = dir + '/' + fileName;
 
-        // bbox
-        var left = f.geometry.coordinates[0][0][0];
-        var bottom = f.geometry.coordinates[0][0][1];
-        var right = f.geometry.coordinates[0][3][0];
-        var top = f.geometry.coordinates[0][1][1];
+        var bbox = extractBBox(f);
 
         // create osm xml for bbox
-        var omkProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
+        var posmMBTilesProc = spawn('sudo', ['-u', 'gis', OSM_OMK_OSM_SH,
                                                     filePath,
-                                                    left,
-                                                    bottom,
-                                                    right,
-                                                    top]);
+                                                    bbox.left,
+                                                    bbox.bottom,
+                                                    bbox.right,
+                                                    bbox.top]);
 
-        omkProc.stdout.pipe(process.stdout);
-        omkProc.stderr.pipe(process.stderr);
+        posmMBTilesProc.stdout.pipe(process.stdout);
+        posmMBTilesProc.stderr.pipe(process.stderr);
 
     }
 }
 
 function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
+    var features = atlasGeoJSON.features;
+
+    // get the file name from the title of the atlas
+    var fileName = features[0].properties.title + ' POSM.mbtiles';
+    var filePath = dir + '/' + fileName;
+
+    // get the bbox from the index page
+    var bbox = extractBBox(features[1]);
+
+    // create MBTiles for bbox of atlas
+    var omkMBTilesProc = spawn('sudo', ['-u', 'gis', GIS_OMK_POSM_MBTILES_SH,
+                                                    filePath,
+                                                    bbox.left,
+                                                    bbox.bottom,
+                                                    bbox.right,
+                                                    bbox.top]);
+
+    omkMBTilesProc.stdout.pipe(process.stdout);
+    omkMBTilesProc.stderr.pipe(process.stderr);
 
 }
 
 function copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON) {
+    var features = atlasGeoJSON.features;
 
+    // get the title from the atlas feature for file names
+    var title = features[0].properties.title;
+
+    // get the bbox from the index page
+    var bbox = extractBBox(features[1]);
+}
+
+function extractBBox(f) {
+    return {
+        left: f.geometry.coordinates[0][0][0],
+        bottom: f.geometry.coordinates[0][0][1],
+        right: f.geometry.coordinates[0][3][0],
+        top: f.geometry.coordinates[0][1][1]
+    };
 }

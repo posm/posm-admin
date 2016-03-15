@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+path=$1
+
+left=$2
+bottom=$3
+right=$4
+top=$5
+
+POSM_MAPNIK_XML=/opt/gis/posm-carto/project.xml
+DEFAULT_MIN_ZOOM=13
+DEFAULT_MAX_ZOOM=22
+
+echo
+echo '==> gis_omk-posm-mbtiles.sh: Creating POSM MBTiles for OpenMapKit.'
+echo '      path: '$path
+echo "      bbox: ${left} ${bottom} ${right} ${top}"
+echo '      Min Zoom: '$DEFAULT_MIN_ZOOM
+echo '      Max Zoom: '$DEFAULT_MAX_ZOOM
+echo
+
+tl copy \
+  mapnik://$POSM_MAPNIK_XML \
+  "mbtiles://$path" \
+  -b "$left $bottom $right $top" \
+  -z $DEFAULT_MIN_ZOOM \
+  -Z $DEFAULT_MAX_ZOOM
+
+echo "==> gis_omk-posm-mbtiles.sh: END"
+echo

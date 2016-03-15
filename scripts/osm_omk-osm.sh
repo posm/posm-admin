@@ -9,7 +9,7 @@ top=$5
 
 echo '==> osm_omk-osm.sh'
 echo '      path: '$path
-echo "      bbox: [${left}, ${bottom}, ${right}, ${top}]"
+echo "      bbox: left=${left} bottom=${bottom} right=${right} top=${top}"
 
 # Buildings
 echo ''
