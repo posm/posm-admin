@@ -11,20 +11,30 @@ top=$6
 POSM_MAPNIK_XML=/opt/gis/posm-carto/project.xml
 
 cut_bbox() {
-    echo
-    echo '==> gis_omk-aoi-mbtiles.sh: Creating POSM MBTiles for OpenMapKit.'
-    echo '      write_path: '$write_path
-    echo "      bbox: ${left} ${bottom} ${right} ${top}"
-    echo
-
     aoi_path=$1
     fname=$(basename "$aoi_path")
     aoi_name="${fname%.*}"
+    write_file="${write_path} ${aoi_name}.mbtiles"
+
+    echo
+    echo '==> gis_omk-aoi-mbtiles.sh: Creating POSM MBTiles for OpenMapKit.'
+    echo '      $aoi_path: '$aoi_path
+    echo '      $write_file: '$write_file
+    echo "      bbox: ${left} ${bottom} ${right} ${top}"
+    echo
 
     tl copy \
       "mbtiles://$aoi_path" \
-      "mbtiles://${write_path} ${aoi_name}.mbtiles" \
+      "mbtiles://${write_file}" \
       -b "$left $bottom $right $top"
+
+    # These python one-liners encode and decode uri
+#    python -c "import urllib, sys; print urllib.quote(sys.argv[1])" æ
+#    python -c "import urllib, sys; print urllib.unquote(sys.argv[1])" %C3%A6
+
+    # mbtiles uri encodes the file. we dont want that...
+#    uri_path=$(python -c "import urllib, sys; print urllib.quote(sys.argv[1])" "${write_file}")
+#    mv $uri_path $write_file
 
 }
 
