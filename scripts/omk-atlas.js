@@ -48,7 +48,7 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
             var json = JSON.stringify(atlasGeoJSON, null, 2);
             fs.writeFile(jsonFileName, json, function (err) {
                 if (err) {
-                    console.error('omk-atlas.js: Had trouble writing manifest.json. ' + dir);
+                    console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
                     return;
                 }
 
@@ -79,6 +79,7 @@ function extractOsmXml(dir, atlasGeoJSON) {
 
         // osm file name
         var fileName = title + ' ' + f.properties.page_number + '.osm';
+        var filePath = dir + '/' + fileName;
 
         // bbox
         var left = f.geometry.coordinates[0][0][0];
@@ -88,19 +89,14 @@ function extractOsmXml(dir, atlasGeoJSON) {
 
         // create osm xml for bbox
         var omkProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
-                                                    fileName,
+                                                    filePath,
                                                     left,
                                                     bottom,
                                                     right,
                                                     top]);
 
-        //omkProc.stdout.on('data', function (data) {
-        //    console.log(data.toString());
-        //});
-        
-        omkProc.stderr.on('data', function (data) {
-            console.log(data.toString());
-        });
+        omkProc.stdout.pipe(process.stdout);
+        omkProc.stderr.pipe(process.stderr);
 
     }
 }

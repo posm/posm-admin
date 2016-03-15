@@ -9,7 +9,7 @@ top=$5
 
 echo '==> osm_omk-osm.sh'
 echo '      path: '$path
-echo "      bbox: [$(left), $(bottom), $(right), $(top)]"
+echo "      bbox: [${left}, ${bottom}, ${right}, ${top}]"
 
 # Buildings
 echo ''
@@ -21,7 +21,7 @@ osmosis --read-apidb \
             password=openstreetmap \
             validateSchemaVersion=no \
     --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations \
-    --write-xml file=$path
+    --write-xml file="$path"
 
 # POIs
 echo ''
@@ -36,7 +36,7 @@ osmosis --read-apidb \
     --used-node \
     --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \
     --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations \
-    --write-xml file=$path
+    --write-xml file="$path"
 
 echo "==> osm_omk-osm.sh: END"
 echo
