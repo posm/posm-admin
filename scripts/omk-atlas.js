@@ -16,10 +16,16 @@ var mkdirp = require('mkdirp');
  * The url argument should be the url of the map.geojson
  * for a given Field Papers atlas.
  *
- * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/5b3s1bbl.geojson
+ * args: Field Papers map.geojson, AOI Dir (optional)
+ *
+ * Example:
+ *
+ * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/5b3s1bbl.geojson /opt/data/aoi/huaquillas
+ *
  */
 if (typeof argv === 'object') {
     var fpUrl = argv._[0] || argv.u || argv.url;
+    var aoiDir = argv._[1] || argv.a || argv.aoiDir;
     if (typeof fpUrl === 'string') {
         request(fpUrl, function (err, res, body) {
             if (err) {
@@ -27,12 +33,12 @@ if (typeof argv === 'object') {
                 return;
             }
             var atlasGeoJSON = JSON.parse(body);
-            buildOmkAtlas(atlasGeoJSON);
+            buildOmkAtlas(atlasGeoJSON, aoiDir);
         });
     }
 }
 
-var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
+var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
     try {
         var atlasUrl = atlasGeoJSON.features[0].properties.url;
         var urlParts = atlasUrl.split('/');
@@ -54,9 +60,11 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
                     return;
                 }
 
-                extractOsmXml(dir, atlasGeoJSON);
-                renderPosmCartoMBTiles(dir, atlasGeoJSON);
-                //copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON);
+                //extractOsmXml(dir, atlasGeoJSON);
+                //renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                if (typeof aoiDir === 'string') {
+                    copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
+                }
 
             });
 
@@ -122,14 +130,26 @@ function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
 
 }
 
-function copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON) {
+function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON) {
     var features = atlasGeoJSON.features;
 
-    // get the title from the atlas feature for file names
-    var title = features[0].properties.title;
+    // file path (gets appended with .mbtiles)
+    var fileName = features[0].properties.title;
+    var filePath = dir + '/' + fileName;
 
     // get the bbox from the index page
     var bbox = extractBBox(features[1]);
+
+    // create MBTiles for bbox of atlas
+    var omkMBTilesProc = spawn(GIS_OMK_AOI_MBTILES_SH, [aoiDir,
+                                                          filePath,
+                                                          bbox.left,
+                                                          bbox.bottom,
+                                                          bbox.right,
+                                                          bbox.top]);
+
+    omkMBTilesProc.stdout.pipe(process.stdout);
+    omkMBTilesProc.stderr.pipe(process.stderr);
 }
 
 function extractBBox(f) {
