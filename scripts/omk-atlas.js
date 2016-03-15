@@ -54,7 +54,7 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON) {
                     return;
                 }
 
-                //extractOsmXml(dir, atlasGeoJSON);
+                extractOsmXml(dir, atlasGeoJSON);
                 renderPosmCartoMBTiles(dir, atlasGeoJSON);
                 //copyAOIMBTilesToAtlasMBTiles(dir, atlasGeoJSON);
 
@@ -79,14 +79,14 @@ function extractOsmXml(dir, atlasGeoJSON) {
     for (var i = 2, len = features.length; i < len; i++) {
         var f = features[i];
 
-        // osm file name
-        var fileName = title + ' ' + f.properties.page_number + '.osm';
+        // osm file name without extension (added by bash script)
+        var fileName = title + ' ' + f.properties.page_number;
         var filePath = dir + '/' + fileName;
 
         var bbox = extractBBox(f);
 
         // create osm xml for bbox
-        var posmMBTilesProc = spawn('sudo', ['-u', 'gis', OSM_OMK_OSM_SH,
+        var posmMBTilesProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
                                                     filePath,
                                                     bbox.left,
                                                     bbox.bottom,
