@@ -22,7 +22,7 @@ osmosis --read-apidb \
             validateSchemaVersion=no \
     --tf accept-ways building=* \
     --used-node \
-    --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations \
+    --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations=yes completeWays=yes \
     --write-xml file="${path} Buildings.osm"
 
 # POIs
@@ -35,7 +35,7 @@ osmosis --read-apidb \
             password=openstreetmap \
             validateSchemaVersion=no \
     --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \
-    --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations \
+    --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations=yes completeWays=yes \
     --write-xml file="${path} POIs.osm"
 
 echo "==> osm_omk-osm.sh: END"

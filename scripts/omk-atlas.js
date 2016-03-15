@@ -87,11 +87,11 @@ function extractOsmXml(dir, atlasGeoJSON) {
 
         // create osm xml for bbox
         var posmMBTilesProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
-                                                    filePath,
-                                                    bbox.left,
-                                                    bbox.bottom,
-                                                    bbox.right,
-                                                    bbox.top]);
+                                                            filePath,
+                                                            bbox.left,
+                                                            bbox.bottom,
+                                                            bbox.right,
+                                                            bbox.top]);
 
         posmMBTilesProc.stdout.pipe(process.stdout);
         posmMBTilesProc.stderr.pipe(process.stderr);
@@ -111,11 +111,11 @@ function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
 
     // create MBTiles for bbox of atlas
     var omkMBTilesProc = spawn('sudo', ['-u', 'gis', GIS_OMK_POSM_MBTILES_SH,
-                                                    filePath,
-                                                    bbox.left,
-                                                    bbox.bottom,
-                                                    bbox.right,
-                                                    bbox.top]);
+                                                            filePath,
+                                                            bbox.left,
+                                                            bbox.bottom,
+                                                            bbox.right,
+                                                            bbox.top]);
 
     omkMBTilesProc.stdout.pipe(process.stdout);
     omkMBTilesProc.stderr.pipe(process.stderr);
