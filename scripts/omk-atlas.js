@@ -22,6 +22,9 @@ var mkdirp = require('mkdirp');
  *
  * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/5b3s1bbl.geojson /opt/data/aoi/huaquillas
  *
+ * Cerca del Hotel
+ * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/k5iic7si.geojson /opt/data/aoi/huaquillas
+ *
  */
 if (typeof argv === 'object') {
     var fpUrl = argv._[0] || argv.u || argv.url;
@@ -44,7 +47,7 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
         var urlParts = atlasUrl.split('/');
         var slug = urlParts[urlParts.length - 1];
         var dir = DEPLOYMENTS_DIR + '/' + slug;
-        mkdirp(dir, function (err) {
+        mkdirp(dir, parseInt('0777', 8), function (err) {
             if (err) {
                 console.error('omk-atlas.js: Had trouble making the deployments dir: ' + dir);
                 return;
@@ -103,7 +106,6 @@ function extractOsmXml(dir, atlasGeoJSON) {
 
         posmMBTilesProc.stdout.pipe(process.stdout);
         posmMBTilesProc.stderr.pipe(process.stderr);
-
     }
 }
 
