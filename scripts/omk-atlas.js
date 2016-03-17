@@ -23,7 +23,13 @@ var mkdirp = require('mkdirp');
  * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/5b3s1bbl.geojson /opt/data/aoi/huaquillas
  *
  * Cerca del Hotel
- * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/k5iic7si.geojson /opt/data/aoi/huaquillas
+ * /opt/admin/posm-admin/scripts/omk-atlas.js -a /opt/data/aoi/huaquillas -u http://posm.local/fp/atlases/k5iic7si.geojson
+ *
+ * Choferes Sportman
+ * /opt/admin/posm-admin/scripts/omk-atlas.js -a /opt/data/aoi/huaquillas -u http://posm.local/fp/atlases/3bun4nml.geojson
+ *
+ * Brisas del Sur
+ * /opt/admin/posm-admin/scripts/omk-atlas.js -a /opt/data/aoi/huaquillas -u http://posm.local/fp/atlases/5f06he1i.geojson
  *
  */
 if (typeof argv === 'object') {
@@ -63,8 +69,8 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
                     return;
                 }
 
-                //extractOsmXml(dir, atlasGeoJSON);
-                //renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                extractOsmXml(dir, atlasGeoJSON);
+                renderPosmCartoMBTiles(dir, atlasGeoJSON);
                 if (typeof aoiDir === 'string') {
                     copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
                 }
@@ -84,29 +90,27 @@ function extractOsmXml(dir, atlasGeoJSON) {
     // get the title from the atlas feature for file names
     var title = features[0].properties.title;
 
-    // skip second feature - it is the index page
+    // the second feature is the index page.
+    var f = features[1];
+
+    // osm file name without extension (added by bash script)
+    var filePath = dir + '/' + title;
+
+    var bbox = extractBBox(f);
+
+    // create osm xml for bbox
+    var posmMBTilesProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
+                                                        filePath,
+                                                        bbox.left,
+                                                        bbox.bottom,
+                                                        bbox.right,
+                                                        bbox.top]);
+
+    posmMBTilesProc.stdout.pipe(process.stdout);
+    posmMBTilesProc.stderr.pipe(process.stderr);
 
     // the rest of the features are pages
-    for (var i = 2, len = features.length; i < len; i++) {
-        var f = features[i];
 
-        // osm file name without extension (added by bash script)
-        var fileName = title + ' ' + f.properties.page_number;
-        var filePath = dir + '/' + fileName;
-
-        var bbox = extractBBox(f);
-
-        // create osm xml for bbox
-        var posmMBTilesProc = spawn('sudo', ['-u', 'osm', OSM_OMK_OSM_SH,
-                                                            filePath,
-                                                            bbox.left,
-                                                            bbox.bottom,
-                                                            bbox.right,
-                                                            bbox.top]);
-
-        posmMBTilesProc.stdout.pipe(process.stdout);
-        posmMBTilesProc.stderr.pipe(process.stderr);
-    }
 }
 
 function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
