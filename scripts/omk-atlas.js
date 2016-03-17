@@ -53,30 +53,29 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
         var urlParts = atlasUrl.split('/');
         var slug = urlParts[urlParts.length - 1];
         var dir = DEPLOYMENTS_DIR + '/' + slug;
-        mkdirp(dir, parseInt('0777', 8), function (err) {
+        mkdirp(dir, function (err) {
             if (err) {
                 console.error('omk-atlas.js: Had trouble making the deployments dir: ' + dir);
                 return;
             }
             console.log('omk-atlas.js: Sucessfully created deployment dir: ' + dir);
 
-            // Write manifest
-            var jsonFileName = dir + '/fp.geojson';
-            var json = JSON.stringify(atlasGeoJSON, null, 2);
-            fs.writeFile(jsonFileName, json, function (err) {
-                if (err) {
-                    console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
-                    return;
-                }
-
-                extractOsmXml(dir, atlasGeoJSON);
-                renderPosmCartoMBTiles(dir, atlasGeoJSON);
-                if (typeof aoiDir === 'string') {
-                    copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
-                }
-
+            fs.chmod(dir, parseInt('0777', 8), function () {
+                // Write manifest
+                var jsonFileName = dir + '/fp.geojson';
+                var json = JSON.stringify(atlasGeoJSON, null, 2);
+                fs.writeFile(jsonFileName, json, function (err) {
+                    if (err) {
+                        console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
+                        return;
+                    }
+                    extractOsmXml(dir, atlasGeoJSON);
+                    renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                    if (typeof aoiDir === 'string') {
+                        copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
+                    }
+                });
             });
-
         });
     } catch (err) {
         console.error('omk-atlas.js: Unable to read Field Papers Atlas GeoJSON and write manifest.json.');
