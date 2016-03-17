@@ -26,5 +26,9 @@ tl copy \
   -z $DEFAULT_MIN_ZOOM \
   -Z $DEFAULT_MAX_ZOOM
 
+# mbtiles uri encodes the file. we dont want that...
+uri_path=$(python -c "import urllib, sys; print urllib.quote(sys.argv[1])" "${path}")
+mv "${uri_path}" "${path}"
+
 echo "==> gis_omk-posm-mbtiles.sh: END"
 echo

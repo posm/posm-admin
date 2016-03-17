@@ -28,13 +28,9 @@ cut_bbox() {
       "mbtiles://${write_file}" \
       -b "$left $bottom $right $top"
 
-    # These python one-liners encode and decode uri
-#    python -c "import urllib, sys; print urllib.quote(sys.argv[1])" æ
-#    python -c "import urllib, sys; print urllib.unquote(sys.argv[1])" %C3%A6
-
     # mbtiles uri encodes the file. we dont want that...
-#    uri_path=$(python -c "import urllib, sys; print urllib.quote(sys.argv[1])" "${write_file}")
-#    mv $uri_path $write_file
+    uri_path=$(python -c "import urllib, sys; print urllib.quote(sys.argv[1])" "${write_file}")
+    mv "${uri_path}" "${write_file}"
 
 }
 
