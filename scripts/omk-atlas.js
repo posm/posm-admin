@@ -69,8 +69,8 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
                         console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
                         return;
                     }
-                    //extractOsmXml(dir, atlasGeoJSON);
-                    //renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                    extractOsmXml(dir, atlasGeoJSON);
+                    renderPosmCartoMBTiles(dir, atlasGeoJSON);
                     if (typeof aoiDir === 'string') {
                         copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
                     }
