@@ -69,12 +69,29 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
                         console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
                         return;
                     }
-                    extractOsmXml(dir, atlasGeoJSON);
-                    renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                    //extractOsmXml(dir, atlasGeoJSON);
+                    //renderPosmCartoMBTiles(dir, atlasGeoJSON);
                     if (typeof aoiDir === 'string') {
                         copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
                     }
                 });
+
+                // Create manifest.json
+                // We don't have to wait on getting a manifest.json...
+                var properties = atlasGeoJSON.features[0].properties;
+                var urlArr = properties.url.split('/');
+                var slug = urlArr[urlArr.length - 1];
+                var manifest = {
+                    title: properties.title,
+                    name: slug,
+                    description: properties.description
+                };
+                fs.writeFile(dir + '/manifest.json', JSON.stringify(manifest, null, 2), function (err) {
+                    if (err) {
+                        console.error('omk-atlas.js: Had trouble writing manifest.json. ' + dir);
+                    }
+                });
+
             });
         });
     } catch (err) {
