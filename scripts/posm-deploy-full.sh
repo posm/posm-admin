@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+# This script will do the complete deployment of an AOI from a HOT Export AOI tar.gz.
+# This amalgamation of scripts provisions the POSM with AOI data, and sets up
+# XLS Forms, the API DB, and the Render DB.
+#
+# Once this is set up, you can use omk-atlas.js to create a deployment for OpenMapKit
+# based off of a Field Papers atlas' map.geojson
+
+# Arguments:
+# $1 - The url to the HOT Export
+
+# Example Usage:
+#/opt/admin/posm-admin/scripts/posm-deploy-full.sh http://posm.io/omk/data/hot-export/huaquillas.tar.gz
+
+
 hot_export_url=$1
 
 # Fetch HOT Export
