@@ -6,7 +6,7 @@ echo "      temp dir: "$2
 echo
 
 mkdir -p $2
-curl $1 | pv | tar zxf - -C $2
+curl $1 | pv | tar xf - -C $2
 
 echo "==> hot-export-fetch.sh : END"
 echo
