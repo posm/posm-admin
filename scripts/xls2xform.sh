@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # $1 - xls2xform.py in pyxform
-# $2 - deployment contents dir
+# $2 - aoi dir
 # $3 - OMK forms dir
 for xlsx in $(find $2 -iname '*.xlsx')
 do

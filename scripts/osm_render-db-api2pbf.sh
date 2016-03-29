@@ -8,7 +8,7 @@ timestamp_pbf() {
 
 file_path=$api_db_dumps_dir$(timestamp_pbf)
 
-echo "==> render-db-api2pbf.sh: Dumping the API DB to a PBF."
+echo "==> osm_render-db-api2pbf.sh: Dumping the API DB to a PBF."
 echo "        pbf dump: $file_path"
 echo
 
@@ -22,5 +22,5 @@ osmosis --read-apidb \
 echo
 echo "PBF dump written to: $file_path"
 echo
-echo "==> render-db-api2pbf.sh: END"
+echo "==> osm_render-db-api2pbf.sh: END"
 echo

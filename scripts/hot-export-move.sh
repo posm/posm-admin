@@ -8,7 +8,7 @@ echo "      deployment dir: "$2
 echo
 
 rm -rf $2
-mkdir -p $2/contents
+mkdir -p $2
 mv $1/* $2
 rm -rf $1
 

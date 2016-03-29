@@ -36,19 +36,13 @@ sudo -u osm $scripts_dir/osm_api-db-init.sh
 sudo -u osm $scripts_dir/osm_api-db-populate.sh $aoi_dir
 
 # Dump API DB to a PBF (Osmosis)
-# sudo -u osm /opt/admin/posm-admin/scripts/render-db-api2pbf.sh
-sudo -u osm $scripts_dir/render-db-api2pbf.sh
+# sudo -u osm /opt/admin/posm-admin/scripts/osm_render-db-api2pbf.sh
+sudo -u osm $scripts_dir/osm_render-db-api2pbf.sh
 
 # Reset and populate Render DB with latest PBF dump (osm2pgsql)
-# sudo -u gis /opt/admin/posm-admin/scripts/render-db-pbf2render.sh
-sudo -u gis $scripts_dir/render-db-pbf2render.sh
+# sudo -u gis /opt/admin/posm-admin/scripts/gis_render-db-pbf2render.sh
+sudo -u gis $scripts_dir/gis_render-db-pbf2render.sh
 
 # Reset configs for tessera and field papers. Reset services.
 # /opt/admin/posm-admin/scripts/tessera-fp-reset.js /opt/data/aoi/huaquillas/manifest.json
 ./tessera-fp-reset.js $aoi_dir/manifest.json
-
-# Create OSM XML layers for OpenMapKit
-./omk-osm.sh $aoi_dir
-
-# Create POSM MBTiles for OpenMapKit
-sudo -u gis $scripts_dir/omk-mbtiles.sh $aoi_dir

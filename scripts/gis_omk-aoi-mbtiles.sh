@@ -17,7 +17,7 @@ cut_bbox() {
     write_file="${write_path} ${aoi_name}.mbtiles"
 
     echo
-    echo '==> gis_omk-aoi-mbtiles.sh: Creating POSM MBTiles for OpenMapKit.'
+    echo '==> gis_omk-aoi-mbtiles.sh: Creating AOI MBTiles Extract for OpenMapKit.'
     echo '      $aoi_path: '$aoi_path
     echo '      $write_file: '$write_file
     echo "      bbox: ${left} ${bottom} ${right} ${top}"
