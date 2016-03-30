@@ -35,6 +35,7 @@ echo
 $scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
 
 # Convert XLS to XForm
+# /opt/admin/posm-admin/scripts/xls2xform.sh /opt/omk/OpenMapKitServer/api/odk/pyxform/pyxform/xls2xform.py /opt/data/aoi/huaquillas /opt/omk/OpenMapKitServer/data/forms
 omk_dir=/opt/omk/OpenMapKitServer
 pyxform=$omk_dir/api/odk/pyxform/pyxform/xls2xform.py
 omk_forms_dir=$omk_dir/data/forms
