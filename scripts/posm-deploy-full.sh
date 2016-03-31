@@ -18,7 +18,7 @@ hot_export_url=$1
 scripts_dir=/opt/admin/posm-admin/scripts/
 
 # Fetch HOT Export
-# /opt/admin/posm-admin/scripts/hot-export-fetch.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas.tar.gz /opt/admin/tmp/example
+# /opt/admin/posm-admin/scripts/hot-export-fetch.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas-sm.tar.gz /opt/admin/tmp/example
 # /opt/admin/posm-admin/scripts/hot-export-fetch.sh http://ec2-52-32-62-7.us-west-2.compute.amazonaws.com/downloads/c6509d34-68ff-474b-ab93-8bc69d47a00b/huaquillas_el_oro_ecuador-bundle.tar.gz /opt/admin/tmp/example
 uuid=$(uuidgen)
 tmp_dir=/opt/admin/tmp/$uuid
