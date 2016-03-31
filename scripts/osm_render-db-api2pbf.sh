@@ -6,7 +6,13 @@ timestamp_pbf() {
     date +'%FT%TZ.pbf'
 }
 
-file_path=$api_db_dumps_dir$(timestamp_pbf)
+if [ -z "$1" ]; then
+    # no file name argument, creating a file with a timestamp in the name
+    file_path=$api_db_dumps_dir$(timestamp_pbf)
+else
+    # file name provided, creating a file with the name provided as arg $1
+    file_path=$api_db_dumps_dir$1
+fi
 
 echo "==> osm_render-db-api2pbf.sh: Dumping the API DB to a PBF."
 echo "        pbf dump: $file_path"

@@ -108,7 +108,7 @@ function tesseraFieldPapersReset(manifestPath, cb) {
                     consoleCb(data, 'sudo service fp-web restart');
                 });
                 fpProc.stderr.on('close', function (code) {
-                    var msg = 'Completed resetting configs for tessera and field papers. Reset services.';
+                    var msg = 'Completed resetting configs for tessera and field papers. Reset services.\n==> tessera-fp-reset.js: END';
                     if (typeof cb === 'function') {
                         cb({
                             done: true,

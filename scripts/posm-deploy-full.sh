@@ -56,4 +56,4 @@ sudo -u gis $scripts_dir/gis_render-db-pbf2render.sh
 
 # Reset configs for tessera and field papers. Reset services.
 # /opt/admin/posm-admin/scripts/tessera-fp-reset.js /opt/data/aoi/huaquillas/manifest.json
-./tessera-fp-reset.js $aoi_dir/manifest.json
+$scripts_dir/tessera-fp-reset.js $aoi_dir/manifest.json
