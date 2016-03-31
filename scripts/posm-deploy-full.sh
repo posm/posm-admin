@@ -11,7 +11,7 @@
 # $1 - The url to the HOT Export
 
 # Example Usage:
-# /opt/admin/posm-admin/scripts/posm-deploy-full.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas.tar.gz
+# /opt/admin/posm-admin/scripts/posm-deploy-full.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas-sm.tar.gz
 
 hot_export_url=$1
 
@@ -33,13 +33,6 @@ echo "==> posm-deploy-full.sh"
 echo "      aoi name: "$aoi_name
 echo
 $scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
-
-# Convert XLS to XForm
-# /opt/admin/posm-admin/scripts/xls2xform.sh /opt/omk/OpenMapKitServer/api/odk/pyxform/pyxform/xls2xform.py /opt/data/aoi/huaquillas /opt/omk/OpenMapKitServer/data/forms
-omk_dir=/opt/omk/OpenMapKitServer
-pyxform=$omk_dir/api/odk/pyxform/pyxform/xls2xform.py
-omk_forms_dir=$omk_dir/data/forms
-$scripts_dir/xls2xform.sh $pyxform $aoi_dir $omk_forms_dir
 
 # Drop and create API DB
 # sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
