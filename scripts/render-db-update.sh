@@ -10,5 +10,8 @@ sudo -u osm $scripts_dir/osm_render-db-api2pbf.sh render-db-update-dump.pbf
 # sudo -u gis /opt/admin/posm-admin/scripts/gis_render-db-pbf2render.sh render-db-update-dump.pbf
 sudo -u gis $scripts_dir/gis_render-db-pbf2render.sh render-db-update-dump.pbf
 
+echo "==> render-db-update.sh: Restarting tessera."
+sudo service tessera restart
+
 echo "==> render-db-update.sh: END"
 echo
