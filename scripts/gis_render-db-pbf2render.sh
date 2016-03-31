@@ -12,11 +12,12 @@ else
     dump_path=$api_db_dumps_dir$1
 fi
 
-
+temp_db=gis_temp
 mem=$(awk 'NR == 1 { print int($2*.9/1024) } ' /proc/meminfo)
 
 echo "==> gis_render-db-pbf2render.sh: Building Render DB from PBF dump via osm2pgsql."
 echo "      Using PBF: "$dump_path
+echo "      Populating DB: "$temp_db
 
 osm2pgsql \
     --create \
@@ -26,13 +27,14 @@ osm2pgsql \
     --slim \
     --drop \
     --unlogged \
-    --database='gis_temp' \
+    --database=$temp_db \
     -C $mem \
     --number-processes $(nproc) $dump_path
 
 psql -d postgres -c "ALTER DATABASE gis RENAME TO gis_temp2;";
 psql -d postgres -c "ALTER DATABASE gis_temp RENAME TO gis;";
 psql -d postgres -c "ALTER DATABASE gis_temp2 RENAME TO gis_temp;";
+echo "==> gis_render-db-pbf2render.sh: Moved gis_temp to gis."
 
 echo
 echo "==> gis_render-db-pbf2render.sh: END"
