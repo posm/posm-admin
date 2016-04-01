@@ -25,7 +25,7 @@ http://ec2-52-32-62-7.us-west-2.compute.amazonaws.com/downloads/c6509d34-68ff-47
 
 With this url, you can run [`posm-deploy-full.sh`](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/posm-deploy-full.sh).
 
-### `posm-deploy-full.sh`
+### posm-deploy-full.sh
 
 Takes as a single argument the URL to a HOT Export tar.gz.
 
