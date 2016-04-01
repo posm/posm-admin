@@ -25,7 +25,7 @@ http://ec2-52-32-62-7.us-west-2.compute.amazonaws.com/downloads/c6509d34-68ff-47
 
 With this url, you can run [`posm-deploy-full.sh`](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/posm-deploy-full.sh).
 
-### `[posm-deploy-full.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/posm-deploy-full.sh)`
+### `posm-deploy-full.sh`
 
 Takes as a single argument the URL to a HOT Export tar.gz.
 
@@ -38,27 +38,27 @@ Takes as a single argument the URL to a HOT Export tar.gz.
 1. [Fetch HOT Export](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
     - Fetches a tar.gz containing a `manifest.json`, OSM PBF, and MBTiles.
     - Uses [hot-export-fetch.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/hot-export-fetch.sh)
-2. [Move HOT Export to AOI directory](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
+2. [Move HOT Export to AOI directory](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L27-L35).
     - Extracts the name of the AOI from the `manifest.json`. Moves the contents into `/opt/data/aoi/<aoi-name>`.
     - Uses [hot-export-move.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/hot-export-move.sh)
-3. [Drop and Create API DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
+3. [Drop and Create API DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L37-L39).
     - Drops the API DB and recreates with appropriate functions and extensions.
     - Uses [postgres_api-db-drop-create.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/postgres_api-db-drop-create.sh)
-4. [Init API DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
+4. [Init API DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L41-L43).
     - Initializes the API DB with `rake db:migrate`.
     - Uses [osm_api-db-init.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_api-db-init.sh)
-5. [Populate API DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
+5. [Populate API DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L45-L47).
     - Uses `osmosis` to populate the API DB from the AOI's OSM PBF. Does other administrative tasks.
-    - Uses [osm_api-db-init.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_api-db-init.sh)
-6. [Dump API DB to PB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25)
+    - Uses [osm_api-db-populate.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_api-db-populate.sh)
+6. [Dump API DB to PB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L49-L51)
     - Dumps the entire contents of the API DB to an OSM PBF. Used for backup and populating the Render DB.
-    - Uses [osm_api-db-init.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_api-db-init.sh)
-7. [Reset and Populate Render DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
+    - Uses [osm_render-db-api2pbf.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_render-db-api2pbf.sh)
+7. [Reset and Populate Render DB](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L53-L55).
     - Resets and populates the Render DB with fresh OSM PBF that has been exported from the API DB.
-    - Uses [osm_api-db-init.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_api-db-init.sh)
-8. [Reset and Configure Tessera and Field Papers](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L20-L25).
+    - Uses [gis_render-db-pbf2render.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/gis_render-db-pbf2render.sh)
+8. [Reset and Configure Tessera and Field Papers](https://github.com/AmericanRedCross/posm-admin/blob/bab07d4fa047990c312b5a35cdd41121fe22b73d/scripts/posm-deploy-full.sh#L57-L59).
     - Updates the configs of Tessera and Field Papers to have reflect the OSM data and MBTiles that have been loaded.
-    - Uses [osm_api-db-init.sh](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/osm_api-db-init.sh)
+    - Uses [tessera-fp-reset.js](https://github.com/AmericanRedCross/posm-admin/blob/master/scripts/tessera-fp-reset.js)
 
 ## OpenMapKit Field Papers Atlas Deployment
 
