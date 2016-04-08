@@ -108,7 +108,7 @@ You many also manually re-run the [update script](https://github.com/AmericanRed
 /opt/admin/posm-admin/scripts/render-db-update.sh
 ```
 
-## Sandbox Mode
+## Reset AOI Deployment
 
 To be discussed. See [#144](https://github.com/AmericanRedCross/posm/issues/144).
 
