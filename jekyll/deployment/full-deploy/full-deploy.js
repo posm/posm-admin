@@ -5,7 +5,7 @@ $(function () {
     $('#action-btn').click(function (evt) {
         var postJson = {};
         postJson.url = $('#hot-export-url-input').val();
-        $.post('/posm-admin/fetch-hot-export', postJson)
+        $.post('/posm-admin/full-deploy', postJson)
             .done(function (data) {
 
                 $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
@@ -22,7 +22,7 @@ $(function () {
                 $instructionsDiv.hide();
                 $('#supporting-msg-txt').html(data.msg);
 
-                socket.on(data.uuid, function (iomsg) {
+                socket.on('full-deploy', function (iomsg) {
                     console.log(iomsg);
                     if (iomsg.output) {
                         $('#console').append(iomsg.output);
@@ -33,8 +33,8 @@ $(function () {
                         $('#supporting-msg-div').hide();
                         // false means the scripts exited without trouble
                         if (iomsg.code === false) {
-                            $('#instructions-div').html('HOT Export tar.gz has been fetched and unpacked. Press fetch to redo.');
-                            $('a[href*="/fetch-hot-export/"]>i').html('check_circle');
+                            $('#instructions-div').html('The full deployment script has been executed.');
+                            $('a[href*="/deployment/"]>i').html('check_circle');
                             var manifest = iomsg.manifest;
                             if (manifest) {
                                 receiveManifest(manifest);

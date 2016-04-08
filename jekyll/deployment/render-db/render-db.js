@@ -13,10 +13,9 @@ $(function () {
     listenForStatusUpdates(socket, deploymentName);
 
     // Handle click of the action buttons.
-    handleResetButton(deploymentName);
-    handlePopulateButton(deploymentName);
-    handleResetAndPopulateButton(deploymentName);
-
+    handleApi2PbfButton(deploymentName);
+    handlePbf2RenderButton(deploymentName);
+    handleAllButton(deploymentName);
 
 
     function checkStatus(deploymentName) {
@@ -40,7 +39,7 @@ $(function () {
     }
 
     function listenForStatusUpdates(socket, deploymentName) {
-        socket.on('deployments/' + deploymentName, function (iomsg) {
+        socket.on('render-db', function (iomsg) {
             console.log(iomsg);
             if (iomsg.output) {
                 $('#console').append(iomsg.output);
@@ -82,9 +81,9 @@ $(function () {
         }
     }
 
-    function handleResetButton(deploymentName) {
-        $('#reset-btn').click(function (evt) {
-            $.post('/posm-admin/api-db/reset', {deployment: deploymentName})
+    function handleApi2PbfButton(deploymentName) {
+        $('#api2pbf-btn').click(function (evt) {
+            $.post('/posm-admin/render-db/api2pbf', {deployment: deploymentName})
                 .done(function (data) {
 
                     $('#supporting-msg-div').show();
@@ -98,9 +97,9 @@ $(function () {
         });
     }
 
-    function handlePopulateButton(deploymentName) {
-        $('#populate-btn').click(function (evt) {
-            $.post('/posm-admin/api-db/populate', {deployment: deploymentName})
+    function handlePbf2RenderButton(deploymentName) {
+        $('#pbf2render-btn').click(function (evt) {
+            $.post('/posm-admin/render-db/pbf2render', {deployment: deploymentName})
                 .done(function (data) {
 
                     $('#supporting-msg-div').show();
@@ -114,9 +113,9 @@ $(function () {
         });
     }
 
-    function handleResetAndPopulateButton(deploymentName) {
+    function handleAllButton(deploymentName) {
         $('#reset-and-populate-btn').click(function (evt) {
-            $.post('/posm-admin/api-db/reset-and-populate', {deployment: deploymentName})
+            $.post('/posm-admin/render-db/all', {deployment: deploymentName})
                 .done(function (data) {
 
                     $('#supporting-msg-div').show();
