@@ -6,6 +6,7 @@ var fetchHotExport = require('./controllers/fetch-hot-export');
 var xls2xform = require('./controllers/xls2xform');
 var apidb = require('./controllers/api-db');
 var renderdb = require('./controllers/render-db');
+var atlasDeploy = require('./controllers/atlas-deploy');
 
 /**
  * Takes a socket io instance so we have a hold of it.
@@ -45,6 +46,13 @@ module.exports = function(io, status) {
     router.route('/full-deploy')
         .get(fullDeploy(io, status))
         .post(fullDeploy(io, status));
+
+	/**
+	 * Execute omk-atlas.js
+	 */
+	router.route('/atlas-deploy')
+		.get(atlasDeploy(io,status))
+		.post(atlasDeploy(io,status));
 
     /**
      * You can provide a URL to a HOT Export tar.gz

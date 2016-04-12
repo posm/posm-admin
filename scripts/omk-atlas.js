@@ -47,7 +47,7 @@ if (typeof argv === 'object') {
     }
 }
 
-var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
+var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDirm, socket) {
     try {
         var atlasUrl = atlasGeoJSON.features[0].properties.url;
         var urlParts = atlasUrl.split('/');
@@ -69,10 +69,10 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
                         console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
                         return;
                     }
-                    extractOsmXml(dir, atlasGeoJSON);
-                    renderPosmCartoMBTiles(dir, atlasGeoJSON);
+                    extractOsmXml(dir, atlasGeoJSON,socket);
+                    renderPosmCartoMBTiles(dir, atlasGeoJSON,socket);
                     if (typeof aoiDir === 'string') {
-                        copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON);
+                        copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON,socket);
                     }
                 });
 
@@ -100,7 +100,7 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir) {
     }
 };
 
-function extractOsmXml(dir, atlasGeoJSON) {
+function extractOsmXml(dir, atlasGeoJSON, socket) {
     var features = atlasGeoJSON.features;
 
     // get the title from the atlas feature for file names
@@ -125,11 +125,22 @@ function extractOsmXml(dir, atlasGeoJSON) {
     posmMBTilesProc.stdout.pipe(process.stdout);
     posmMBTilesProc.stderr.pipe(process.stderr);
 
+    // emit socket
+    if(socket){
+        posmMBTilesProc.stdout.on('data', function (data) {
+            socket(data);
+        });
+
+        posmMBTilesProc.stderr.on('data', function (data) {
+            socket(data);
+        });
+    }
+
     // the rest of the features are pages
 
 }
 
-function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
+function renderPosmCartoMBTiles(dir, atlasGeoJSON, socket) {
     var features = atlasGeoJSON.features;
 
     // get the file name from the title of the atlas
@@ -150,9 +161,19 @@ function renderPosmCartoMBTiles(dir, atlasGeoJSON) {
     omkMBTilesProc.stdout.pipe(process.stdout);
     omkMBTilesProc.stderr.pipe(process.stderr);
 
+    if(socket){
+        omkMBTilesProc.stdout.on('data', function (data) {
+            socket(data);
+        });
+
+        omkMBTilesProc.stderr.on('data', function (data) {
+            socket(data);
+        });
+    }
+
 }
 
-function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON) {
+function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON, socket) {
     var features = atlasGeoJSON.features;
 
     // file path (gets appended with .mbtiles)
@@ -172,6 +193,16 @@ function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON) {
 
     omkMBTilesProc.stdout.pipe(process.stdout);
     omkMBTilesProc.stderr.pipe(process.stderr);
+
+    if(socket){
+        omkMBTilesProc.stdout.on('data', function (data) {
+            socket(data);
+        });
+
+        omkMBTilesProc.stderr.on('data', function (data) {
+            socket(data);
+        });
+    }
 }
 
 function extractBBox(f) {
