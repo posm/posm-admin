@@ -44,8 +44,8 @@ module.exports = function(io, status) {
      * single API call.
      */
     router.route('/full-deploy')
-        .get(fullDeploy(io, status))
-        .post(fullDeploy(io, status));
+        .get(fullDeploy(io, status).init)
+        .post(fullDeploy(io, status).init);
 
 	/**
 	 * Execute omk-atlas.js

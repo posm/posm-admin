@@ -28,7 +28,7 @@ $(function () {
                     console.log(iomsg);
                     // scroll to bottom of div (add padding)
                     var d = $('#console');
-                    d.scrollTop(d.prop("scrollHeight") + 15);
+                    d.scrollTop(d.prop("scrollHeight") + 45);
                     if (iomsg.output) {
                         $('#console').append(iomsg.output);
                     }

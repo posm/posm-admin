@@ -32,7 +32,7 @@ jQuery(window).ready(function () {
     var pathname = window.location.pathname; // Returns path only
     $(".mdl-navigation__link").each(function (i,o) {
         if (o.pathname == pathname.substring(0,pathname.length-1)) {
-            $(o.childNodes[0]).text("done_all");
+            $(o).addClass("active");
         }
     });
 

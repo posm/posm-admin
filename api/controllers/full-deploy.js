@@ -1,8 +1,19 @@
 var spawn = require('child_process').spawn;
 var fullDeploySh = __dirname + '/../../scripts/posm-deploy-full.sh';
 
-module.exports = function (io, deploymentsStatus, fullDeploy) {
-    return function (req, res, next) {
+module.exports = function (io, status) {
+
+    // register status
+    if (!status['full-deploy']) {
+        status['full-deploy'] = {
+            complete: false,
+            initialized: false,
+            error: false,
+            msg: ""
+        };
+    }
+
+    function init(req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
         if (typeof url !== 'string' && typeof res !== 'undefined') {
@@ -17,27 +28,33 @@ module.exports = function (io, deploymentsStatus, fullDeploy) {
             io.emit('full-deploy', {
                 controller: 'full-deploy',
                 script: 'posm-deploy-full.sh',
-                output: data.toString()
+                exportUrl: url,
+                output: data.toString(),
+                status: status['full-deploy']
             });
-            console.log(data.toString());
         }
 
         var fullDeployProc = spawn(fullDeploySh, [url]);
         fullDeployProc.stdout.on('data', function (data) {
+            status['full-deploy'].initialized = true;
+            status["full-deploy"].msg = "Doing a full deployment starting with fetching a HOT Export tar.gz.";
+            status['full-deploy'].error = false;
             alertSocket(data);
         });
         fullDeployProc.stderr.on('data', function (data) {
+            status['full-deploy'].initialized = true;
+            status['full-deploy'].error = true;
             alertSocket(data);
         });
         fullDeployProc.stdout.on('close', function (code) {
-            // TODO
+            status["full-deploy"].msg = "The full deployment script has been executed.";
+            status['full-deploy'].initialized = false;
+            status['full-deploy'].error = false;
+            status["full-deploy"].complete = true;
+            alertSocket(status);
         });
+    }
 
-        res.status(201).json({
-            status: 201,
-            msg: 'Doing a full deployment starting with fetchign a HOT Export tar.gz.',
-            remoteUrl: url
-        });
-    };
+    return {init: init};
 
 };

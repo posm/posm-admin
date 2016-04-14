@@ -15,5 +15,19 @@
 }
 
 #supporting-msg-div {
-    display: none;
+}
+
+/* console error message */
+.msg-error {
+    color:red;
+}
+
+/* nav bar */
+.mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
+    background-color: rgba(224,224,224,.5) !important;
+}
+
+.mdl-navigation__link.active {
+    font-weight: 700 !important;
+    color: white !important;
 }
