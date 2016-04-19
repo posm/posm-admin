@@ -118,7 +118,7 @@ Under construction.
 
 https://github.com/mojodna/changeset-replay-tool
 
-## Backup
+## Backup & Restore
 
 Current backups are manual. See [#141](https://github.com/AmericanRedCross/posm/issues/141).
 
