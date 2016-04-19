@@ -51,8 +51,8 @@ module.exports = function(io, status) {
 	 * Execute omk-atlas.js
 	 */
 	router.route('/atlas-deploy')
-		.get(atlasDeploy(io,status))
-		.post(atlasDeploy(io,status));
+		.get(atlasDeploy(io,status).init)
+		.post(atlasDeploy(io,status).init);
 
     /**
      * You can provide a URL to a HOT Export tar.gz

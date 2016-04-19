@@ -3,31 +3,28 @@ $(function () {
     var socket = io.connect({path:'/posm-admin/socket.io'});
     var deployment = "full-deploy";
     var pathname = window.location.pathname; // Returns path only
-
-    // fetch status
-    var postJson = {};
-    postJson.deployment = deployment;
+    var deploymentStatus;
 
     // get deployment status on page load
-    $.get('/posm-admin/status?deployment=' + deployment)
-        .done(function (data) {
-            // Deployment has begun
-            if(data.initialized) {
-                updateNavBarStatusIcon('initialized');
-                updateSupportMessage(data.msg);
-            }
-            // Deployment complete
-            else if (data.complete) {
-                updateNavBarStatusIcon('complete');
-                updateSupportMessage(data.msg);
-            }
-            // Development has not begun
-             else if(!data.initialized) {
-                updateSupportMessage("Enter the URL of the HOT Export tar.gz to begin the full deployment.");
-            }
+    POSM.deployment.updateDeploymentStatus(function(data){
+        deploymentStatus = data[deployment];
+        updateSupportMessage(deploymentStatus.msg);
+        showProgressSpinner(deploymentStatus);
 
-        });
+        if(!deploymentStatus.initialized && !deploymentStatus.complete) {
+            updateSupportMessage("Enter the URL of the HOT Export tar.gz to begin the full deployment.");
+        } else {
+            // add hot export URL when page is opened during installation
+            if($('#hot-export-url-input').val() == "") {
+                $('#hot-export-url-input').val(deploymentStatus.exportUrl);
+                // remove background label
+                $("#hot-export-url-input-label").html("");
+            }
+        }
 
+    });
+
+    // do this on url submission
     $('#action-btn').click(function (evt) {
         var postJson = {};
         postJson.url = $('#hot-export-url-input').val();
@@ -37,16 +34,28 @@ $(function () {
                 $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
                     message: data.msg,
                     timeout: 3000,
-                    actionHandler: function (event) {
-                        // TODO Cancel
-                    },
                     actionText: 'Cancel'
                 });
+            }).error(function(err){
+
+            $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                message: JSON.parse(err.responseText).msg,
+                timeout: 3000,
+                actionText: 'Cancel'
             });
+            updateSupportMessage(JSON.parse(err.responseText).msg);
+            POSM.deployment.updateDeploymentStatus();
+        });
+
         evt.preventDefault();
     });
 
+    // listen for stdout on posm
     socket.on('full-deploy', function (iomsg) {
+        // handle progress spinner
+        showProgressSpinner(iomsg.status);
+
+        POSM.deployment.updateDeploymentStatus();
 
         // add hot export URL when page is opened during installation
         if($('#hot-export-url-input').val() == "") {
@@ -63,6 +72,7 @@ $(function () {
 
         if (iomsg.output) {
             if(iomsg.status.error){
+                // red console text on error
                 var span = $('<span />').addClass("msg-error").html(iomsg.output);
                 $('#console').append(span);
             } else {
@@ -75,44 +85,37 @@ $(function () {
 
         // done
         if (iomsg.status.complete) {
+            POSM.deployment.updateDeploymentStatus();
             // false means the scripts exited without trouble
-            if (!iomsg.error) {
+            if (!iomsg.status.error) {
                 updateSupportMessage('The full deployment script has been executed.');
                 updateNavBarStatusIcon('complete');
-
                 var manifest = iomsg.manifest;
                 if (manifest) {
                     receiveManifest(manifest);
                 }
             } else {
                 updateSupportMessage('There was a problem with fetching and unpacking the HOT Export tar.gz.');
-                updateNavBarStatusIcon(null,'error');
             }
         }
 
     });
 
+    // update status message above url input
     function updateSupportMessage (text) {
         $('#supporting-msg-txt').html(text);
     }
 
-    function updateNavBarStatusIcon (status, icon) {
-        var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
-        if (icon) icon_text = icon;
-
-        $(".mdl-navigation__link").each(function (i,o) {
-            if (o.pathname == pathname.substring(0,pathname.length-1)) {
-                $(o.childNodes[0]).text(icon_text);
-            }
-        });
-
-        if(status == 'initialized'){
-            $("#progressSpinner").show();
+    // hide spinner and disable action button
+    function showProgressSpinner (status) {
+        if(status.initialized){
+            $("#full-deploy-progress-spinner").show();
             // disable star button
             $("#action-btn").prop("disabled", true);
-            
         } else {
-            $("#progressSpinner").hide();
+            $("#full-deploy-progress-spinner").hide();
+            $("#action-btn").prop("disabled", false);
+
         }
     }
 
@@ -122,6 +125,18 @@ $(function () {
             $(this).attr('href', $(this).attr('href') + '?deployment=' + manifest.name);
         });
         window.history.replaceState({} , manifest.title, window.location.href.split('?')[0] + '?deployment=' + manifest.name);
+    }
+
+    // update nav bar icon
+    function updateNavBarStatusIcon (status, icon) {
+        var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
+        if (icon) icon_text = icon;
+
+        $(".mdl-navigation__link").each(function (i,o) {
+            if (o.pathname == pathname.substring(0,pathname.length-1)) {
+                $(o.childNodes[0]).text(icon_text);
+            }
+        });
     }
 
 });

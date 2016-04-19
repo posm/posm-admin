@@ -22,9 +22,36 @@ POSM.deployment.updateLinksWithDeployment = function () {
     });
 };
 
+/**
+ * get status of all deployment and update icons in menu
+ */
+POSM.deployment.updateDeploymentStatus = function (cb){
+    // get all statuses
+    $.get('/posm-admin/status')
+        .done(function (data) {
+            // loop through all deployments
+            Object.keys(data).forEach(function(d){
+                // match deployment name with url's for each item in sidenav menu
+                $(".mdl-navigation__link").each(function (i,o) {
+                    if (d == o.pathname.substring(o.pathname.indexOf(d), o.pathname.length)) {
+                        var icon;
+                        if(data[d].error) icon = 'error_outline';
+                        if(data[d].initialized) icon = 'compare_arrows';
+                        if(data[d].complete) icon = 'check_circle';
+
+                        $(o.childNodes[0]).text(icon || 'brightness_1');
+                    }
+                });
+            });
+
+            if(cb) cb(data);
+        });
+};
+
 // Do this on each deployment page when the DOM is ready.
 $(function () {
-    POSM.deployment.updateLinksWithDeployment();
+    // POSM.deployment.updateLinksWithDeployment();
+    POSM.deployment.updateDeploymentStatus();
 });
 
 // Add check icon indicating current page on left menu

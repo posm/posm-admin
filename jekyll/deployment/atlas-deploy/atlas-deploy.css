@@ -1,8 +1,8 @@
-.top-card .hot-export-url {
+.top-card .atlas-deploy {
     padding: 0 40px 8px 40px;
 }
 
-.top-card .hot-export-url .mdl-textfield {
+.top-card .atlas-deploy .mdl-textfield {
     width: 100%;
 }
 
@@ -19,4 +19,8 @@
     /*background-image: url('../images/hot-logo.png');*/
     background-position: 98% 70%;
     background-repeat: no-repeat;
+}
+
+#atlas-deploy-progress-spinner {
+    display: none;
 }

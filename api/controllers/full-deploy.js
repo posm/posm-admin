@@ -8,7 +8,6 @@ module.exports = function (io, status) {
         status['full-deploy'] = {
             complete: false,
             initialized: false,
-            error: false,
             msg: ""
         };
     }
@@ -16,12 +15,25 @@ module.exports = function (io, status) {
     function init(req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
+        //reset status
+        status['full-deploy'] = {
+            complete: false,
+            initialized: false,
+            msg: ""
+        };
         if (typeof url !== 'string' && typeof res !== 'undefined') {
+            status['full-deploy'].error = true;
             res.status(400).json({
                 status: 400,
                 msg: 'You must provide a URL to a hot export tar.gz. This can be a url query parameter or url string in a JSON POST.'
             });
             return;
+        } else {
+            res.status(201).json({
+                status: 201,
+                msg: 'Doing a full deployment starting with fetching a HOT Export tar.gz.',
+                remoteUrl: url
+            });
         }
 
         function alertSocket(data) {
@@ -32,6 +44,8 @@ module.exports = function (io, status) {
                 output: data.toString(),
                 status: status['full-deploy']
             });
+
+            status['full-deploy'].exportUrl = url;
         }
 
         var fullDeployProc = spawn(fullDeploySh, [url]);

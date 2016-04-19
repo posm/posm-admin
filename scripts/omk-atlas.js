@@ -47,18 +47,22 @@ if (typeof argv === 'object') {
     }
 }
 
-var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDirm, socket) {
+var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDir, socket, status) {
     try {
         var atlasUrl = atlasGeoJSON.features[0].properties.url;
         var urlParts = atlasUrl.split('/');
         var slug = urlParts[urlParts.length - 1];
         var dir = DEPLOYMENTS_DIR + '/' + slug;
+        if(status) {
+            status.msg = 'Creating deployment dir: ' + dir;
+        }
         mkdirp(dir, function (err) {
             if (err) {
-                console.error('omk-atlas.js: Had trouble making the deployments dir: ' + dir);
+                console.error(socket('omk-atlas.js: Had trouble making the deployments dir: ' + dir));
                 return;
             }
-            console.log('omk-atlas.js: Sucessfully created deployment dir: ' + dir);
+            if(status) status.initialized = true;
+            console.log('omk-atlas.js: Successfully created deployment dir: ' + dir);
 
             fs.chmod(dir, parseInt('0777', 8), function () {
                 // Write manifest
@@ -66,13 +70,15 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDirm, socket) {
                 var json = JSON.stringify(atlasGeoJSON, null, 2);
                 fs.writeFile(jsonFileName, json, function (err) {
                     if (err) {
+                        status.error = true;
+                        socket('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
                         console.error('omk-atlas.js: Had trouble writing fp.geojson. ' + dir);
                         return;
                     }
-                    extractOsmXml(dir, atlasGeoJSON,socket);
-                    renderPosmCartoMBTiles(dir, atlasGeoJSON,socket);
+                    extractOsmXml(dir, atlasGeoJSON,socket,status);
+                    renderPosmCartoMBTiles(dir, atlasGeoJSON,socket,status);
                     if (typeof aoiDir === 'string') {
-                        copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON,socket);
+                        copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON,socket,status);
                     }
                 });
 
@@ -88,6 +94,10 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDirm, socket) {
                 };
                 fs.writeFile(dir + '/manifest.json', JSON.stringify(manifest, null, 2), function (err) {
                     if (err) {
+                        if(socket) {
+                            status.error = true;
+                            socket('omk-atlas.js: Had trouble writing manifest.json. ' + dir);
+                        }
                         console.error('omk-atlas.js: Had trouble writing manifest.json. ' + dir);
                     }
                 });
@@ -95,12 +105,17 @@ var buildOmkAtlas = module.exports = function (atlasGeoJSON, aoiDirm, socket) {
             });
         });
     } catch (err) {
+        if(status){
+            status.error = true;
+            socket({error:JSON.stringify(err, null, 2), message:'omk-atlas.js: Unable to read Field Papers Atlas GeoJSON and write manifest.json.'});
+        }
+        console.log(err);
         console.error('omk-atlas.js: Unable to read Field Papers Atlas GeoJSON and write manifest.json.');
         console.error(JSON.stringify(err, null, 2));
     }
 };
 
-function extractOsmXml(dir, atlasGeoJSON, socket) {
+function extractOsmXml(dir, atlasGeoJSON, socket,status) {
     var features = atlasGeoJSON.features;
 
     // get the title from the atlas feature for file names
@@ -127,11 +142,23 @@ function extractOsmXml(dir, atlasGeoJSON, socket) {
 
     // emit socket
     if(socket){
+        status.msg = 'Extracting Osm XML...';
+
         posmMBTilesProc.stdout.on('data', function (data) {
+            status.extractOSMxml.initialized = true;
+            status.msg = 'Extracting Osm XML...';
             socket(data);
         });
 
+        posmMBTilesProc.stdout.on('close', function (data) {
+            status.extractOSMxml.complete = true;
+            if(checkAtlasDeployCompletion(status)) status.complete = true;
+            console.log('Finished....')
+        });
+
         posmMBTilesProc.stderr.on('data', function (data) {
+            status.extractOSMxml.error = true;
+            status.extractOSMxml.msg = (typeof data == 'object') ? data.toString() : data;
             socket(data);
         });
     }
@@ -140,7 +167,7 @@ function extractOsmXml(dir, atlasGeoJSON, socket) {
 
 }
 
-function renderPosmCartoMBTiles(dir, atlasGeoJSON, socket) {
+function renderPosmCartoMBTiles(dir, atlasGeoJSON, socket,status) {
     var features = atlasGeoJSON.features;
 
     // get the file name from the title of the atlas
@@ -162,18 +189,31 @@ function renderPosmCartoMBTiles(dir, atlasGeoJSON, socket) {
     omkMBTilesProc.stderr.pipe(process.stderr);
 
     if(socket){
+
+        status.msg = 'Rendering POSM CartoDB MBTiles...';
+
         omkMBTilesProc.stdout.on('data', function (data) {
+            status.renderMBTiles.initialized = true;
+            status.msg = 'Rendering POSM CartoDB MBTiles...';
+            socket(data);
+        });
+
+        omkMBTilesProc.stdout.on('close', function (data) {
+            status.renderMBTiles.complete = true;
+            if(checkAtlasDeployCompletion(status)) status.complete = true;
             socket(data);
         });
 
         omkMBTilesProc.stderr.on('data', function (data) {
+            status.renderMBTiles.error = true;
+            status.renderMBTiles.msg = (typeof data == 'object') ? data.toString() : data;
             socket(data);
         });
     }
 
 }
 
-function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON, socket) {
+function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON, socket,status) {
     var features = atlasGeoJSON.features;
 
     // file path (gets appended with .mbtiles)
@@ -195,14 +235,44 @@ function copyAOIMBTilesToAtlasMBTiles(aoiDir, dir, atlasGeoJSON, socket) {
     omkMBTilesProc.stderr.pipe(process.stderr);
 
     if(socket){
+        status.msg = 'Copying AIO MBTiles to Altas MBTiles...';
+
         omkMBTilesProc.stdout.on('data', function (data) {
+            status.copyMBTiles.initialized = true;
+            status.msg = 'Copying AIO MBTiles to Altas MBTiles...';
+            socket(data);
+        });
+
+        omkMBTilesProc.stdout.on('close', function (data) {
+            status.copyMBTiles.complete = true;
+            if(checkAtlasDeployCompletion(status)) status.complete = true;
             socket(data);
         });
 
         omkMBTilesProc.stderr.on('data', function (data) {
+            status.copyMBTiles.error = true;
+            status.copyMBTiles.msg = (typeof data == 'object') ? data.toString() : data;
             socket(data);
         });
     }
+}
+
+/**
+ * return true if all 3 scripts are complete
+ * @param status
+ * @returns {boolean}
+ */
+function checkAtlasDeployCompletion (status) {
+    var completedScripts = [];
+    Object.keys(status).forEach(function(o){
+        if(o == "copyMBTiles" && status[o].complete) completedScripts.push(o);
+        if(o == "renderMBTiles" && status[o].complete) completedScripts.push(o);
+        if(o == "extractOSMxml" && status[o].complete) completedScripts.push(o);
+    });
+
+    if(completedScripts.length == 3) status.msg = "The full deployment script has been executed.";
+
+    return completedScripts.length == 3;
 }
 
 function extractBBox(f) {
