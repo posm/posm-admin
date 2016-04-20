@@ -11,6 +11,7 @@ $(function () {
         deploymentStatus = data[deployment];
         updateSupportMessage(deploymentStatus.msg);
         showProgressSpinner(deploymentStatus);
+        updateDeploySubNav(deploymentStatus);
     });
 
     $('#action-btn').click(function (evt) {
@@ -53,6 +54,7 @@ $(function () {
             updateSupportMessage(iomsg.status.msg);
             // updateDeploySubNav(iomsg.status);
             updateNavBarStatusIcon('initialized');
+            updateDeploySubNav(iomsg.status);
         }
 
         if (iomsg.output) {
@@ -73,6 +75,7 @@ $(function () {
             if (!iomsg.status.error) {
                 updateSupportMessage('The full deployment script has been executed.');
                 updateNavBarStatusIcon('complete');
+                updateDeploySubNav(iomsg.status);
 
                 // var manifest = iomsg.manifest;
                 // if (manifest) {
@@ -235,6 +238,18 @@ $(function () {
 
         $(".mdl-navigation__link").each(function (i,o) {
             if (o.pathname == pathname.substring(0,pathname.length-1)) {
+                $(o.childNodes[0]).text(icon_text);
+            }
+        });
+    }
+
+    // update deploy sub scripts icons
+    function updateDeploySubNav (status, selector){
+
+        $(".deploy-sub-nav li").each(function (i,o) {
+            if (status[o.id]) {
+                var icon_text = (status[o.id].initialized) ? 'compare_arrows' : 'brightness_1';
+                icon_text = (status[o.id].complete) ? 'check_circle' : icon_text;
                 $(o.childNodes[0]).text(icon_text);
             }
         });

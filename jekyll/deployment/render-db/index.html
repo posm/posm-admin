@@ -13,8 +13,13 @@ title: Update Render DB
             The Render database contains data that is a derivative of what is found in the API DB.
             This is needed for Mapnik to cut tiles in a timely fashion.
             <div id="render-db-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
-            &nbsp;<span id="supporting-msg-txt"></span>
+            &nbsp;
+            <div id="supporting-msg-txt"></div>
         </div>
+        <ul class="deploy-sub-nav">
+            <li id="api2pbf"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Dump the API DB to a PBF</li>
+            <li id="pbf2render"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Build Render DB from PBF dump via osm2pgsql</li>
+        </ul>
         <div class="mdl-card__actions mdl-card--border">
             <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Update Render DB</button>
         </div>

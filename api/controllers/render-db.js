@@ -2,7 +2,7 @@ var spawn = require('child_process').spawn;
 var fs = require('fs');
 var settings = require('../../settings');
 var renderdbApi2PbfSh = __dirname + '/../../scripts/osm_render-db-api2pbf.sh';
-var renderdbPbf2RenderSh = __dirname + '/../../scripts/gis_render_db_pbf2render';
+var renderdbPbf2RenderSh = __dirname + '/../../scripts/gis_render-db-pbf2render.sh';
 
 module.exports = function (io, status) {
 
@@ -28,6 +28,7 @@ module.exports = function (io, status) {
 
         status['render-db'].msg = 'Dumping the API DB into a PBF.';
         status['render-db'].initialized = true;
+        status['render-db'].api2pbf.initialized = true;
 
         renderdbApi2PbfProc.stdout.on('data', function (data) {
             status['render-db'].api2pbf.error = false;
@@ -72,6 +73,7 @@ module.exports = function (io, status) {
 
         status['render-db'].msg = 'Importing PBF dump into Rendering DB via osm2pgsql.';
         status['render-db'].initialized = true;
+        status['render-db'].pbf2render.initialized = true;
 
         renderdbPbf2RenderProc.stdout.on('data', function (data) {
             status['render-db'].pbf2render.error = false;
