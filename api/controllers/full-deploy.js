@@ -5,22 +5,15 @@ module.exports = function (io, status) {
 
     // register status
     if (!status['full-deploy']) {
-        status['full-deploy'] = {
-            complete: false,
-            initialized: false,
-            msg: ""
-        };
+        status['full-deploy'] = {complete: false, initialized: false, msg: ""};
     }
 
     function init(req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
         //reset status
-        status['full-deploy'] = {
-            complete: false,
-            initialized: false,
-            msg: ""
-        };
+        status['full-deploy'] = {complete: false, initialized: false, msg: ""};
+
         if (typeof url !== 'string' && typeof res !== 'undefined') {
             status['full-deploy'].error = true;
             res.status(400).json({
@@ -56,7 +49,6 @@ module.exports = function (io, status) {
             alertSocket(data);
         });
         fullDeployProc.stderr.on('data', function (data) {
-            status['full-deploy'].initialized = true;
             status['full-deploy'].error = true;
             alertSocket(data);
         });

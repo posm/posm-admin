@@ -9,3 +9,8 @@
 .top-card .mdl-card__title {
     min-height: 200px;
 }
+
+
+#render-db-progress-spinner {
+    display: none;
+}

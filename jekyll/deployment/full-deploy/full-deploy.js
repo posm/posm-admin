@@ -55,8 +55,6 @@ $(function () {
         // handle progress spinner
         showProgressSpinner(iomsg.status);
 
-        POSM.deployment.updateDeploymentStatus();
-
         // add hot export URL when page is opened during installation
         if($('#hot-export-url-input').val() == "") {
             $('#hot-export-url-input').val(iomsg.exportUrl);

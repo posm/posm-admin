@@ -88,13 +88,9 @@ module.exports = function(io, status) {
         .get(apidb(io, status).resetAndPopulate)
         .post(apidb(io, status).resetAndPopulate);
 
-	router.route('/render-db/api2pbf')
-		.get(renderdb(io, status).api2pbf)
-        .post(renderdb(io, status).api2pbf);
-
-	router.route('/render-db/pbf2render')
-        .get(renderdb(io, status).pbf2render)
-        .post(renderdb(io, status).pbf2render);
+	router.route('/render-db')
+		.get(renderdb(io, status).init)
+        .post(renderdb(io, status).init);
 
 	return router;
 };

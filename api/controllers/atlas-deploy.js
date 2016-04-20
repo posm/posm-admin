@@ -1,21 +1,25 @@
 var request = require('request');
 var atlasDeployJs = require(__dirname + '/../../scripts/omk-atlas.js');
+var fs = require('fs');
+
+/**
+ *
+ * The overall process, as well as each individual script has an status object
+ * An error resulting from an individual script will change the status of the overall process
+ *
+ * @param io
+ * @param status
+ * @returns {{init: init}}
+ */
 
 module.exports = function (io, status) {
 
     // register status
     if (!status['atlas-deploy']) {
-        status['atlas-deploy'] = {
-            complete: false,
-            initialized: false,
-            error: false,
-            msg: ""
-        };
-
+        status['atlas-deploy'] = {complete: false, initialized: false, error: false, msg: "", fpGeoJsonUrl:""};
         status['atlas-deploy'].extractOSMxml = {};
         status['atlas-deploy'].renderMBTiles = {};
         status['atlas-deploy'].copyMBTiles = {};
-
     }
 
     function init (req, res, next) {
@@ -23,11 +27,11 @@ module.exports = function (io, status) {
         var url = req.body.url || req.query.url;
 
         //reset status
-        status['atlas-deploy'] = {
-            complete: false,
-            initialized: false,
-            msg: ""
-        };
+        status['atlas-deploy'] = {complete: false, initialized: false, msg: "", fpGeoJsonUrl:""};
+        status['atlas-deploy'].extractOSMxml = {};
+        status['atlas-deploy'].renderMBTiles = {};
+        status['atlas-deploy'].copyMBTiles = {};
+
         if (typeof url !== 'string' && typeof res !== 'undefined') {
             res.status(400).json({
                 status: 400,
@@ -46,7 +50,6 @@ module.exports = function (io, status) {
             io.emit('atlas-deploy', {
                 controller: 'atlas-deploy',
                 script: 'omk-atlas.js',
-                exportUrl: url,
                 output: data.toString(),
                 status: status['atlas-deploy']
             });
@@ -66,9 +69,13 @@ module.exports = function (io, status) {
                     console.error(err);
                     return;
                 }
+                status['atlas-deploy'].fpGeoJsonUrl = url;
                 var atlasGeoJSON = JSON.parse(body);
-                //TODO get list of
-                atlasDeployJs(atlasGeoJSON, '/opt/data/aoi/huaquillas', alertSocket, status['atlas-deploy']);
+                //TODO get list of aoi's and deploy atlas for each?
+                var aois = fs.readdirSync('/opt/data/aoi');
+                aois.forEach(function(aoiName,i) {
+                    atlasDeployJs(atlasGeoJSON, '/opt/data/aoi/' + aoiName, alertSocket, status['atlas-deploy']);
+                });
             });
         } catch (err) {
             // TODO status error

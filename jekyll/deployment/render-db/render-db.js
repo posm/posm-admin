@@ -1,22 +1,104 @@
 $(function () {
-
+    //TODO get from url
+    var deployment = "render-db";
+    var pathname = window.location.pathname; // Returns path only
+    var deploymentStatus;
     // init socket.io
     var socket = io.connect({path:'/posm-admin/socket.io'});
 
-    // Get deployment name.
-    var deploymentName = POSM.deployment.getParam('deployment');
+    // get deployment status on page load
+    POSM.deployment.updateDeploymentStatus(function(data){
+        deploymentStatus = data[deployment];
+        updateSupportMessage(deploymentStatus.msg);
+        showProgressSpinner(deploymentStatus);
+    });
 
-    // Check the status of the deployment.
-    checkStatus(deploymentName);
+    $('#action-btn').click(function (evt) {
+        $.post('/posm-admin/render-db')
+            .done(function (data) {
 
-    // Listen for updates on the status from socket.io
-    listenForStatusUpdates(socket, deploymentName);
+                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                    message: data.msg,
+                    timeout: 3000,
+                    actionHandler: function (event) {
+                        // TODO Cancel
+                    },
+                    actionText: 'Cancel'
+                });
+            })
+            .error(function(err){
+                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                    message: JSON.parse(err.responseText).msg,
+                    timeout: 3000,
+                    actionHandler: function (event) {
+                        // TODO Cancel
+                    },
+                    actionText: 'Cancel'
+                });
 
-    // Handle click of the action buttons.
-    handleApi2PbfButton(deploymentName);
-    handlePbf2RenderButton(deploymentName);
-    handleAllButton(deploymentName);
+                updateSupportMessage(JSON.parse(err.responseText).msg);
+                updateNavBarStatusIcon(null,'error_outline');
 
+            });
+        evt.preventDefault();
+    });
+
+    // listen for stdout on posm
+    socket.on('render-db', function (iomsg) {
+        // handles progress spinner
+        showProgressSpinner(iomsg.status);
+
+        // in progress
+        if(iomsg.status.initialized){
+            updateSupportMessage(iomsg.status.msg);
+            // updateDeploySubNav(iomsg.status);
+            updateNavBarStatusIcon('initialized');
+        }
+
+        if (iomsg.output) {
+            if(iomsg.status.error){
+                // red console text on error
+                var span = $('<span />').addClass("msg-error").html(iomsg.output);
+                $('#console').append(span);
+            } else {
+                $('#console').append(iomsg.output);
+            }
+            // keep scroll at bottom of console output
+            var d = $('#console');
+            d.scrollTop(d.prop("scrollHeight") + 45);
+        }
+        // done
+        if (iomsg.status.complete) {
+            // false means the scripts exited without trouble
+            if (!iomsg.status.error) {
+                updateSupportMessage('The full deployment script has been executed.');
+                updateNavBarStatusIcon('complete');
+
+                // var manifest = iomsg.manifest;
+                // if (manifest) {
+                //     receiveManifest(manifest);
+                // }
+            } else {
+                updateSupportMessage('There was a problem with fetching and unpacking the HOT Export tar.gz.');
+                updateNavBarStatusIcon(null,'error');
+            }
+        }
+
+    });
+
+    // // Get deployment name.
+    // var deploymentName = POSM.deployment.getParam('deployment');
+
+    // // Check the status of the deployment.
+    // checkStatus(deploymentName);
+    //
+    // // Listen for updates on the status from socket.io
+    // listenForStatusUpdates(socket, deploymentName);
+    //
+    // // Handle click of the action buttons.
+    // handleApi2PbfButton(deploymentName);
+    // handlePbf2RenderButton(deploymentName);
+    // handleAllButton(deploymentName);
 
     function checkStatus(deploymentName) {
         if (typeof deploymentName !== 'string') return;
@@ -126,6 +208,35 @@ $(function () {
 
                 });
             evt.preventDefault();
+        });
+    }
+
+    // hide spinner and disable action button
+    function showProgressSpinner (status) {
+        if(status.initialized){
+            $("#render-db-progress-spinner").show();
+            // disable star button
+            $("#action-btn").prop("disabled", true);
+        } else {
+            $("#render-db-progress-spinner").hide();
+            $("#action-btn").prop("disabled", false);
+        }
+    }
+
+    // update status message above url input
+    function updateSupportMessage (text) {
+        $('#supporting-msg-txt').html(text);
+    }
+
+    // update nav bar icon
+    function updateNavBarStatusIcon (status, icon) {
+        var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
+        if (icon) icon_text = icon;
+
+        $(".mdl-navigation__link").each(function (i,o) {
+            if (o.pathname == pathname.substring(0,pathname.length-1)) {
+                $(o.childNodes[0]).text(icon_text);
+            }
         });
     }
 

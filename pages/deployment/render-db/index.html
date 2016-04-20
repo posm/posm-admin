@@ -113,23 +113,15 @@
         <div class="mdl-card__title mdl-card--expand posm-grey">
             <h2 class="mdl-card__title-text">Update Render DB</h2>
         </div>
-        <div id="instructions-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
             The OSM API database has the source OSM data that can be imported, edited, and submitted to OpenStreetMap.
             The Render database contains data that is a derivative of what is found in the API DB.
             This is needed for Mapnik to cut tiles in a timely fashion.
-        </div>
-        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
-            <div class="mdl-spinner mdl-js-spinner is-active"></div>
+            <div id="render-db-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
             &nbsp;<span id="supporting-msg-txt"></span>
         </div>
         <div class="mdl-card__actions mdl-card--border">
-            <!--<button id="api2pbf-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Export API DB-->
-                <!--to PBF-->
-            <!--</button>-->
-            <!--<button id="pbf2render-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Import PBF-->
-                <!--to Rendering DB-->
-            <!--</button>-->
-            <button id="all-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Update Render DB</button>
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Update Render DB</button>
         </div>
     </div>
 </div>

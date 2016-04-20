@@ -1,71 +1,7 @@
-// $(function () {
-//     // init socket.io
-//     var socket = io.connect({path:'/posm-admin/socket.io'});
-//
-//     $('#action-btn').click(function (evt) {
-//         var postJson = {};
-//         postJson.url = $('#atlas-deploy-input').val();
-//         $.post('/posm-admin/atlas-deploy', postJson)
-//             .done(function (data) {
-//
-//                 $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
-//                     message: data.msg,
-//                     timeout: 3000,
-//                     actionHandler: function (event) {
-//                         // TODO Cancel
-//                     },
-//                     actionText: 'Cancel'
-//                 });
-//
-//                 var $instructionsDiv = $('#instructions-div');
-//                 $('#supporting-msg-div').show();
-//                 $instructionsDiv.hide();
-//                 $('#supporting-msg-txt').html(data.msg);
-//
-//                 socket.on('atlas-deploy', function (iomsg) {
-//                     console.log(iomsg);
-//                     // scroll to bottom of div (add padding)
-//                     var d = $('#console');
-//                     d.scrollTop(d.prop("scrollHeight") + 45);
-//                     if (iomsg.output) {
-//                         $('#console').append(iomsg.output);
-//                     }
-//                     // done
-//                     if (iomsg.close) {
-//                         $instructionsDiv.show();
-//                         $('#supporting-msg-div').hide();
-//                         // false means the scripts exited without trouble
-//                         if (iomsg.code === false) {
-//                             $('#instructions-div').html('The full deployment script has been executed.');
-//                             $('a[href*="/deployment/"]>i').html('check_circle');
-//                             var manifest = iomsg.manifest;
-//                             if (manifest) {
-//                                 receiveManifest(manifest);
-//                             }
-//                         } else {
-//                             $('#instructions-div').html('There was a problem with fetching and unpacking the HOT Export tar.gz.');
-//                             $('a[href$="fetch-hot-export/"]>i').html('error');
-//                         }
-//                     }
-//
-//                 });
-//             });
-//         evt.preventDefault();
-//     });
-//
-//     function receiveManifest(manifest) {
-//         $('.deployment-title').html(manifest.title);
-//         $('a[href*="/deployment/"]').each(function () {
-//             $(this).attr('href', $(this).attr('href') + '?deployment=' + manifest.name);
-//         });
-//         window.history.replaceState({} , manifest.title, window.location.href.split('?')[0] + '?deployment=' + manifest.name);
-//     }
-//
-// });
-
 $(function () {
     // init socket.io
     var socket = io.connect({path:'/posm-admin/socket.io'});
+    // TODO get from url
     var deployment = "atlas-deploy";
     var pathname = window.location.pathname; // Returns path only
     var deploymentStatus;
@@ -75,17 +11,24 @@ $(function () {
         deploymentStatus = data[deployment];
         updateSupportMessage(deploymentStatus.msg);
         showProgressSpinner(deploymentStatus);
+        updateDeploySubNav(deploymentStatus);
 
-        if(!deploymentStatus.initialized) {
+        if(!deploymentStatus.initialized && !deploymentStatus.complete) {
             updateSupportMessage("Take the bounds of an atlas from a Field Paper and create an OpenMapKit deployment.");
+        } else {
+            // Add field papers geojson url
+            if($('#fp-geojson-url').val() == "") {
+                $('#fp-geojson-url').val(deploymentStatus.fpGeoJsonUrl);
+                // remove background label
+                $("#fp-geojson-url-label").html("");
+            }
         }
-
     });
 
     // do this on url submission
     $('#action-btn').click(function (evt) {
         var postJson = {};
-        postJson.url = $('#atlas-deploy-input').val();
+        postJson.url = $('#fp-geojson-url').val();
         $.post('/posm-admin/atlas-deploy', postJson)
             .done(function (data) {
 
@@ -120,10 +63,10 @@ $(function () {
         showProgressSpinner(iomsg.status);
 
         // add hot export URL when page is opened during installation
-        if($('#atlas-deploy-input').val() == "") {
-            $('#atlas-deploy-input').val(iomsg.exportUrl);
+        if($('#fp-geojson-url').val() == "") {
+            $('#fp-geojson-url').val(iomsg.exportUrl);
             // remove background label
-            $("#atlas-deploy-input-label").html("");
+            $("#fp-geojson-url-label").html("");
         }
 
         // in progress
@@ -131,10 +74,6 @@ $(function () {
             updateSupportMessage(iomsg.status.msg);
             updateDeploySubNav(iomsg.status);
             updateNavBarStatusIcon('initialized');
-            
-            // updateExtractOsmXMLStatus(iomsg.status);
-            // updateRenderMBTilesStatus(iomsg.status);
-            // updateCopyMBTiles(iomsg.status);
         }
 
         if (iomsg.output) {
@@ -149,13 +88,13 @@ $(function () {
             var d = $('#console');
             d.scrollTop(d.prop("scrollHeight") + 45);
         }
-
         // done
         if (iomsg.status.complete) {
             // false means the scripts exited without trouble
             if (!iomsg.status.error) {
                 updateSupportMessage('The full deployment script has been executed.');
                 updateNavBarStatusIcon('complete');
+                updateDeploySubNav(iomsg.status);
 
                 var manifest = iomsg.manifest;
                 if (manifest) {
@@ -204,24 +143,6 @@ $(function () {
             $(this).attr('href', $(this).attr('href') + '?deployment=' + manifest.name);
         });
         window.history.replaceState({} , manifest.title, window.location.href.split('?')[0] + '?deployment=' + manifest.name);
-    }
-
-    function updateExtractOsmXMLStatus (status) {
-        if(status.extractOSMxml.complete){
-            updateSupportMessage(status.extractOSMxml.msg)
-        }
-    }
-
-    function updateRenderMBTilesStatus (status) {
-        if(status.renderMBTiles.complete){
-            updateSupportMessage(status.renderMBTiles.msg)
-        }
-    }
-
-    function updateCopyMBTiles (status) {
-        if(status.copyMBTiles.complete){
-            updateSupportMessage(status.copyMBTiles.msg)
-        }
     }
 
     // hide spinner and disable action button
