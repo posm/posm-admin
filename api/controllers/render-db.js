@@ -14,42 +14,37 @@ module.exports = function (io, status) {
         var renderdbApi2PbfProc = spawn('sudo', ['-u', 'osm', renderdbApi2PbfSh]);
 
         function alertSocket(data) {
+            var status = statusUtility.getStatus('render-db');
+
             io.emit('render-db', {
                 controller: 'render-db',
                 method: 'api2pbf',
                 script: 'osm_render-db-api2pbf.sh',
                 output: data.toString(),
-                status: status['render-db']
+                status: status
             });
             console.log(data.toString());
         }
 
-        status['render-db'].msg = 'Dumping the API DB into a PBF.';
-        status['render-db'].initialized = true;
-        status['render-db'].api2pbf.initialized = true;
-
         renderdbApi2PbfProc.stdout.on('data', function (data) {
-            status['render-db'].api2pbf.error = false;
-            status['render-db'].error = false;
+            statusUtility.update('render-db', '', {initialized:true, error:false, msg: 'Dumping the API DB into a PBF.'});
+            statusUtility.update('render-db', 'api2pbf', {initialized:true, error:false});
             alertSocket(data);
         });
 
         renderdbApi2PbfProc.stdout.on('close', function (data){
-            status['render-db'].api2pbf.complete = true;
-            status['render-db'].api2pbf.error = false;
-            status['render-db'].error = false;
-            if(checkRenderDBComplete(status['render-db'])) status['render-db'].complete = true;
-
+            statusUtility.update('render-db', 'api2pbf', {complete: true, error: false});
+            statusUtility.update('render-db', '', {error: false});
+            // check if all sub processes are complete
+            if (checkRenderDBComplete()) statusUtility.update('', '', {complete: true});
             alertSocket(data);
         });
 
         renderdbApi2PbfProc.stderr.on('data', function (data) {
-            status['render-db'].api2pbf.error = true;
-            status['render-db'].error = true;
-            status['render-db'].api2pbf.msg = (typeof data == 'object') ? data.toString() : data;
-
-            alertSocket(status['render-db'].api2pbf.msg);
-            alertSocket(status['render-db'].api2pbf.msg);
+            var error = (typeof data == 'object') ? data.toString() : data;
+            statusUtility.update('render-db', 'api2pbf', {error: true, msg: error});
+            statusUtility.update('render-db', '', {error: true});
+            alertSocket(error);
         });
 
 
@@ -59,42 +54,37 @@ module.exports = function (io, status) {
         var renderdbPbf2RenderProc = spawn('sudo', ['-u', 'gis', renderdbPbf2RenderSh]);
 
         function alertSocket(data) {
+            var status = statusUtility.getStatus('render-db');
+
             io.emit('render-db', {
                 controller: 'render-db',
                 method: 'pbf2render',
                 script: 'gis_render_db_pbf2render',
                 output: data.toString(),
-                status: status['render-db']
+                status: status
             });
             console.log(data.toString());
         }
 
-        status['render-db'].msg = 'Importing PBF dump into Rendering DB via osm2pgsql.';
-        status['render-db'].initialized = true;
-        status['render-db'].pbf2render.initialized = true;
-
         renderdbPbf2RenderProc.stdout.on('data', function (data) {
-            status['render-db'].pbf2render.error = false;
-            status['render-db'].pbf2render.msg = data;
-
+            statusUtility.update('render-db', '', {initialized:true, error:false, msg: 'Importing PBF dump into Rendering DB via osm2pgsql.'});
+            statusUtility.update('render-db', 'pbf2render', {initialized:true, error:false});
             alertSocket(data);
         });
 
         renderdbPbf2RenderProc.stdout.on('close', function (data){
-            status['render-db'].pbf2render.complete = true;
-            status['render-db'].pbf2render.error = false;
-            status['render-db'].error = false;
-            if(checkRenderDBComplete(status['render-db'])) status['render-db'].complete = true;
-
+            statusUtility.update('render-db', 'pbf2render', {complete: true, error: false});
+            statusUtility.update('render-db', '', {error: false});
+            // check if all sub processes are complete
+            if (checkRenderDBComplete()) statusUtility.update('', '', {complete: true});
             alertSocket(data);
         });
 
         renderdbPbf2RenderProc.stderr.on('data', function (data) {
-            status['render-db'].pbf2render.error = true;
-            status['render-db'].error = true;
-            status['render-db'].pbf2render.msg = (typeof data == 'object') ? data.toString() : data;
-
-            alertSocket(status['render-db'].pbf2render.msg);
+            var error = (typeof data == 'object') ? data.toString() : data;
+            statusUtility.update('render-db', 'pbf2render', {error: true, msg: error});
+            statusUtility.update('render-db', '', {error: true});
+            alertSocket(error);
         });
 
     }
@@ -102,9 +92,7 @@ module.exports = function (io, status) {
     function init(req, res, next) {
 
         //reset status
-        status['render-db'] = {complete: false, initialized: false, msg: ""};
-        status['render-db'].api2pbf = {};
-        status['render-db'].pbf2render = {};
+        statusUtility.resetProcess('render-db', ['api2pbf', 'pbf2render']);
 
         api2pbf();
         pbf2render();
@@ -116,16 +104,21 @@ module.exports = function (io, status) {
 
     }
 
-    function checkRenderDBComplete (status) {
+    function checkRenderDBComplete () {
         var completedScripts = [];
+        var status = statusUtility.getStatus('render-db');
+
         Object.keys(status).forEach(function(o){
             if(o == "api2pbf" && status[o].complete) completedScripts.push(o);
             if(o == "pbf2render" && status[o].complete) completedScripts.push(o);
         });
 
-        if(completedScripts.length == 2){
-            status.msg = "The full deployment script has been executed.";
-            status.initialized = false;
+        if (completedScripts.length == 2) {
+            statusUtility.update('render-db', '', {
+                complete: true,
+                initialized: false,
+                msg: 'The full deployment script has been executed.'
+            });
         }
 
         return completedScripts.length == 2;

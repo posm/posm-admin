@@ -1,6 +1,8 @@
 var fs = require('fs');
 var statusUtility = {};
 var status;
+var DEPLOYMENTS_DIR = '/opt/data/deployments';
+
 
 /**
  * Initialize status object that persists throughout application
@@ -8,6 +10,7 @@ var status;
  */
 statusUtility.init = function (){
     status = {initialized:false, error:false, msg: ''};
+    writeStatusToDisk ();
 };
 
 /**
@@ -16,14 +19,17 @@ statusUtility.init = function (){
  * @param childProcesses - Array of child processes
  */
 statusUtility.registerProcess = function (name, childProcesses) {
-    if(!status[name]){
-        status[name] = {initialized:false, error:false, msg: '', complete:false};
-        // check for child processes
-        if(childProcesses){
-            childProcesses.forEach(function(n){
-                status[name][n] = {initialized:false, error:false, msg: '', complete:false};
-            });
+    if(status) {
+        if (!status[name]) {
+            status[name] = {initialized: false, error: false, msg: '', complete: false};
+            // check for child processes
+            if (childProcesses) {
+                childProcesses.forEach(function (n) {
+                    status[name][n] = {initialized: false, error: false, msg: '', complete: false};
+                });
+            }
         }
+        writeStatusToDisk();
     }
 };
 
@@ -35,33 +41,36 @@ statusUtility.registerProcess = function (name, childProcesses) {
  * @param obj
  */
 statusUtility.update = function (parent, child, obj) {
-    // update parent process object
-    if(parent && !child.length) {
-        if (status[parent]) {
-            // get object properties
+    if(status) {
+        // update parent process object
+        if (parent && !child.length) {
+            if (status[parent]) {
+                // get object properties
+                Object.keys(obj).forEach(function (prop) {
+                    // set parent property values
+                    status[parent][prop] = obj[prop];
+                });
+            }
+        }
+
+        // update child process
+        if (parent && child) {
+            if (status[parent][child]) {
+                // get object properties
+                Object.keys(obj).forEach(function (prop) {
+                    // set parent property values
+                    status[parent][child][prop] = obj[prop];
+                });
+            }
+        }
+
+        // update global status object as apposed to a global status process object
+        if (!parent.length && !child.length && obj) {
             Object.keys(obj).forEach(function (prop) {
-                // set parent property values
-                status[parent][prop] = obj[prop];
+                status[prop] = obj[prop];
             });
         }
-    }
-
-    // update child process
-    if(parent && child) {
-        if (status[parent][child]) {
-            // get object properties
-            Object.keys(obj).forEach(function (prop) {
-                // set parent property values
-                status[parent][child][prop] = obj[prop];
-            });
-        }
-    }
-
-    // update global status object as apposed to a global status process object
-    if (!parent.length && !child.length && obj) {
-        Object.keys(obj).forEach(function (prop) {
-            status[prop] = obj[prop];
-        });
+        writeStatusToDisk();
     }
 };
 
@@ -71,14 +80,17 @@ statusUtility.update = function (parent, child, obj) {
  * @param childProcesses
  */
 statusUtility.resetProcess = function (name, childProcesses) {
-    if(status[name]){
-        status[name] = {initialized:false, error:false, msg: '', complete:false};
-        // check for child processes
-        if(childProcesses){
-            childProcesses.forEach(function(n){
-                status[name][n] = {initialized:false, error:false, msg: '', complete:false};
-            });
+    if(status) {
+        if (status[name]) {
+            status[name] = {initialized: false, error: false, msg: '', complete: false};
+            // check for child processes
+            if (childProcesses) {
+                childProcesses.forEach(function (n) {
+                    status[name][n] = {initialized: false, error: false, msg: '', complete: false};
+                });
+            }
         }
+        writeStatusToDisk();
     }
 };
 
@@ -89,12 +101,15 @@ statusUtility.resetProcess = function (name, childProcesses) {
  * @returns {*}
  */
 statusUtility.getStatus = function(name){
-    return (name && status[name]) ? status[name] : status;
+    if(status) return (name && status[name]) ? status[name] : status;
 };
 
 function writeStatusToDisk () {
-
-
+    fs.writeFile(DEPLOYMENTS_DIR + '/status.json', JSON.stringify(status, null, 2), function (err) {
+        if (err) {
+            console.error('Had trouble writing status.json. ' + DEPLOYMENTS_DIR);
+        }
+    });
 }
 
 module.exports = statusUtility;

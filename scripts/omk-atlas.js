@@ -23,6 +23,9 @@ var statusUtility = require('../api/utilities/status');
  *
  * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.local/fp/atlases/5b3s1bbl.geojson /opt/data/aoi/huaquillas
  *
+ * /opt/admin/posm-admin/scripts/omk-atlas.js http://posm.io/fp/atlases/5gj9upxv.geojson /opt/data/aoi/huaquillas
+ *
+ *
  * Cerca del Hotel
  * /opt/admin/posm-admin/scripts/omk-atlas.js -a /opt/data/aoi/huaquillas -u http://posm.local/fp/atlases/k5iic7si.geojson
  *
@@ -266,18 +269,20 @@ function checkAtlasDeployCompletion() {
     var completedScripts = [];
     var status = statusUtility.getStatus('atlas-deploy');
 
-    Object.keys(status).forEach(function (o) {
-        if (o == "copyMBTiles" && status[o].complete) completedScripts.push(o);
-        if (o == "renderMBTiles" && status[o].complete) completedScripts.push(o);
-        if (o == "extractOSMxml" && status[o].complete) completedScripts.push(o);
-    });
-
-    if (completedScripts.length == 3) {
-        statusUtility.update('atlas-deploy', '', {
-            complete: true,
-            initialized: false,
-            msg: 'The full deployment script has been executed.'
+    if (status) {
+        Object.keys(status).forEach(function (o) {
+            if (o == "copyMBTiles" && status[o].complete) completedScripts.push(o);
+            if (o == "renderMBTiles" && status[o].complete) completedScripts.push(o);
+            if (o == "extractOSMxml" && status[o].complete) completedScripts.push(o);
         });
+
+        if (completedScripts.length == 3) {
+            statusUtility.update('atlas-deploy', '', {
+                complete: true,
+                initialized: false,
+                msg: 'The full deployment script has been executed.'
+            });
+        }
     }
 
     return completedScripts.length == 3;
