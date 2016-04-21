@@ -1,7 +1,10 @@
-module.exports = function (io, deploymentsStatus) {
+var statusUtility = require('../utilities/status');
+
+module.exports = function (io) {
     return function (req, res, next) {
         if (req.query.deployment) {
-            var deployment = deploymentsStatus[req.query.deployment];
+            var status = statusUtility.getStatus();
+            var deployment = status[req.query.deployment];
             if (typeof deployment === 'object' && deployment !== null) {
                 res.status(200).json(deployment);
             } else {
@@ -13,7 +16,8 @@ module.exports = function (io, deploymentsStatus) {
         }
         // No deployment query parameter - give status of everything.
         else {
-            res.status(200).json(deploymentsStatus);
+            var status = statusUtility.getStatus();
+            res.status(200).json(status);
         }
     };
 };

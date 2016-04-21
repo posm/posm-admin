@@ -86,14 +86,15 @@ $(function () {
             POSM.deployment.updateDeploymentStatus();
             // false means the scripts exited without trouble
             if (!iomsg.status.error) {
-                updateSupportMessage('The full deployment script has been executed.');
+                updateSupportMessage(iomsg.status.msg);
                 updateNavBarStatusIcon('complete');
+
                 var manifest = iomsg.manifest;
                 if (manifest) {
                     receiveManifest(manifest);
                 }
             } else {
-                updateSupportMessage('There was a problem with fetching and unpacking the HOT Export tar.gz.');
+                updateNavBarStatusIcon(null,'error');
             }
         }
 

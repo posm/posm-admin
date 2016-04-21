@@ -3,14 +3,12 @@ var fs = require('fs');
 var settings = require('../../settings');
 var renderdbApi2PbfSh = __dirname + '/../../scripts/osm_render-db-api2pbf.sh';
 var renderdbPbf2RenderSh = __dirname + '/../../scripts/gis_render-db-pbf2render.sh';
+var statusUtility = require('../utilities/status');
 
 module.exports = function (io, status) {
 
-    if (!status['render-db']) {
-        status['render-db'] = {complete: false, initialized: false, msg: ""};
-        status['render-db'].api2pbf = {};
-        status['render-db'].pbf2render = {};
-    }
+    // register status
+    statusUtility.registerProcess('render-db', ['api2pbf', 'pbf2render']);
 
     function api2pbf() {
         var renderdbApi2PbfProc = spawn('sudo', ['-u', 'osm', renderdbApi2PbfSh]);

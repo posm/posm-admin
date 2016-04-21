@@ -1,18 +1,19 @@
 var spawn = require('child_process').spawn;
 var fullDeploySh = __dirname + '/../../scripts/posm-deploy-full.sh';
+var statusUtility = require('../utilities/status');
 
 module.exports = function (io, status) {
 
     // register status
-    if (!status['full-deploy']) {
-        status['full-deploy'] = {complete: false, initialized: false, msg: ""};
-    }
+    statusUtility.registerProcess('full-deploy');
 
     function init(req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
         //reset status
-        status['full-deploy'] = {complete: false, initialized: false, msg: ""};
+        statusUtility.resetProcess('full-deploy');
+        // update export url
+        statusUtility.update('full-deploy', '', {exportUrl: url});
 
         if (typeof url !== 'string' && typeof res !== 'undefined') {
             status['full-deploy'].error = true;
@@ -35,29 +36,21 @@ module.exports = function (io, status) {
                 script: 'posm-deploy-full.sh',
                 exportUrl: url,
                 output: data.toString(),
-                status: status['full-deploy']
+                status: statusUtility.getStatus('full-deploy')
             });
-
-            status['full-deploy'].exportUrl = url;
         }
-
         var fullDeployProc = spawn(fullDeploySh, [url]);
         fullDeployProc.stdout.on('data', function (data) {
-            status['full-deploy'].initialized = true;
-            status["full-deploy"].msg = "Doing a full deployment starting with fetching a HOT Export tar.gz.";
-            status['full-deploy'].error = false;
+            statusUtility.update('full-deploy', '', {initialized: true, error:false, msg: 'Doing a full deployment starting with fetching a HOT Export tar.gz.'});
             alertSocket(data);
         });
         fullDeployProc.stderr.on('data', function (data) {
-            status['full-deploy'].error = true;
+            statusUtility.update('full-deploy', '', {error:true});
             alertSocket(data);
         });
         fullDeployProc.stdout.on('close', function (code) {
-            status["full-deploy"].msg = "The full deployment script has been executed.";
-            status['full-deploy'].initialized = false;
-            status['full-deploy'].error = false;
-            status["full-deploy"].complete = true;
-            alertSocket(status);
+            statusUtility.update('full-deploy', '', {initialized : false, error : false, complete : true, msg : "The full deployment script has been executed."});
+            alertSocket(code);
         });
     }
 

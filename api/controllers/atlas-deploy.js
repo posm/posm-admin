@@ -1,6 +1,7 @@
 var request = require('request');
 var atlasDeployJs = require(__dirname + '/../../scripts/omk-atlas.js');
 var fs = require('fs');
+var statusUtility = require('../utilities/status');
 
 /**
  *
@@ -15,22 +16,14 @@ var fs = require('fs');
 module.exports = function (io, status) {
 
     // register status
-    if (!status['atlas-deploy']) {
-        status['atlas-deploy'] = {complete: false, initialized: false, error: false, msg: "", fpGeoJsonUrl:""};
-        status['atlas-deploy'].extractOSMxml = {};
-        status['atlas-deploy'].renderMBTiles = {};
-        status['atlas-deploy'].copyMBTiles = {};
-    }
+    statusUtility.registerProcess('atlas-deploy', ['extractOSMxml', 'renderMBTiles', 'copyMBTiles']);
 
     function init (req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
 
         //reset status
-        status['atlas-deploy'] = {complete: false, initialized: false, msg: "", fpGeoJsonUrl:""};
-        status['atlas-deploy'].extractOSMxml = {};
-        status['atlas-deploy'].renderMBTiles = {};
-        status['atlas-deploy'].copyMBTiles = {};
+        statusUtility.resetProcess('atlas-deploy', ['extractOSMxml', 'renderMBTiles', 'copyMBTiles']);
 
         if (typeof url !== 'string' && typeof res !== 'undefined') {
             res.status(400).json({
@@ -47,11 +40,12 @@ module.exports = function (io, status) {
         }
 
         function alertSocket(data) {
+            var status = statusUtility.getStatus('atlas-deploy');
             io.emit('atlas-deploy', {
                 controller: 'atlas-deploy',
                 script: 'omk-atlas.js',
                 output: data.toString(),
-                status: status['atlas-deploy']
+                status: status
             });
             console.log(data.toString());
         }
@@ -69,17 +63,20 @@ module.exports = function (io, status) {
                     console.error(err);
                     return;
                 }
-                status['atlas-deploy'].fpGeoJsonUrl = url;
+
+                statusUtility.update('atlas-deploy', '', {fpGeoJsonUrl:url});
                 var atlasGeoJSON = JSON.parse(body);
-                //TODO get list of aoi's and deploy atlas for each?
-                var aois = fs.readdirSync('/opt/data/aoi');
-                aois.forEach(function(aoiName,i) {
-                    atlasDeployJs(atlasGeoJSON, '/opt/data/aoi/' + aoiName, alertSocket, status['atlas-deploy']);
+                //TODO look for active aoi
+
+                fs.readdir('/opt/data/aoi', function (err,files) {
+                    files.forEach(function(aoiName,i) {
+                        atlasDeployJs(atlasGeoJSON, '/opt/data/aoi/' + aoiName, alertSocket);
+                    });
                 });
             });
         } catch (err) {
             // TODO status error
-            status['atlas-deploy'].error = true;
+            statusUtility.update('atlas-deploy', '', {error:true});
             alertSocket('unable to fetch geojson: ' + err);
             console.log('unable to fetch geojson: ' + err);
         }
