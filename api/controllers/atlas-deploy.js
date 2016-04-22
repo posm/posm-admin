@@ -2,6 +2,7 @@ var request = require('request');
 var atlasDeployJs = require(__dirname + '/../../scripts/omk-atlas.js');
 var fs = require('fs');
 var statusUtility = require('../utilities/status');
+var AOI_DIRECTORY = '/opt/data/aoi';
 
 /**
  *
@@ -13,7 +14,7 @@ var statusUtility = require('../utilities/status');
  * @returns {{init: init}}
  */
 
-module.exports = function (io, status) {
+module.exports = function (io) {
 
     // register status
     statusUtility.registerProcess('atlas-deploy', ['extractOSMxml', 'renderMBTiles', 'copyMBTiles']);
@@ -59,20 +60,15 @@ module.exports = function (io, status) {
         try {
             request(url, function (err, res, body) {
                 if (err) {
-                    //TODO status error
+                    statusUtility.update('atlas-deploy', '', {error:true, msg: err});
                     console.error(err);
                     return;
                 }
 
                 statusUtility.update('atlas-deploy', '', {fpGeoJsonUrl:url});
                 var atlasGeoJSON = JSON.parse(body);
-                //TODO look for active aoi
-
-                fs.readdir('/opt/data/aoi', function (err,files) {
-                    files.forEach(function(aoiName,i) {
-                        atlasDeployJs(atlasGeoJSON, '/opt/data/aoi/' + aoiName, alertSocket);
-                    });
-                });
+                var activeAOI = statusUtility.getActiveAOI();
+                atlasDeployJs(atlasGeoJSON, activeAOI, alertSocket);
             });
         } catch (err) {
             // TODO status error

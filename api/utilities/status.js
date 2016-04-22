@@ -2,15 +2,30 @@ var fs = require('fs');
 var statusUtility = {};
 var status;
 var DEPLOYMENTS_DIR = '/opt/data/deployments';
+var path = require('path');
 
 
 /**
+ * Look for status.json file on disk
+ * If file doesn't exist, create new status object
  * Initialize status object that persists throughout application
  *
  */
-statusUtility.init = function (){
-    status = {initialized:false, error:false, msg: ''};
-    writeStatusToDisk ();
+statusUtility.init = function (cb) {
+    try {
+        var dir = path.join(DEPLOYMENTS_DIR, "status.json");
+        fs.readFile(dir, function (err, data) {
+            if (err) {
+                console.log("status.json does not exist. Creating....");
+            }
+            status = (data) ? JSON.parse(data) : {activeAOI: '', initialized: false, error: false, msg: ''};
+            writeStatusToDisk();
+            cb();
+        });
+    } catch (err) {
+        console.error('Had trouble reading status.json');
+        console.error(err);
+    }
 };
 
 /**
@@ -19,7 +34,7 @@ statusUtility.init = function (){
  * @param childProcesses - Array of child processes
  */
 statusUtility.registerProcess = function (name, childProcesses) {
-    if(status) {
+    if (status) {
         if (!status[name]) {
             status[name] = {initialized: false, error: false, msg: '', complete: false};
             // check for child processes
@@ -41,7 +56,7 @@ statusUtility.registerProcess = function (name, childProcesses) {
  * @param obj
  */
 statusUtility.update = function (parent, child, obj) {
-    if(status) {
+    if (status) {
         // update parent process object
         if (parent && !child.length) {
             if (status[parent]) {
@@ -80,7 +95,7 @@ statusUtility.update = function (parent, child, obj) {
  * @param childProcesses
  */
 statusUtility.resetProcess = function (name, childProcesses) {
-    if(status) {
+    if (status) {
         if (status[name]) {
             status[name] = {initialized: false, error: false, msg: '', complete: false};
             // check for child processes
@@ -100,16 +115,23 @@ statusUtility.resetProcess = function (name, childProcesses) {
  * @param name
  * @returns {*}
  */
-statusUtility.getStatus = function(name){
-    if(status) return (name && status[name]) ? status[name] : status;
+statusUtility.getStatus = function (name) {
+    if (status) return (name && status[name]) ? status[name] : status;
 };
 
-function writeStatusToDisk () {
+function writeStatusToDisk() {
     fs.writeFile(DEPLOYMENTS_DIR + '/status.json', JSON.stringify(status, null, 2), function (err) {
         if (err) {
             console.error('Had trouble writing status.json. ' + DEPLOYMENTS_DIR);
         }
     });
 }
+
+/**
+ * Get active AOI directory
+ */
+statusUtility.getActiveAOI = function () {
+    if (status) return status.activeAOI;
+};
 
 module.exports = statusUtility;

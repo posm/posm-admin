@@ -2,7 +2,7 @@ var spawn = require('child_process').spawn;
 var fullDeploySh = __dirname + '/../../scripts/posm-deploy-full.sh';
 var statusUtility = require('../utilities/status');
 
-module.exports = function (io, status) {
+module.exports = function (io) {
 
     // register status
     statusUtility.registerProcess('full-deploy');
@@ -16,7 +16,7 @@ module.exports = function (io, status) {
         statusUtility.update('full-deploy', '', {exportUrl: url});
 
         if (typeof url !== 'string' && typeof res !== 'undefined') {
-            status['full-deploy'].error = true;
+            statusUtility.update('full-deploy', '', {error: true});
             res.status(400).json({
                 status: 400,
                 msg: 'You must provide a URL to a hot export tar.gz. This can be a url query parameter or url string in a JSON POST.'
@@ -38,6 +38,7 @@ module.exports = function (io, status) {
                 output: data.toString(),
                 status: statusUtility.getStatus('full-deploy')
             });
+            console.log(data.toString());
         }
         var fullDeployProc = spawn(fullDeploySh, [url]);
         fullDeployProc.stdout.on('data', function (data) {
@@ -49,6 +50,7 @@ module.exports = function (io, status) {
             alertSocket(data);
         });
         fullDeployProc.stdout.on('close', function (code) {
+            // When full deploy has completed 
             statusUtility.update('full-deploy', '', {initialized : false, error : false, complete : true, msg : "The full deployment script has been executed."});
             alertSocket(code);
         });

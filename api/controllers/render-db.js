@@ -5,7 +5,7 @@ var renderdbApi2PbfSh = __dirname + '/../../scripts/osm_render-db-api2pbf.sh';
 var renderdbPbf2RenderSh = __dirname + '/../../scripts/gis_render-db-pbf2render.sh';
 var statusUtility = require('../utilities/status');
 
-module.exports = function (io, status) {
+module.exports = function (io) {
 
     // register status
     statusUtility.registerProcess('render-db', ['api2pbf', 'pbf2render']);
