@@ -1,8 +1,15 @@
 var spawn = require('child_process').spawn;
 var fullDeploySh = __dirname + '/../../scripts/posm-deploy-full.sh';
 var statusUtility = require('../utilities/status');
+var fullDeployProc;
+var socket;
 
 module.exports = function (io) {
+
+    // listen for client connections
+    io.on('connection', function (clientSocket) {
+        updateSocketClient(clientSocket);
+    });
 
     // register status
     statusUtility.registerProcess('full-deploy');
@@ -31,27 +38,39 @@ module.exports = function (io) {
         }
 
         function alertSocket(data) {
-            io.emit('full-deploy', {
-                controller: 'full-deploy',
-                script: 'posm-deploy-full.sh',
-                exportUrl: url,
-                output: data.toString(),
-                status: statusUtility.getStatus('full-deploy')
-            });
-            console.log(data.toString());
+            if(socket) {
+                socket.emit('full-deploy', {
+                    controller: 'full-deploy',
+                    script: 'posm-deploy-full.sh',
+                    exportUrl: url,
+                    output: data.toString(),
+                    status: statusUtility.getStatus('full-deploy')
+                });
+                console.log(data.toString());
+            }
         }
-        var fullDeployProc = spawn(fullDeploySh, [url]);
+
+        fullDeployProc = spawn(fullDeploySh, [url]);
         fullDeployProc.stdout.on('data', function (data) {
-            statusUtility.update('full-deploy', '', {initialized: true, error:false, msg: 'Doing a full deployment starting with fetching a HOT Export tar.gz.'});
+            statusUtility.update('full-deploy', '', {
+                initialized: true,
+                error: false,
+                msg: 'Doing a full deployment starting with fetching a HOT Export tar.gz.'
+            });
             alertSocket(data);
         });
         fullDeployProc.stderr.on('data', function (data) {
-            statusUtility.update('full-deploy', '', {error:true});
+            statusUtility.update('full-deploy', '', {error: true});
             alertSocket(data);
         });
         fullDeployProc.stdout.on('close', function (code) {
             // When full deploy has completed 
-            statusUtility.update('full-deploy', '', {initialized : false, error : false, complete : true, msg : "The full deployment script has been executed."});
+            statusUtility.update('full-deploy', '', {
+                initialized: false,
+                error: false,
+                complete: true,
+                msg: "The full deployment script has been executed."
+            });
             alertSocket(code);
         });
     }
@@ -59,3 +78,23 @@ module.exports = function (io) {
     return {init: init};
 
 };
+
+/**
+ * Get socket object on client connection
+ * @param clientSocket
+ */
+function updateSocketClient(clientSocket) {
+    socket = clientSocket;
+    console.log('Connected to client ' + clientSocket.id);
+
+    // listen for process kill event coming from client
+    socket.on('full-deploy/kill', function () {
+        try {
+            if (fullDeployProc) {
+                //TODO kill the child process fullDeployProc
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    })
+}

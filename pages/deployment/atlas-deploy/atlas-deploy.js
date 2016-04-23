@@ -57,6 +57,11 @@ $(function () {
         evt.preventDefault();
     });
 
+    // cancel process
+    $('#cancelProcess').click(function (evt){
+        socket.emit('kill');
+    });
+
     // listen for stdout on posm
     socket.on('atlas-deploy', function (iomsg) {
         // handles progress spinner

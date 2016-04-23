@@ -19,6 +19,15 @@ statusUtility.init = function (cb) {
                 console.log("status.json does not exist. Creating....");
             }
             status = (data) ? JSON.parse(data) : {activeAOI: '', initialized: false, error: false, msg: ''};
+            // reset any processes stopped midway through
+            Object.keys(status).forEach(function(val){
+                if (val == 'full-deploy' || val == 'atlas-deploy' || val == 'render-db') {
+                    if(status[val].initialized && !status[val].complete){
+                        statusUtility.resetProcess(val);
+                    }
+                }
+            });
+            // write to disk
             writeStatusToDisk();
             cb();
         });

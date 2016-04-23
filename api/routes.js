@@ -7,18 +7,16 @@ var xls2xform = require('./controllers/xls2xform');
 var apidb = require('./controllers/api-db');
 var renderdb = require('./controllers/render-db');
 var atlasDeploy = require('./controllers/atlas-deploy');
-var updateAOI = require('./controllers/update-aoi');
+var updateAOI = require('./controllers/activate-aoi');
 
 /**
  * Takes a socket io instance so we have a hold of it.
  * Returns the router.
  *
  * @param io - socket.io instance
- * @param status - status of the deployments & operations
  * @returns router - the router
  */
 module.exports = function(io) {
-
 	/**
 	 * Root posm-admin route brings you to the full deploy page.
 	 */

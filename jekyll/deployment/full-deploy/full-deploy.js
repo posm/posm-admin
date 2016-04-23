@@ -50,8 +50,13 @@ $(function () {
         evt.preventDefault();
     });
 
+    // cancel process
+    $('#cancelProcess').click(function (evt){
+        socket.emit(deployment + '/kill');
+    });
+
     // listen for stdout on posm
-    socket.on('full-deploy', function (iomsg) {
+    socket.on(deployment, function (iomsg) {
         // handle progress spinner
         showProgressSpinner(iomsg.status);
 

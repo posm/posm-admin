@@ -2,7 +2,7 @@ var request = require('request');
 var atlasDeployJs = require(__dirname + '/../../scripts/omk-atlas.js');
 var fs = require('fs');
 var statusUtility = require('../utilities/status');
-var AOI_DIRECTORY = '/opt/data/aoi';
+var socket;
 
 /**
  *
