@@ -45,7 +45,7 @@ $(function () {
     });
 
     // listen for stdout on posm
-    socket.on(deployment, function (iomsg) {
+    socket.on('render-db', function (iomsg) {
         // handles progress spinner
         showProgressSpinner(iomsg.status);
 

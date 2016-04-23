@@ -18,7 +18,7 @@ statusUtility.init = function (cb) {
             if (err) {
                 console.log("status.json does not exist. Creating....");
             }
-            status = (data) ? JSON.parse(data) : {activeAOI: '', initialized: false, error: false, msg: ''};
+            status = (data && data.length > 0) ? JSON.parse(data) : {activeAOI: '', initialized: false, error: false, msg: ''};
             // reset any processes stopped midway through
             Object.keys(status).forEach(function(val){
                 if (val == 'full-deploy' || val == 'atlas-deploy' || val == 'render-db') {
@@ -28,8 +28,9 @@ statusUtility.init = function (cb) {
                 }
             });
             // write to disk
-            writeStatusToDisk();
-            cb();
+            writeStatusToDisk(function(){
+                cb();
+            });
         });
     } catch (err) {
         console.error('Had trouble reading status.json');
@@ -128,11 +129,12 @@ statusUtility.getStatus = function (name) {
     if (status) return (name && status[name]) ? status[name] : status;
 };
 
-function writeStatusToDisk() {
+function writeStatusToDisk(cb) {
     fs.writeFile(DEPLOYMENTS_DIR + '/status.json', JSON.stringify(status, null, 2), function (err) {
         if (err) {
             console.error('Had trouble writing status.json. ' + DEPLOYMENTS_DIR);
         }
+        if(cb) cb();
     });
 }
 

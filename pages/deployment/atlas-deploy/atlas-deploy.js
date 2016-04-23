@@ -2,7 +2,7 @@ $(function () {
     // init socket.io
     var socket = io.connect({path:'/posm-admin/socket.io'});
     // TODO get from url
-    var deployment = "atlas-deploy";
+    var deployment = 'atlas-deploy';
     var pathname = window.location.pathname; // Returns path only
     var deploymentStatus;
 
@@ -59,7 +59,7 @@ $(function () {
 
     // cancel process
     $('#cancelProcess').click(function (evt){
-        socket.emit('kill');
+        socket.emit('atlas-deploy/kill');
     });
 
     // listen for stdout on posm

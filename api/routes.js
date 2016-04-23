@@ -7,7 +7,7 @@ var xls2xform = require('./controllers/xls2xform');
 var apidb = require('./controllers/api-db');
 var renderdb = require('./controllers/render-db');
 var atlasDeploy = require('./controllers/atlas-deploy');
-var updateAOI = require('./controllers/activate-aoi');
+var activateAOI = require('./controllers/activate-aoi');
 
 /**
  * Takes a socket io instance so we have a hold of it.
@@ -33,7 +33,7 @@ module.exports = function(io) {
 	/**
 	 * Accepts an aoi_name in a POST and updates status object
 	 */
-	router.route('/status/update-aoi').post(updateAOI);
+	router.route('/status/activate-aoi').post(activateAOI);
 
 	/**
 	 * Accepts a manifest in a POST and write

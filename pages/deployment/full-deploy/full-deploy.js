@@ -56,7 +56,7 @@ $(function () {
     });
 
     // listen for stdout on posm
-    socket.on(deployment, function (iomsg) {
+    socket.on('full-deploy', function (iomsg) {
         // handle progress spinner
         showProgressSpinner(iomsg.status);
 
