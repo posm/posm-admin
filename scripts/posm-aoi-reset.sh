@@ -1,35 +1,22 @@
 #!/usr/bin/env bash
 
-# This script will do the complete deployment of an AOI from a HOT Export AOI tar.gz.
-# This amalgamation of scripts provisions the POSM with AOI data, and sets up
-# the API DB, and the Render DB.
+# This script will do the complete deployment of an existing AOI from disk.
+# This amalgamation of scripts sets up the API DB, and the Render DB.
 #
 # Once this is set up, you can use omk-atlas.js to create a deployment for OpenMapKit
 # based off of a Field Papers atlas' map.geojson
 
 # Arguments:
-# $1 - The url to the HOT Export
+# $1 - The name (directory) of the AOI
 
 # Example Usage:
-# /opt/admin/posm-admin/scripts/posm-deploy-full.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas-sm.tar.gz
-
-hot_export_url=$1
+# /opt/admin/posm-admin/scripts/posm-aoi-reset.sh huaquillas
 
 scripts_dir=/opt/admin/posm-admin/scripts/
 
-# Fetch HOT Export
-# /opt/admin/posm-admin/scripts/hot-export-fetch.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas-sm.tar.gz /opt/admin/tmp/example
-# /opt/admin/posm-admin/scripts/hot-export-fetch.sh http://ec2-52-32-62-7.us-west-2.compute.amazonaws.com/downloads/c6509d34-68ff-474b-ab93-8bc69d47a00b/huaquillas_el_oro_ecuador-bundle.tar.gz /opt/admin/tmp/example
-uuid=$(uuidgen)
-tmp_dir=/opt/admin/tmp/$uuid
-$scripts_dir/hot-export-fetch.sh $hot_export_url $tmp_dir
-
-# Move aoi from temp to aoi dir
-# /opt/admin/posm-admin/scripts/hot-export-move.sh /opt/admin/tmp/example /opt/data/aoi/huaquillas
-manifest_path=$tmp_dir/manifest.json
-aoi_name=$(cat $manifest_path | jq -r '.name')
+aoi_name=$1
 aoi_dir=/opt/data/aoi/$aoi_name
-echo "==> posm-deploy-full.sh"
+echo "==> posm-aoi-reset.sh"
 echo "      aoi name: "$aoi_name
 echo
 $scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
