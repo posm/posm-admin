@@ -192,7 +192,7 @@ function renderPosmCartoMBTiles(dir, atlasGeoJSON, socket, status) {
     omkMBTilesProc.stderr.pipe(process.stderr);
 
     omkMBTilesProc.stdout.on('data', function (data) {
-        statusUtility.update('atlas-deploy', '', {initialized: true, error: false, msg: 'Rendering POSM CartoDB MBTiles...'});
+        statusUtility.update('atlas-deploy', '', {initialized: true, error: false, msg: 'Rendering POSM Carto MBTiles...'});
         statusUtility.update('atlas-deploy', 'renderMBTiles', {initialized: true, error: false});
         notifySocket(socket, data);
     });
