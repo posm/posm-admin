@@ -17,6 +17,10 @@ module.exports = function (req, res, next) {
 
     if(req.body.aoi_name){
         statusUtility.update('','', {activeAOI: req.body.aoi_name});
+        res.status(201).json({
+            status: 201,
+            msg: 'Updated Active aoi.'
+        });
     }
 };
 

@@ -38,8 +38,8 @@ POSM.deployment.updateDeploymentStatus = function (cb){
                         if(data[d].error) icon = 'error_outline';
                         if(data[d].initialized) icon = 'compare_arrows';
                         if(data[d].complete) icon = 'check_circle';
-
-                        $(o.childNodes[0]).text(icon || 'brightness_1');
+                        
+                        $(o.childNodes[1]).text(icon || 'brightness_1');
                     }
                 });
             });

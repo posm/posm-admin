@@ -36,6 +36,7 @@ $(function () {
                     timeout: 3000,
                     actionText: 'Cancel'
                 });
+                POSM.deployment.updateDeploymentStatus();
             }).error(function(err){
 
             $('#snackbar').get(0).MaterialSnackbar.showSnackbar({

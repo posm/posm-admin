@@ -18,8 +18,6 @@ aoi_name=$1
 aoi_dir=/opt/data/aoi/$aoi_name
 echo "==> posm-aoi-reset.sh"
 echo "      aoi name: "$aoi_name
-echo
-$scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
 
 # Activate aoi
 curl --data "aoi_name=$aoi_name" http://posm.io/posm-admin/status/activate-aoi
