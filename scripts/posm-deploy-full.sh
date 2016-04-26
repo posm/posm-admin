@@ -31,8 +31,6 @@ aoi_name=$(cat $manifest_path | jq -r '.name')
 aoi_dir=/opt/data/aoi/$aoi_name
 echo "==> posm-deploy-full.sh"
 echo "      aoi name: "$aoi_name
-echo
-$scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
 
 # Activate aoi
 curl --data "aoi_name=$aoi_name" http://posm.io/posm-admin/status/activate-aoi
