@@ -29,9 +29,11 @@
     "body-parser": "^1.15.0",
     "cors": "^2.7.1",
     "express": "^4.13.4",
+    "fs": "0.0.2",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "node-uuid": "^1.4.7",
+    "path": "^0.12.7",
     "request": "^2.69.0",
     "serve-index": "^1.7.3",
     "socket.io": "^1.4.5"

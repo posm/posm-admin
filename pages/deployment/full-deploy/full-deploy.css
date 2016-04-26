@@ -7,7 +7,7 @@
 }
 
 .top-card .posm-grey {
-    background-color: rgb(55, 71, 79) !important;
+    background-color: #B02129 !important;
 }
 
 .top-card h2 {
@@ -16,7 +16,11 @@
 
 .top-card .mdl-card__title {
     min-height: 200px;
-    /*background-image: url('../images/posm.png');*/
+    background-image: url('../images/hot-logo.png');
     background-position: 98% 70%;
     background-repeat: no-repeat;
+}
+
+#full-deploy-progress-spinner {
+    display: none;
 }

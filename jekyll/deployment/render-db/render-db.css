@@ -1,11 +1,3 @@
-.top-card .hot-export-url {
-    padding: 0 40px 8px 40px;
-}
-
-.top-card .hot-export-url .mdl-textfield {
-    width: 100%;
-}
-
 .top-card .posm-grey {
     background-color: rgb(55, 71, 79) !important;
 }
@@ -16,4 +8,9 @@
 
 .top-card .mdl-card__title {
     min-height: 200px;
+}
+
+
+#render-db-progress-spinner {
+    display: none;
 }

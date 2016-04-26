@@ -1,0 +1,25 @@
+.top-card .atlas-deploy {
+    padding: 0 40px 8px 40px;
+}
+
+.top-card .atlas-deploy .mdl-textfield {
+    width: 100%;
+}
+
+.top-card .posm-grey {
+    background-color: black !important;
+}
+
+.top-card h2 {
+    color: white;
+}
+
+.top-card .mdl-card__title {
+    min-height: 200px;
+    background-position: 98% 70%;
+    background-repeat: no-repeat;
+}
+
+#atlas-deploy-progress-spinner {
+    display: none;
+}

@@ -1,140 +1,164 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>POSM Rendering DB</title>
 
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" sizes="192x192" href="../images/android-desktop.png">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POSM Fetch HOT Export</title>
 
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="POSM Rendering DB">
-    <link rel="apple-touch-icon-precomposed" href="../images/ios-desktop.png">
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="../images/android-desktop.png">
 
-    <!-- Tile icon for Win8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
-    <meta name="msapplication-TileColor" content="#3372DF">
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="POSM Deployment">
+  <link rel="apple-touch-icon-precomposed" href="../images/ios-desktop.png">
 
-    <link rel="shortcut icon" href="../images/favicon.png">
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+  <meta name="msapplication-TileColor" content="#3372DF">
 
-    <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
-    <!--
-    <link rel="canonical" href="http://www.example.com/">
-    -->
+  <link rel="shortcut icon" href="../images/favicon.png">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="../../libs/mdl/material.min.css">
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../deployment.css">
-    <link rel="stylesheet" href="render-db.css">
-    <style>
-        #view-source {
-            position: fixed;
-            display: block;
-            right: 0;
-            bottom: 0;
-            margin-right: 40px;
-            margin-bottom: 40px;
-            z-index: 900;
-        }
-    </style>
+  <!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+  <!--
+  <link rel="canonical" href="http://www.example.com/">
+  -->
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../deployment/deployment.css">
+  <link rel="stylesheet" href="../../vendor/mdl/material.min.css">
+
+  <script type="text/javascript" src="../../vendor/mdl/material.min.js"></script>
+  <script type="text/javascript" src="../../vendor/jquery/jquery-2.1.1.min.js"></script>
+  <script src="../../../socket.io/socket.io.js"></script>
+  <script src="../../deployment/deployment.js"></script>
+
+  <style>
+    #view-source {
+      position: fixed;
+      display: block;
+      right: 0;
+      bottom: 0;
+      margin-right: 40px;
+      margin-bottom: 40px;
+      z-index: 900;
+    }
+  </style>
+
 </head>
-<body>
-<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
-    <header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
-        <div class="mdl-layout__header-row">
-            <span class="mdl-layout-title">POSM Admin Console - Deployment</span>
-            <div class="mdl-layout-spacer"></div>
-            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
-                <i class="material-icons">more_vert</i>
-            </button>
-            <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
-                <li class="mdl-menu__item">About</li>
-                <li class="mdl-menu__item">Contact</li>
-                <li class="mdl-menu__item">Legal information</li>
-            </ul>
-        </div>
-    </header>
-    <div class="demo-drawer mdl-layout__drawer">
-        <header class="posm-drawer-header">
-            <img src="../images/posm.png" class="demo-avatar">
-            <div class="demo-avatar-dropdown">
-                <span class="deployment-title">New Deployment</span>
-                <div class="mdl-layout-spacer"></div>
-                <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
-                    <i class="material-icons" role="presentation">arrow_drop_down</i>
-                    <span class="visuallyhidden">Accounts</span>
-                </button>
-                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
-                    <li class="mdl-menu__item">hello@example.com</li>
-                    <li class="mdl-menu__item">info@example.com</li>
-                    <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
-                </ul>
-            </div>
-        </header>
-        <nav class="demo-navigation mdl-navigation mdl-color--grey-800">
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/full-deploy/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">done_all</i>Full Deploy</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/fetch-hot-export/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Fetch HOT Export</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/xls2xform/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Convert XLS to XForm</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/api-db/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Populate API DB</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/render-db/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Populate Rendering DB</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/fp/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Configure Field Papers</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/omk-osm/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">check_circle</i>Create OpenMapKit OSM XML</a>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/omk-mbtiles/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">error</i>Render OpenMapKit MBTiles</a>
-            <div class="mdl-layout-spacer"></div>
-            <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/help/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">help_outline</i><span class="visuallyhidden">Help</span></a>
-        </nav>
+
+
+  <body>
+
+    <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+
+      <!-- Header -->
+<header class="demo-header mdl-layout__header mdl-color--grey-100 mdl-color-text--grey-600">
+    <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">POSM Admin Console - Deployment</span>
+        <div class="mdl-layout-spacer"></div>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+            <i class="material-icons">more_vert</i>
+        </button>
+        <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+            <li class="mdl-menu__item">About</li>
+            <li class="mdl-menu__item">Contact</li>
+            <li class="mdl-menu__item">Legal information</li>
+        </ul>
     </div>
-    <main class="mdl-layout__content mdl-color--grey-100">
+</header>
+
+<!-- Left Sidebar -->
+<div class="demo-drawer mdl-layout__drawer">
+    <header class="posm-drawer-header">
+        <img src="../images/posm.png" class="demo-avatar">
+        <!--<div class="demo-avatar-dropdown">-->
+            <!--<span class="deployment-title">New Deployment</span>-->
+            <!--<div class="mdl-layout-spacer"></div>-->
+            <!--<button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button&#45;&#45;icon">-->
+                <!--<i class="material-icons" role="presentation">arrow_drop_down</i>-->
+                <!--<span class="visuallyhidden">Accounts</span>-->
+            <!--</button>-->
+            <!--<ul class="mdl-menu mdl-menu&#45;&#45;bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">-->
+                <!--<li class="mdl-menu__item">hello@example.com</li>-->
+                <!--<li class="mdl-menu__item">info@example.com</li>-->
+                <!--<li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    </header>
+    <nav class="demo-navigation mdl-navigation mdl-color--grey-800">
+        <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/full-deploy"><i
+                class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>POSM Deployment</a>
+        <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/atlas-deploy"><i
+                class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>OMK Atlas Deployment</a>
+        <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/render-db"><i
+                class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Update Render DB</a>
+        <a class="mdl-navigation__link" href="/"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Reset
+            AOI Deployment</a>
+    </nav>
+</div>
+
+      <main class="mdl-layout__content mdl-color--grey-100">
+
         <div class="mdl-grid demo-content">
-
-            <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
-                <div class="mdl-card__title mdl-card--expand posm-grey">
-                    <h2 class="mdl-card__title-text">Rendering DB</h2>
-                </div>
-                <div id="instructions-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
-                    Export API DB to PBF. Import PBF to rendering DB.
-                </div>
-                <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
-                    <div class="mdl-spinner mdl-js-spinner is-active"></div>&nbsp;<span id="supporting-msg-txt"></span>
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <button id="api2pbf-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Export API DB to PBF</button>
-                    <button id="pbf2render-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Import PBF to Rendering DB</button>
-                    <button id="all-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">All</button>
-                </div>
-            </div>
-
-            <div class="posm-console-output mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
-                <div class="mdl-card__title mdl-card--expand">
-                    <h2 class="mdl-card__title-text">Console Output</h2>
-                </div>
-                <pre id="console"></pre>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a href="#" class="mdl-button mdl-js-button mdl-js-ripple-effect">Cancel</a>
-                </div>
-            </div>
-
+    <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        <div class="mdl-card__title mdl-card--expand posm-grey">
+            <h2 class="mdl-card__title-text">Update Render DB</h2>
         </div>
-    </main>
+        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+            The OSM API database has the source OSM data that can be imported, edited, and submitted to OpenStreetMap.
+            The Render database contains data that is a derivative of what is found in the API DB.
+            This is needed for Mapnik to cut tiles in a timely fashion.
+            <div id="render-db-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+            &nbsp;
+            <div id="supporting-msg-txt"></div>
+        </div>
+        <ul class="deploy-sub-nav">
+            <li id="api2pbf"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Dump the API DB to a PBF</li>
+            <li id="pbf2render"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Build Render DB from PBF dump via osm2pgsql</li>
+        </ul>
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Update Render DB</button>
+        </div>
+    </div>
 </div>
 
-<div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
-    <div class="mdl-snackbar__text"></div>
-    <button class="mdl-snackbar__action" type="button"></button>
-</div>
 
-<script src="../../libs/jquery/jquery-2.1.1.min.js"></script>
-<script src="../../libs/mdl/material.min.js"></script>
-<script src="../../../socket.io/socket.io.js"></script>
-<script src="../deployment.js"></script>
 <script src="render-db.js"></script>
-</body>
+<link rel="stylesheet" href="render-db.css">
+
+
+        <!-- console output -->
+        <div class="posm-console-output mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+          <div class="mdl-card__title mdl-card--expand">
+            <h2 class="mdl-card__title-text">Console Output</h2>
+          </div>
+          <pre id="console"></pre>
+          <div class="mdl-card__actions mdl-card--border">
+            <button id="cancelProcess" class="mdl-button mdl-js-button mdl-js-ripple-effect">Cancel</button>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- snack bar -->
+      <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
+        <div class="mdl-snackbar__text"></div>
+        <button class="mdl-snackbar__action" type="button"></button>
+      </div>
+
+    </div>
+
+    
+
+  </body>
+
 </html>

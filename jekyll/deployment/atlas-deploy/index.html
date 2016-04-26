@@ -1,0 +1,34 @@
+---
+layout: default
+title: Field Papers Deploy
+---
+<div class="mdl-grid demo-content">
+
+    <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        <div class="mdl-card__title mdl-card--expand posm-grey">
+            <h2 class="mdl-card__title-text">Field Papers Atlas Deployment</h2>
+        </div>
+        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+            <div id="atlas-deploy-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+            &nbsp;<span id="supporting-msg-txt"></span>
+        </div>
+        <ul class="deploy-sub-nav">
+            <li id="extractOSMxml"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Extract OSM XML</li>
+            <li id="renderMBTiles"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Render POSM CartoDB MBTiles</li>
+            <li id="copyMBTiles"><i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>Copy AOI MBTiles to Atlas MBTiles</li>
+        </ul>
+        <form class="atlas-deploy">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="fp-geojson-url">
+                <label id="fp-geojson-url-label" class="mdl-textfield__label" for="fp-geojson-url">Field Papers Atlas GeoJSON URL</label>
+            </div>
+        </form>
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Start</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="atlas-deploy.js"></script>
+<link rel="stylesheet" href="atlas-deploy.css">

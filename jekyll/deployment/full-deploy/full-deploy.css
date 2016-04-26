@@ -6,11 +6,11 @@
     width: 100%;
 }
 
-.top-card .hot-red {
+.top-card .posm-grey {
     background-color: #B02129 !important;
 }
 
-.top-card .hot-red h2 {
+.top-card h2 {
     color: white;
 }
 
@@ -19,4 +19,8 @@
     background-image: url('../images/hot-logo.png');
     background-position: 98% 70%;
     background-repeat: no-repeat;
+}
+
+#full-deploy-progress-spinner {
+    display: none;
 }
