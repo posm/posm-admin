@@ -95,6 +95,8 @@ $(function () {
         }
         // done
         if (iomsg.status.complete) {
+            // update status
+            POSM.deployment.updateDeploymentStatus();
             // false means the scripts exited without trouble
             if (!iomsg.status.error) {
                 updateSupportMessage(iomsg.status.msg);
