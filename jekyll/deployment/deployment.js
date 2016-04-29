@@ -29,6 +29,12 @@ POSM.deployment.updateDeploymentStatus = function (cb){
     // get all statuses
     $.get('/posm-admin/status')
         .done(function (data) {
+            // update deployment name
+            data["aoi-list"].forEach(function(val){
+                if (data.activeAOI == val.name){
+                    $("#aoiName").text(val.label);
+                }
+            });
             // loop through all deployments
             Object.keys(data).forEach(function(d){
                 // match deployment name with url's for each item in sidenav menu
@@ -46,6 +52,18 @@ POSM.deployment.updateDeploymentStatus = function (cb){
 
             if(cb) cb(data);
         });
+};
+
+POSM.updateNavBarStatusIcon = function(status, icon) {
+    var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
+    if (icon) icon_text = icon;
+    var pathname = window.location.pathname; // Returns path only
+
+    $(".mdl-navigation__link").each(function (i,o) {
+        if (o.pathname == pathname.substring(0,pathname.length-1)) {
+            $(o.childNodes[1]).text(icon_text);
+        }
+    });
 };
 
 // Do this on each deployment page when the DOM is ready.

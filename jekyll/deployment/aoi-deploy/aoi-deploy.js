@@ -1,7 +1,7 @@
 $(function () {
     // init socket.io
     var socket = io.connect({path:'/posm-admin/socket.io'});
-    var deployment = "full-deploy";
+    var deployment = "aoi-deploy";
     var pathname = window.location.pathname; // Returns path only
     var deploymentStatus;
 
@@ -13,24 +13,53 @@ $(function () {
 
         if(!deploymentStatus.initialized && !deploymentStatus.complete) {
             updateSupportMessage("Enter the URL of the HOT Export tar.gz to begin the full deployment.");
-        } else {
-            // add hot export URL when page is opened during installation
-            if($('#hot-export-url-input').val() == "") {
-                $('#hot-export-url-input').val(deploymentStatus.exportUrl);
-                // remove background label
-                $("#hot-export-url-input-label").html("");
-            }
         }
 
+        // add list of deployment radio buttons
+        data["aoi-list"].forEach(function(obj){
+            // get parent div
+            var $deployContent = $("#deploy-content");
+
+            // create label, add classes and attributes
+            var $label = $("<label></label>");
+            $label.addClass("deploy-list mdl-radio mdl-js-radio mdl-js-ripple-effect");
+            $label.attr("for", obj.name);
+
+            // create input, add classes & attributes
+            // activeAOI is checked
+            var $input = (obj.name == data.activeAOI) ? $("<input checked>") : $("<input>");
+            $input.addClass("mdl-radio__button");
+            $input.attr("id", obj.name).attr("name", "aoi-deploy").attr("type", "radio");
+
+            // create span, add classes & attributes
+            var $span = $("<span></span>");
+            $span.addClass("mdl-radio__label").html(obj.label + ' (' + obj.name + ')');
+
+            // add input and span to label
+            $label.append($input);
+            $label.append($span);
+
+            // add label to parent div after 2nd child
+            $deployContent.children(":eq(2)").after($label);
+        });
+
+        if($("#hot-export-url").parent().hasClass("is-checked")){
+            $('#hot-export-url-input').val(deploymentStatus.exportUrl);
+            // remove background label
+            $("#hot-export-url-input-label").html("");
+        } else {
+            $('#hot-export-url-input').val("");
+        }
     });
 
     // do this on url submission
     $('#action-btn').click(function (evt) {
         var postJson = {};
         postJson.url = $('#hot-export-url-input').val();
-        $.post('/posm-admin/full-deploy', postJson)
-            .done(function (data) {
+        postJson.aoi = getSelectedAOI();
 
+        $.post('/posm-admin/aoi-deploy', postJson)
+            .done(function (data) {
                 $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
                     message: data.msg,
                     timeout: 3000,
@@ -57,7 +86,7 @@ $(function () {
     });
 
     // listen for stdout on posm
-    socket.on('full-deploy', function (iomsg) {
+    socket.on('aoi-deploy', function (iomsg) {
         // handle progress spinner
         showProgressSpinner(iomsg.status);
 
@@ -71,7 +100,7 @@ $(function () {
         // in progress
         if(iomsg.status.initialized){
             updateSupportMessage(iomsg.status.msg);
-            updateNavBarStatusIcon('initialized');
+            POSM.updateNavBarStatusIcon('initialized');
         }
 
         if (iomsg.output) {
@@ -93,14 +122,14 @@ $(function () {
             // false means the scripts exited without trouble
             if (!iomsg.status.error) {
                 updateSupportMessage(iomsg.status.msg);
-                updateNavBarStatusIcon('complete');
+                POSM.updateNavBarStatusIcon('complete');
 
                 var manifest = iomsg.manifest;
                 if (manifest) {
                     receiveManifest(manifest);
                 }
             } else {
-                updateNavBarStatusIcon(null,'error');
+                POSM.updateNavBarStatusIcon(null,'error');
             }
         }
 
@@ -114,11 +143,11 @@ $(function () {
     // hide spinner and disable action button
     function showProgressSpinner (status) {
         if(status.initialized){
-            $("#full-deploy-progress-spinner").show();
+            $("#aoi-deploy-progress-spinner").show();
             // disable star button
             $("#action-btn").prop("disabled", true);
         } else {
-            $("#full-deploy-progress-spinner").hide();
+            $("#aoi-deploy-progress-spinner").hide();
             $("#action-btn").prop("disabled", false);
 
         }
@@ -132,16 +161,16 @@ $(function () {
         window.history.replaceState({} , manifest.title, window.location.href.split('?')[0] + '?deployment=' + manifest.name);
     }
 
-    // update nav bar icon
-    function updateNavBarStatusIcon (status, icon) {
-        var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
-        if (icon) icon_text = icon;
+    function getSelectedAOI (){
+        var checkedRadio;
 
-        $(".mdl-navigation__link").each(function (i,o) {
-            if (o.pathname == pathname.substring(0,pathname.length-1)) {
-                $(o.childNodes[0]).text(icon_text);
+        $(":radio").each(function(index,value){
+            if($(value).parent().hasClass("is-checked") && value.id !== "hot-export-url"){
+                checkedRadio = value.id;
             }
         });
+
+        return checkedRadio;
     }
 
 });

@@ -24,3 +24,20 @@
 #full-deploy-progress-spinner {
     display: none;
 }
+
+.deploy-list {
+    margin: 5px 16px;
+}
+
+/** Override mdl textfield for radio button group **/
+.mdl-textfield__label {
+    top: 0;
+}
+
+.mdl-textfield {
+    padding: 0 !important;
+}
+
+.mdl-textfield__label:after {
+    bottom: 0 !important;
+}

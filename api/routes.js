@@ -1,7 +1,7 @@
 var router = require('express').Router({ mergeParams: true });
 var getStatus = require('./controllers/get-status');
 var postManifest = require('./controllers/post-manifest');
-var fullDeploy = require('./controllers/full-deploy');
+var aoiDeploy = require('./controllers/aoi-deploy');
 var fetchHotExport = require('./controllers/fetch-hot-export');
 var xls2xform = require('./controllers/xls2xform');
 var apidb = require('./controllers/api-db');
@@ -21,7 +21,7 @@ module.exports = function(io) {
 	 * Root posm-admin route brings you to the full deploy page.
 	 */
 	router.route('/').get(function (req, res, next) {
-		res.redirect('/posm-admin/pages/deployment/full-deploy');
+		res.redirect('/posm-admin/pages/deployment/aoi-deploy');
 	});
 
 	/**
@@ -47,9 +47,9 @@ module.exports = function(io) {
      * complete deployment process is initiated from this
      * single API call.
      */
-    router.route('/full-deploy')
-        .get(fullDeploy(io).init)
-        .post(fullDeploy(io).init);
+    router.route('/aoi-deploy')
+        .get(aoiDeploy(io).init)
+        .post(aoiDeploy(io).init);
 
 	/**
 	 * Execute omk-atlas.js
