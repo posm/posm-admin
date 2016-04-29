@@ -6,10 +6,12 @@ var socket;
 
 module.exports = function (io) {
 
-    // listen for client connections
-    io.on('connection', function (clientSocket) {
-        updateSocketClient(clientSocket);
-    });
+    // // listen for client connections
+    // io.on('connection', function (clientSocket) {
+    //     updateSocketClient(clientSocket);
+    // });
+    
+    socket = io;
 
     // register status
     statusUtility.registerProcess('aoi-deploy');
@@ -79,6 +81,9 @@ module.exports = function (io) {
                 complete: true,
                 msg: "The aoi deployment script has been executed."
             });
+            // reset atlas & render db statuses
+            statusUtility.resetProcess('render-db');
+            statusUtility.resetProcess('atlas-deploy');
             alertSocket(code);
         });
     }

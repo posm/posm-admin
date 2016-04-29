@@ -36,6 +36,7 @@
 
 .mdl-textfield {
     padding: 0 !important;
+    width: 100%;
 }
 
 .mdl-textfield__label:after {

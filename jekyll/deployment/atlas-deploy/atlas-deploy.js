@@ -68,7 +68,7 @@ $(function () {
 
         // add hot export URL when page is opened during installation
         if($('#fp-geojson-url').val() == "") {
-            $('#fp-geojson-url').val(iomsg.exportUrl);
+            $('#fp-geojson-url').val(iomsg.status.fpGeoJsonUrl);
             // remove background label
             $("#fp-geojson-url-label").html("");
         }
