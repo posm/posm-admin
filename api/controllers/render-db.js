@@ -35,9 +35,10 @@ module.exports = function (io) {
         renderdbApi2PbfProc.stdout.on('close', function (data){
             statusUtility.update('render-db', 'api2pbf', {complete: true, error: false});
             statusUtility.update('render-db', '', {error: false});
-            // check if all sub processes are complete
-            if (checkRenderDBComplete()) statusUtility.update('', '', {complete: true});
             alertSocket(data);
+
+            // We're done with dumping the API DB, now we want to load the dump in the Render DB.
+            pbf2render();
         });
 
         renderdbApi2PbfProc.stderr.on('data', function (data) {
@@ -95,7 +96,6 @@ module.exports = function (io) {
         statusUtility.resetProcess('render-db', ['api2pbf', 'pbf2render']);
 
         api2pbf();
-        pbf2render();
 
         res.status(201).json({
             status: 201,
