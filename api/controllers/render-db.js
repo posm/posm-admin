@@ -6,9 +6,9 @@ var renderdbPbf2RenderSh = __dirname + '/../../scripts/gis_render-db-pbf2render.
 var statusUtility = require('../utilities/status');
 
 module.exports = function (io) {
-
     // register status
-    statusUtility.registerProcess('render-db', ['api2pbf', 'pbf2render']);
+    statusUtility.registerProcess('render-db', ['api2pbf', 'pbf2render', 'restartTessera']);
+
 
     function api2pbf() {
         var renderdbApi2PbfProc = spawn('sudo', ['-u', 'osm', renderdbApi2PbfSh]);
@@ -35,9 +35,10 @@ module.exports = function (io) {
         renderdbApi2PbfProc.stdout.on('close', function (data){
             statusUtility.update('render-db', 'api2pbf', {complete: true, error: false});
             statusUtility.update('render-db', '', {error: false});
-            // check if all sub processes are complete
-            if (checkRenderDBComplete()) statusUtility.update('', '', {complete: true});
             alertSocket(data);
+
+            // We're done with dumping the API DB, now we want to load the dump in the Render DB.
+            pbf2render();
         });
 
         renderdbApi2PbfProc.stderr.on('data', function (data) {
@@ -75,8 +76,8 @@ module.exports = function (io) {
         renderdbPbf2RenderProc.stdout.on('close', function (data){
             statusUtility.update('render-db', 'pbf2render', {complete: true, error: false});
             statusUtility.update('render-db', '', {error: false});
-            // check if all sub processes are complete
-            if (checkRenderDBComplete()) statusUtility.update('', '', {complete: true});
+            // restart tessera
+            restartTessera();
             alertSocket(data);
         });
 
@@ -89,13 +90,52 @@ module.exports = function (io) {
 
     }
 
+    function restartTessera (){
+
+        function alertSocket(data) {
+            var status = statusUtility.getStatus('render-db');
+
+            io.emit('render-db', {
+                controller: 'render-db',
+                method: 'restartTessera',
+                script: 'restart tessera',
+                output: data.toString(),
+                status: status
+            });
+            console.log(data.toString());
+        }
+
+        // Restart tessera
+        var tesseraProc = spawn('sudo', ['service', 'tessera', 'restart']);
+
+        tesseraProc.stdout.on('data', function (data) {
+            statusUtility.update('render-db', '', {initialized:true, error:false, msg: 'Restarting Tessera.'});
+            statusUtility.update('render-db', 'restartTessera', {initialized:true, error:false});
+        });
+
+        tesseraProc.stdout.on('close', function (data) {
+            statusUtility.update('render-db', 'restartTessera', {complete: true, error: false});
+            statusUtility.update('render-db', '', {error: false});
+            // check if all sub processes are complete
+            if (checkRenderDBComplete()) statusUtility.update('', '', {complete: true});
+            alertSocket(data);
+        });
+
+        tesseraProc.stderr.on('data', function (data) {
+            var error = (typeof data == 'object') ? data.toString() : data;
+            statusUtility.update('render-db', 'restartTessera', {error: true, msg: error});
+            statusUtility.update('render-db', '', {error: true});
+            alertSocket(error);
+        });
+
+    }
+
     function init(req, res, next) {
 
         //reset status
-        statusUtility.resetProcess('render-db', ['api2pbf', 'pbf2render']);
+        statusUtility.resetProcess('render-db', ['api2pbf', 'pbf2render', 'restartTessera']);
 
         api2pbf();
-        pbf2render();
 
         res.status(201).json({
             status: 201,

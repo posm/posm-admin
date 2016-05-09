@@ -3,7 +3,6 @@ $(function () {
     var socket = io.connect({path:'/posm-admin/socket.io'});
     // TODO get from url
     var deployment = 'atlas-deploy';
-    var pathname = window.location.pathname; // Returns path only
     var deploymentStatus;
 
     // get deployment status on page load
@@ -51,7 +50,7 @@ $(function () {
                     actionText: 'Cancel'
                 });
                 updateSupportMessage(JSON.parse(err.responseText).msg);
-                updateNavBarStatusIcon(null,'error_outline');
+                POSM.updateNavBarStatusIcon(null,'error_outline');
 
             });
         evt.preventDefault();
@@ -69,7 +68,7 @@ $(function () {
 
         // add hot export URL when page is opened during installation
         if($('#fp-geojson-url').val() == "") {
-            $('#fp-geojson-url').val(iomsg.exportUrl);
+            $('#fp-geojson-url').val(iomsg.status.fpGeoJsonUrl);
             // remove background label
             $("#fp-geojson-url-label").html("");
         }
@@ -78,7 +77,7 @@ $(function () {
         if(iomsg.status.initialized){
             updateSupportMessage(iomsg.status.msg);
             updateDeploySubNav(iomsg.status);
-            updateNavBarStatusIcon('initialized');
+            POSM.updateNavBarStatusIcon('initialized');
         }
 
         if (iomsg.output) {
@@ -100,7 +99,7 @@ $(function () {
             // false means the scripts exited without trouble
             if (!iomsg.status.error) {
                 updateSupportMessage(iomsg.status.msg);
-                updateNavBarStatusIcon('complete');
+                POSM.updateNavBarStatusIcon('complete');
                 updateDeploySubNav(iomsg.status);
 
                 var manifest = iomsg.manifest;
@@ -108,7 +107,7 @@ $(function () {
                     receiveManifest(manifest);
                 }
             } else {
-                updateNavBarStatusIcon(null,'error');
+                POSM.updateNavBarStatusIcon(null,'error');
             }
         }
 
@@ -117,18 +116,6 @@ $(function () {
     // update status message above url input
     function updateSupportMessage (text) {
         $('#supporting-msg-txt').html(text);
-    }
-
-    // update nav bar icon
-    function updateNavBarStatusIcon (status, icon) {
-        var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
-        if (icon) icon_text = icon;
-
-        $(".mdl-navigation__link").each(function (i,o) {
-            if (o.pathname == pathname.substring(0,pathname.length-1)) {
-                $(o.childNodes[0]).text(icon_text);
-            }
-        });
     }
 
     // update deploy sub scripts icons

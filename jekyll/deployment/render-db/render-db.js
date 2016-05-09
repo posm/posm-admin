@@ -38,7 +38,7 @@ $(function () {
                 });
 
                 updateSupportMessage(JSON.parse(err.responseText).msg);
-                updateNavBarStatusIcon(null,'error_outline');
+                POSM.updateNavBarStatusIcon(null,'error_outline');
 
             });
         evt.preventDefault();
@@ -53,7 +53,7 @@ $(function () {
         if(iomsg.status.initialized){
             updateSupportMessage(iomsg.status.msg);
             // updateDeploySubNav(iomsg.status);
-            updateNavBarStatusIcon('initialized');
+            POSM.updateNavBarStatusIcon('initialized');
             updateDeploySubNav(iomsg.status);
         }
 
@@ -76,7 +76,7 @@ $(function () {
             // false means the scripts exited without trouble
             if (!iomsg.status.error) {
                 updateSupportMessage('The full deployment script has been executed.');
-                updateNavBarStatusIcon('complete');
+                POSM.updateNavBarStatusIcon('complete');
                 updateDeploySubNav(iomsg.status);
 
                 // var manifest = iomsg.manifest;
@@ -85,7 +85,7 @@ $(function () {
                 // }
             } else {
                 updateSupportMessage('There was a problem with fetching and unpacking the HOT Export tar.gz.');
-                updateNavBarStatusIcon(null,'error');
+                POSM.updateNavBarStatusIcon(null,'error');
             }
         }
 
@@ -106,18 +106,6 @@ $(function () {
     // update status message above url input
     function updateSupportMessage (text) {
         $('#supporting-msg-txt').html(text);
-    }
-
-    // update nav bar icon
-    function updateNavBarStatusIcon (status, icon) {
-        var icon_text = (status == 'initialized') ? 'compare_arrows' : 'check_circle';
-        if (icon) icon_text = icon;
-
-        $(".mdl-navigation__link").each(function (i,o) {
-            if (o.pathname == pathname.substring(0,pathname.length-1)) {
-                $(o.childNodes[0]).text(icon_text);
-            }
-        });
     }
 
     // update deploy sub scripts icons

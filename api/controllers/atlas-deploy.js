@@ -2,6 +2,8 @@ var request = require('request');
 var atlasDeployJs = require(__dirname + '/../../scripts/omk-atlas.js');
 var fs = require('fs');
 var statusUtility = require('../utilities/status');
+var path = require('path');
+var AOI_DIR = '/opt/data/aoi';
 var socket;
 
 /**
@@ -68,7 +70,7 @@ module.exports = function (io) {
                 statusUtility.update('atlas-deploy', '', {fpGeoJsonUrl:url});
                 var atlasGeoJSON = JSON.parse(body);
                 var activeAOI = statusUtility.getActiveAOI();
-                atlasDeployJs(atlasGeoJSON, activeAOI, alertSocket);
+                atlasDeployJs(atlasGeoJSON, path.join(AOI_DIR, activeAOI), alertSocket);
             });
         } catch (err) {
             // TODO status error

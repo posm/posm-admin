@@ -1,0 +1,35 @@
+---
+layout: default
+title: POSM AOI Deployment
+---
+<div class="mdl-grid demo-content">
+
+    <div id="deploy-content" class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        <div class="mdl-card__title mdl-card--expand posm-grey">
+            <h2 class="mdl-card__title-text">POSM Area of Interest Deployment</h2>
+        </div>
+        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+            <div id="aoi-deploy-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+            <div>Enter the URL of the HOT Export tar.gz to begin the full deployment OR select an existing AOI to reset deployment.</div>
+            <div id="supporting-msg-txt"></div>
+        </div>
+
+        <!--<label class="deploy-list mdl-radio mdl-js-radio mdl-js-ripple-effect" for="hot-export-url">-->
+            <!--<input class="mdl-radio__button" id="hot-export-url" name="aoi-deploy" type="radio">-->
+            <!--<span class="mdl-radio__label">-->
+                <!--<div class="mdl-textfield mdl-js-textfield">-->
+                    <!--<input checked class="mdl-textfield__input" type="text" id="hot-export-url-input">-->
+                    <!--<label class="mdl-textfield__label" id="hot-export-url-input-label" for="hot-export-url-input">HOT Export URL</label>-->
+                <!--</div>-->
+            <!--</span>-->
+        <!--</label>-->
+
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Start</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="aoi-deploy.js"></script>
+<link rel="stylesheet" href="aoi-deploy.css">
