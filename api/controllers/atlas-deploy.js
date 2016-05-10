@@ -21,7 +21,28 @@ module.exports = function (io) {
     // register status
     statusUtility.registerProcess('atlas-deploy', ['extractOSMxml', 'renderMBTiles', 'copyMBTiles']);
 
-    function init (req, res, next) {
+    return function (req, res, next) {
+
+        // GeoJSON is posted in web-hook post from Field Papers
+        if (typeof req.body.atlas === 'object' 
+                && typeof req.body.atlas.features === 'object' 
+                && req.body.atlas.features.length > 0) {
+            
+            deployAtlas(req.body.atlas);
+
+            res.status(201).json({
+                status: 201,
+                msg: 'Taking the bounds Field Papers Atlas GeoJSON and creating an OpenMapKit deployment.',
+                webhook: true
+            });
+            return;
+        }
+
+        /**
+         * Otherwise, a URL to the Field Papers GeoJSON is provided as the body of a JSON POST
+         * or from a GET query parameter.
+         */
+        
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
 
@@ -42,17 +63,6 @@ module.exports = function (io) {
             });
         }
 
-        function alertSocket(data) {
-            var status = statusUtility.getStatus('atlas-deploy');
-            io.emit('atlas-deploy', {
-                controller: 'atlas-deploy',
-                script: 'omk-atlas.js',
-                output: data.toString(),
-                status: status
-            });
-            console.log(data.toString());
-        }
-
         /**
          *
          * get geojson from URL
@@ -68,9 +78,7 @@ module.exports = function (io) {
                 }
 
                 statusUtility.update('atlas-deploy', '', {fpGeoJsonUrl:url});
-                var atlasGeoJSON = JSON.parse(body);
-                var activeAOI = statusUtility.getActiveAOI();
-                atlasDeployJs(atlasGeoJSON, path.join(AOI_DIR, activeAOI), alertSocket);
+                deployAtlas(JSON.parse(body));
             });
         } catch (err) {
             // TODO status error
@@ -78,7 +86,21 @@ module.exports = function (io) {
             alertSocket('unable to fetch geojson: ' + err);
             console.log('unable to fetch geojson: ' + err);
         }
+    };
+
+    function deployAtlas(fieldPapersAtlasGeoJson) {
+        var activeAOI = statusUtility.getActiveAOI();
+        atlasDeployJs(fieldPapersAtlasGeoJson, path.join(AOI_DIR, activeAOI), alertSocket);
     }
 
-    return {init: init};
+    function alertSocket(data) {
+        var status = statusUtility.getStatus('atlas-deploy');
+        io.emit('atlas-deploy', {
+            controller: 'atlas-deploy',
+            script: 'omk-atlas.js',
+            output: data.toString(),
+            status: status
+        });
+        console.log(data.toString());
+    }
 };

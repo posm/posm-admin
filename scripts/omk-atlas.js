@@ -146,7 +146,7 @@ function extractOsmXml(dir, atlasGeoJSON, socket) {
     posmMBTilesProc.stderr.pipe(process.stderr);
 
     posmMBTilesProc.stdout.on('data', function (data) {
-        statusUtility.update('atlas-deploy', '', {initialized: true, error: false, msg: 'Extracting Osm XML...'});
+        statusUtility.update('atlas-deploy', '', {initialized: true, error: false, msg: 'Extracting OSM XML...'});
         statusUtility.update('atlas-deploy', 'extractOSMxml', {initialized: true, error: false});
         notifySocket(socket, data);
     });
