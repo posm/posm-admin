@@ -86,21 +86,21 @@ module.exports = function (io) {
             alertSocket('unable to fetch geojson: ' + err);
             console.log('unable to fetch geojson: ' + err);
         }
+    };
+
+    function deployAtlas(fieldPapersAtlasGeoJson) {
+        var activeAOI = statusUtility.getActiveAOI();
+        atlasDeployJs(fieldPapersAtlasGeoJson, path.join(AOI_DIR, activeAOI), alertSocket);
+    }
+
+    function alertSocket(data) {
+        var status = statusUtility.getStatus('atlas-deploy');
+        io.emit('atlas-deploy', {
+            controller: 'atlas-deploy',
+            script: 'omk-atlas.js',
+            output: data.toString(),
+            status: status
+        });
+        console.log(data.toString());
     }
 };
-
-function deployAtlas(fieldPapersAtlasGeoJson) {
-    var activeAOI = statusUtility.getActiveAOI();
-    atlasDeployJs(fieldPapersAtlasGeoJson, path.join(AOI_DIR, activeAOI), alertSocket);
-}
-
-function alertSocket(data) {
-    var status = statusUtility.getStatus('atlas-deploy');
-    io.emit('atlas-deploy', {
-        controller: 'atlas-deploy',
-        script: 'omk-atlas.js',
-        output: data.toString(),
-        status: status
-    });
-    console.log(data.toString());
-}
