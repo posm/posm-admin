@@ -48,15 +48,15 @@ module.exports = function(io) {
      * single API call.
      */
     router.route('/aoi-deploy')
-        .get(aoiDeploy(io).init)
-        .post(aoiDeploy(io).init);
+        .get(aoiDeploy(io))
+        .post(aoiDeploy(io));
 
 	/**
 	 * Execute omk-atlas.js
 	 */
 	router.route('/atlas-deploy')
-		.get(atlasDeploy(io).init)
-		.post(atlasDeploy(io).init);
+		.get(atlasDeploy(io))
+		.post(atlasDeploy(io));
 
     /**
      * You can provide a URL to a HOT Export tar.gz

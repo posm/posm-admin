@@ -21,7 +21,7 @@ module.exports = function (io) {
     // register status
     statusUtility.registerProcess('atlas-deploy', ['extractOSMxml', 'renderMBTiles', 'copyMBTiles']);
 
-    function init (req, res, next) {
+    return function (req, res, next) {
         // We get the url from a url query param or a url field in a JSON POST.
         var url = req.body.url || req.query.url;
 
@@ -79,6 +79,4 @@ module.exports = function (io) {
             console.log('unable to fetch geojson: ' + err);
         }
     }
-
-    return {init: init};
 };
