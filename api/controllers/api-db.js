@@ -143,22 +143,5 @@ module.exports = function (io, deploymentsStatus, deployName) {
 		}
 	}
 
-	function backup(req,res,next){
-		var backupAPIdb = spawn(apidbBackup, ['osm', '/opt/data/api-db-dumps/']);
-
-
-		backupAPIdb.stdout.on('data', function (data) {
-			console.log(data.toString());
-		});
-
-		backupAPIdb.stdout.on('close', function (data) {
-			console.log(data.toString());
-		});
-
-		backupAPIdb.stderr.on('data', function (data) {
-			console.log(data.toString());
-		});
-	}
-
-	return { reset: reset, populate: populate, resetAndPopulate: resetAndPopulate, backup: backup };
+	return { reset: reset, populate: populate, resetAndPopulate: resetAndPopulate};
 };

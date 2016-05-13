@@ -92,10 +92,6 @@ module.exports = function(io) {
         .get(apidb(io).resetAndPopulate)
         .post(apidb(io).resetAndPopulate);
 
-    router.route('/api-db/backup')
-        .get(apidb(io).backup)
-        .post(apidb(io).backup);
-
 	router.route('/render-db')
 		.get(renderdb(io).init)
         .post(renderdb(io).init);
