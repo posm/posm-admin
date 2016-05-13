@@ -4,6 +4,7 @@ var settings = require('../../settings');
 var apidbDropCreateSh = __dirname + '/../../scripts/postgres_api-db-drop-create.sh';
 var apidbInitSh = __dirname + '/../../scripts/osm_api-db-init.sh';
 var apidbPopulateSh = __dirname + '/../../scripts/osm_api-db-populate.sh';
+var apidbBackup = __dirname + '/../../scripts/osm_api-db-backup.sh';
 
 module.exports = function (io, deploymentsStatus, deployName) {
 
@@ -142,5 +143,22 @@ module.exports = function (io, deploymentsStatus, deployName) {
 		}
 	}
 
-	return { reset: reset, populate: populate, resetAndPopulate: resetAndPopulate };
+	function backup(req,res,next){
+		var backupAPIdb = spawn(apidbBackup, ['osm', '/opt/data/api-db-dumps/']);
+
+
+		backupAPIdb.stdout.on('data', function (data) {
+			console.log(data.toString());
+		});
+
+		backupAPIdb.stdout.on('close', function (data) {
+			console.log(data.toString());
+		});
+
+		backupAPIdb.stderr.on('data', function (data) {
+			console.log(data.toString());
+		});
+	}
+
+	return { reset: reset, populate: populate, resetAndPopulate: resetAndPopulate, backup: backup };
 };
