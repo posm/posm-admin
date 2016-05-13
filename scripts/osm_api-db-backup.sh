@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # example
-# sh db_backup.sh yeezy ~/Desktop/YeezyBackups
 
 echo '=> db_backup.sh'
 
@@ -16,6 +15,6 @@ echo '=> Backing up database: '$db_name 'to: ' $dump_dir
 mkdir $dump_dir
 echo '=> Dumping database...'
 #dump db
-sudo -u osm pg_dump $db_name | gzip > $dump_dir/$db_name.sql.gz
+pg_dump -U osm $db_name | gzip > $dump_dir/$db_name.sql.gz
 
 echo '=> Complete...'
