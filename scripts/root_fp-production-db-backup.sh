@@ -10,7 +10,7 @@ backup_path=$1
 echo '=> Backing up osm api database to: ' $backup_path
 echo '=> Dumping database...'
 
-#dump db - date format: YYYYMMDD-HH-MM/SS
+#dump mysql db - date format: YYYYMMDD-HH-MM/SS
 mysqldump -uroot -pposm fieldpapers_production | gzip > $backup_path/fp_production`date +%Y%m%d-%H%M:%S`
 
 echo '=> Complete...'
