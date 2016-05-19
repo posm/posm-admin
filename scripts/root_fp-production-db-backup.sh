@@ -20,6 +20,6 @@ mysqldump -uroot -pposm fieldpapers_production | gzip > $backup_path/$timestamp/
 
 echo '=> Copying field paper atlases & snapshots ...'
 # copy fp data into $backup_path/fieldpapers/
-cp -a /opt/fp/data/. $backup_path/$timestamp/
+cp -a /opt/fp/data/. $backup_path/$timestamp
 
 echo '=> Complete...'
