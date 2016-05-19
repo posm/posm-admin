@@ -42,3 +42,8 @@
 .mdl-textfield__label:after {
     bottom: 0 !important;
 }
+
+ul.deploy-sub-nav li {
+    list-style: none;
+    display: flex !important;
+}

@@ -22,6 +22,8 @@ module.exports = function (io) {
 
     return function (req, res, next) {
 
+        statusUtility.resetProcess('backup-data');
+
         // Run backup data script
         var backupOsmAPIProc = spawn('/opt/admin/posm-admin/scripts/backup-data.sh');
 
@@ -44,7 +46,7 @@ module.exports = function (io) {
 
         res.status(201).json({
             status: 201,
-            msg: 'Backing up.....'
+            msg: 'Backing up data script initialized..'
         });
     };
 
@@ -57,14 +59,5 @@ module.exports = function (io) {
             status: status
         });
         console.log(data.toString());
-    }
-
-    function getHardDisks() {
-        njds.drives(function (err, drives) {
-            njds.drivesDetail(drives, function (err, data) {
-                    return data;
-                }
-            );
-        });
     }
 };

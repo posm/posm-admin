@@ -23,3 +23,8 @@
 #atlas-deploy-progress-spinner {
     display: none;
 }
+
+ul.deploy-sub-nav li {
+    list-style: none;
+    display: flex !important;
+}
