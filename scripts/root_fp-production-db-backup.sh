@@ -12,7 +12,7 @@ backup_path=$1
 
 echo '=> Backing up osm api database to: ' $backup_path/$timestamp
 # create timestamp directory
-mkdir $backup_path/fieldpapers/$timestamp
+mkdir $backup_path/$timestamp
 
 echo '=> Dumping database...'
 #dump mysql db - date format: YYYYMMDD-HH-MM/SS
@@ -20,6 +20,6 @@ mysqldump -uroot -pposm fieldpapers_production | gzip > $backup_path/$timestamp/
 
 echo '=> Copying field paper atlases & snapshots ...'
 # copy fp data into $backup_path/fieldpapers/
-cp -a /opt/fp/data/. $backup_path/fieldpapers/$timestamp/
+cp -a /opt/fp/data/. $backup_path/$timestamp/
 
 echo '=> Complete...'
