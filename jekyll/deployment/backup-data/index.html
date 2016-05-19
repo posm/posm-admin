@@ -1,0 +1,30 @@
+---
+layout: default
+title: Backup Data
+---
+
+<div class="mdl-grid demo-content">
+    <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        <div class="mdl-card__title mdl-card--expand posm-grey">
+            <h2 class="mdl-card__title-text">Backup Data</h2>
+        </div>
+        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+            Backup data
+            <div id="backup-data-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+            &nbsp;
+            <div id="supporting-msg-txt"></div>
+        </div>
+        <!--<ul class="deploy-sub-nav">-->
+            <!--<li id="api2pbf"><i class="mdl-color-text&#45;&#45;grey-300 material-icons" role="presentation">brightness_1</i>Dump the API DB to a PBF</li>-->
+            <!--<li id="pbf2render"><i class="mdl-color-text&#45;&#45;grey-300 material-icons" role="presentation">brightness_1</i>Build Render DB from PBF dump via osm2pgsql</li>-->
+            <!--<li id="restartTessera"><i class="mdl-color-text&#45;&#45;grey-300 material-icons" role="presentation">brightness_1</i>Restart Tessera</li>-->
+        <!--</ul>-->
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Backup Data</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="backup-data.js"></script>
+<link rel="stylesheet" href="backup-data.css">

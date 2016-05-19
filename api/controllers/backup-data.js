@@ -18,7 +18,7 @@ var socket;
 module.exports = function (io) {
 
     // register status
-    statusUtility.registerProcess('backup-data', ['backup-api-db']);
+    statusUtility.registerProcess('backup-data');
 
     return function (req, res, next) {
 
@@ -26,21 +26,19 @@ module.exports = function (io) {
         var backupOsmAPIProc = spawn('/opt/admin/posm-admin/scripts/backup-data.sh');
 
         backupOsmAPIProc.stdout.on('data', function (data) {
-            statusUtility.update('backup-data', '', {initialized: true, error: false, msg: 'Backing up osm api db.'});
-            statusUtility.update('backup-data', 'backup-api-db', {initialized: true, error: false});
+            statusUtility.update('backup-data', '', {initialized: true, error: false, msg: 'Backing up osm api db, ' +
+            'field papers production database, atlas & snapshots & omk data'});
             alertSocket(data);
         });
 
         backupOsmAPIProc.stdout.on('close', function (data) {
-            statusUtility.update('backup-data', 'backup-api-db', {complete: true, error: false});
-            statusUtility.update('backup-data', '', {error: false});
+            statusUtility.update('backup-data', '', {complete: true, error: false, initialized:false});
             alertSocket(data);
         });
 
         backupOsmAPIProc.stderr.on('data', function (data) {
             var error = (typeof data == 'object') ? data.toString() : data;
-            statusUtility.update('backup-data', 'backup-api-db', {error: true, msg: error});
-            statusUtility.update('backup-data', '', {error: true});
+            statusUtility.update('backup-data', '', {error: true, msg: error});
             alertSocket(error);
         });
 

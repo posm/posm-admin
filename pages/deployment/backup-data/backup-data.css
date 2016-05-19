@@ -1,0 +1,16 @@
+.top-card .posm-grey {
+    background-color: rgb(55, 71, 79) !important;
+}
+
+.top-card .posm-grey h2 {
+    color: white;
+}
+
+.top-card .mdl-card__title {
+    min-height: 200px;
+}
+
+
+#backup-data-db-progress-spinner {
+    display: none;
+}

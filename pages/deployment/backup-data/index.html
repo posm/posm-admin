@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>POSM AOI Deployment</title>
+  <title>Backup Data</title>
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -105,36 +105,31 @@
       <main class="mdl-layout__content mdl-color--grey-100">
 
         <div class="mdl-grid demo-content">
-
-    <div id="deploy-content" class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+    <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
         <div class="mdl-card__title mdl-card--expand posm-grey">
-            <h2 class="mdl-card__title-text">POSM Area of Interest Deployment</h2>
+            <h2 class="mdl-card__title-text">Backup Data</h2>
         </div>
         <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
-            <div id="aoi-deploy-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
-            <div>Enter the URL of the HOT Export tar.gz to begin the full deployment OR select an existing AOI to reset deployment.</div>
+            Backup data
+            <div id="backup-data-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+            &nbsp;
             <div id="supporting-msg-txt"></div>
         </div>
-
-        <!--<label class="deploy-list mdl-radio mdl-js-radio mdl-js-ripple-effect" for="hot-export-url">-->
-            <!--<input class="mdl-radio__button" id="hot-export-url" name="aoi-deploy" type="radio">-->
-            <!--<span class="mdl-radio__label">-->
-                <!--<div class="mdl-textfield mdl-js-textfield">-->
-                    <!--<input checked class="mdl-textfield__input" type="text" id="hot-export-url-input">-->
-                    <!--<label class="mdl-textfield__label" id="hot-export-url-input-label" for="hot-export-url-input">HOT Export URL</label>-->
-                <!--</div>-->
-            <!--</span>-->
-        <!--</label>-->
-
+        <!--<ul class="deploy-sub-nav">-->
+            <!--<li id="api2pbf"><i class="mdl-color-text&#45;&#45;grey-300 material-icons" role="presentation">brightness_1</i>Dump the API DB to a PBF</li>-->
+            <!--<li id="pbf2render"><i class="mdl-color-text&#45;&#45;grey-300 material-icons" role="presentation">brightness_1</i>Build Render DB from PBF dump via osm2pgsql</li>-->
+            <!--<li id="restartTessera"><i class="mdl-color-text&#45;&#45;grey-300 material-icons" role="presentation">brightness_1</i>Restart Tessera</li>-->
+        <!--</ul>-->
         <div class="mdl-card__actions mdl-card--border">
-            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Start</button>
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Backup Data</button>
         </div>
     </div>
-
 </div>
 
-<script src="aoi-deploy.js"></script>
-<link rel="stylesheet" href="aoi-deploy.css">
+
+<script src="backup-data.js"></script>
+<link rel="stylesheet" href="backup-data.css">
+
 
         <!-- console output -->
         <div class="posm-console-output mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">

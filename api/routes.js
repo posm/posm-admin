@@ -97,7 +97,7 @@ module.exports = function(io) {
 		.get(renderdb(io).init)
         .post(renderdb(io).init);
 
-    router.route('/backup-db')
+    router.route('/backup-data')
         .get(backupData(io))
         .post(backupData(io));
 
