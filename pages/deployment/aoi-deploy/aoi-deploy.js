@@ -38,6 +38,8 @@ $(function () {
 
             // add label to parent div after 2nd child
             $deployContent.children(":eq(2)").after($label);
+            // notify mdl-lite to update dom
+            componentHandler.upgradeDom("MaterialRadio", "mdl-radio");
         });
 
     });
