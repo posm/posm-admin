@@ -45,5 +45,13 @@ cd '/opt/osm/osm-web' && bundle exec rake osm:users:create display_name="${osm_p
 echo "==> changing OSM iD key as root"
 sudo /opt/admin/posm-admin/scripts/root_change-osm-id-key.sh $osm_id_key
 
+# set the center for the POSM user to be the center of the bbox of the AOI
+lat=$(jq -r '(.bbox[1] + .bbox[3]) / 2' $1/manifest.json)
+lng=$(jq -r '(.bbox[0] + .bbox[2]) / 2' $1/manifest.json)
+echo "==> Setting the center for the POSM user to be the center of the bbox of the AOI."
+echo "      lat: $lat"
+echo "      lng: $lng"
+psql -c "update users set home_lat=${lat}, home_lon=${lng} where display_name='POSM'"
+
 echo "==> api-db-populate.sh: END"
 echo
