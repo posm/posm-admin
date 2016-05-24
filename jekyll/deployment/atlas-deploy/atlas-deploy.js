@@ -6,7 +6,9 @@ $(function () {
 
     // get deployment status on page load
     POSM.deployment.updateDeploymentStatus(function(data){
-        updateSupportMessage(data[deployment].msg);
+        if(typeof data[deployment].msg === "string"){
+            updateSupportMessage(data[deployment].msg);
+        }
         showProgressSpinner(data[deployment]);
         updateDeploySubNav(data[deployment]);
 
