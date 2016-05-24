@@ -2,16 +2,14 @@ $(function () {
     //TODO get from url
     var deployment = 'render-db';
     var pathname = window.location.pathname; // Returns path only
-    var deploymentStatus;
     // init socket.io
     var socket = io.connect({path:'/posm-admin/socket.io'});
 
     // get deployment status on page load
     POSM.deployment.updateDeploymentStatus(function(data){
-        deploymentStatus = data[deployment];
-        updateSupportMessage(deploymentStatus.msg);
-        showProgressSpinner(deploymentStatus);
-        updateDeploySubNav(deploymentStatus);
+        updateSupportMessage(data[deployment].msg);
+        showProgressSpinner(data[deployment]);
+        updateDeploySubNav(data[deployment]);
     });
 
     $('#action-btn').click(function (evt) {

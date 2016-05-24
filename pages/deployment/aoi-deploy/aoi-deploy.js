@@ -3,12 +3,10 @@ $(function () {
     var socket = io.connect({path: '/posm-admin/socket.io'});
     var deployment = "aoi-deploy";
     var pathname = window.location.pathname; // Returns path only
-    var deploymentStatus;
 
     // get deployment status on page load
     POSM.deployment.updateDeploymentStatus(function (status) {
-        deploymentStatus = status[deployment];
-        showProgressSpinner(deploymentStatus);
+        showProgressSpinner(status[deployment]);
 
         addHotExportURLTextField(status);
 

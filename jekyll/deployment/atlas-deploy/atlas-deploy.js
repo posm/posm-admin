@@ -3,21 +3,19 @@ $(function () {
     var socket = io.connect({path:'/posm-admin/socket.io'});
     // TODO get from url
     var deployment = 'atlas-deploy';
-    var deploymentStatus;
 
     // get deployment status on page load
     POSM.deployment.updateDeploymentStatus(function(data){
-        deploymentStatus = data[deployment];
-        updateSupportMessage(deploymentStatus.msg);
-        showProgressSpinner(deploymentStatus);
-        updateDeploySubNav(deploymentStatus);
+        updateSupportMessage(data[deployment].msg);
+        showProgressSpinner(data[deployment]);
+        updateDeploySubNav(data[deployment]);
 
-        if(!deploymentStatus.initialized && !deploymentStatus.complete) {
+        if(!data[deployment].initialized && !data[deployment].complete) {
             updateSupportMessage("Take the bounds of an atlas from a Field Paper and create an OpenMapKit deployment.");
         } else {
             // Add field papers geojson url
             if($('#fp-geojson-url').val() == "") {
-                $('#fp-geojson-url').val(deploymentStatus.fpGeoJsonUrl);
+                $('#fp-geojson-url').val(data[deployment].fpGeoJsonUrl);
                 // remove background label
                 $("#fp-geojson-url-label").html("");
             }
