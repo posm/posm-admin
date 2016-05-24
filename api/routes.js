@@ -8,6 +8,7 @@ var apidb = require('./controllers/api-db');
 var renderdb = require('./controllers/render-db');
 var atlasDeploy = require('./controllers/atlas-deploy');
 var activateAOI = require('./controllers/activate-aoi');
+var backupData = require('./controllers/backup-data');
 
 /**
  * Takes a socket io instance so we have a hold of it.
@@ -95,6 +96,10 @@ module.exports = function(io) {
 	router.route('/render-db')
 		.get(renderdb(io).init)
         .post(renderdb(io).init);
+
+    router.route('/backup-data')
+        .get(backupData(io))
+        .post(backupData(io));
 
 	return router;
 };

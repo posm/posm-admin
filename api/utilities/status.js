@@ -5,6 +5,7 @@ var status;
 var DEPLOYMENTS_DIR = '/opt/data/deployments';
 var AOI_DIR = '/opt/data/aoi';
 var path = require('path');
+var njds = require('nodejs-disks');
 
 
 /**
@@ -26,15 +27,15 @@ statusUtility.init = function (cb) {
                 try {
                     status = JSON.parse(data);
                 } catch (err) {
-                    status = {"activeAOI": '', "initialized": false, "error": false, "msg": '', "aoi-list":[]};
+                    status = {"activeAOI": '', "initialized": false, "error": false, "msg": '', "aoi-list":[], "hard-disks":[]};
                 }
             } else {
-                status = {"activeAOI": '', "initialized": false, "error": false, "msg": '', "aoi-list":[]};
+                status = {"activeAOI": '', "initialized": false, "error": false, "msg": '', "aoi-list":[], "hard-disks":[]};
             }
 
             // reset any processes stopped midway through
             Object.keys(status).forEach(function(val){
-                if (val == 'aoi-deploy' || val == 'atlas-deploy' || val == 'render-db') {
+                if (val == 'backup-data' || val == 'aoi-deploy' || val == 'atlas-deploy' || val == 'render-db') {
                     if(status[val].initialized && !status[val].complete){
                         statusUtility.resetProcess(val);
                     }
@@ -43,6 +44,9 @@ statusUtility.init = function (cb) {
 
             // get list of aois
             statusUtility.updateAOIList();
+
+            // get list of hard disks
+            statusUtility.getHardDisks();
 
             // write to disk
             writeStatusToDisk(function(){
@@ -184,6 +188,22 @@ statusUtility.updateAOIList = function() {
  */
 statusUtility.getActiveAOI = function () {
     if (status) return status.activeAOI;
+};
+
+/**
+ * get list of hard disks
+ * @type {{}}
+ */
+statusUtility.getHardDisks = function (){
+    njds.drives(function (err, drives) {
+        njds.drivesDetail(drives, function (err, data) {
+                // update status
+                statusUtility.update('','',{"hard-disks": drives});
+                writeStatusToDisk();
+                return drives;
+            }
+        );
+    });
 };
 
 module.exports = statusUtility;

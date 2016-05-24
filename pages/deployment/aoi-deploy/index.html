@@ -28,16 +28,15 @@
   <!--
   <link rel="canonical" href="http://www.example.com/">
   -->
+  <link rel="stylesheet" href="../../vendor/fonts/material-icons.css">
+  <script type="text/javascript" src="../../vendor/mdl/material.min.js"></script>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-
-  <link rel="stylesheet" href="../../vendor/fonts/material-icons.css">
 
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../deployment/deployment.css">
   <link rel="stylesheet" href="../../vendor/mdl/material.min.css">
 
-  <script type="text/javascript" src="../../vendor/mdl/material.min.js"></script>
   <script type="text/javascript" src="../../vendor/jquery/jquery-2.1.1.min.js"></script>
   <script src="../../../socket.io/socket.io.js"></script>
   <script src="../../deployment/deployment.js"></script>
@@ -96,6 +95,10 @@
             <i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>
             Update Render DB
         </a>
+        <a class="mdl-navigation__link" href="/posm-admin/pages/deployment/backup-data">
+            <i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>
+            Backup Data
+        </a>
     </nav>
 </div>
 
@@ -112,16 +115,6 @@
             <div>Enter the URL of the HOT Export tar.gz to begin the full deployment OR select an existing AOI to reset deployment.</div>
             <div id="supporting-msg-txt"></div>
         </div>
-
-        <!--<label class="deploy-list mdl-radio mdl-js-radio mdl-js-ripple-effect" for="hot-export-url">-->
-            <!--<input class="mdl-radio__button" id="hot-export-url" name="aoi-deploy" type="radio">-->
-            <!--<span class="mdl-radio__label">-->
-                <!--<div class="mdl-textfield mdl-js-textfield">-->
-                    <!--<input checked class="mdl-textfield__input" type="text" id="hot-export-url-input">-->
-                    <!--<label class="mdl-textfield__label" id="hot-export-url-input-label" for="hot-export-url-input">HOT Export URL</label>-->
-                <!--</div>-->
-            <!--</span>-->
-        <!--</label>-->
 
         <div class="mdl-card__actions mdl-card--border">
             <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Start</button>

@@ -32,11 +32,6 @@
     color: white !important;
 }
 
-ul.deploy-sub-nav li {
-    list-style: none;
-    display: flex !important;
-}
-
 ul.deploy-sub-nav li i.material-icons {
     margin: 0 10px 0 0;
 }

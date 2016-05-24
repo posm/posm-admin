@@ -11,11 +11,11 @@
 }
 
 
-#render-db-progress-spinner {
+#backup-data-db-progress-spinner {
     display: none;
 }
 
 ul.deploy-sub-nav li {
-    list-style: none;
-    display: flex !important;
+    list-style: disc;
+    display: grid !important;
 }

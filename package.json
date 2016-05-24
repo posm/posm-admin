@@ -33,6 +33,7 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "node-uuid": "^1.4.7",
+    "nodejs-disks": "^0.2.1",
     "path": "^0.12.7",
     "request": "^2.69.0",
     "serve-index": "^1.7.3",
