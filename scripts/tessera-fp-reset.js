@@ -133,6 +133,7 @@ function tesseraFieldPapersReset(manifestPath, cb) {
             var confPath = TESSERA_CONF_DIR + '/' + fileName + '.json';
             fs.writeFileSync(confPath, confJSON);
             console.log('wrote tessera config: ' + confPath);
+            console.log(confJSON);
         }
 
         function buildFieldPapersConf(manifest, filePath) {
@@ -146,8 +147,10 @@ function tesseraFieldPapersReset(manifestPath, cb) {
         }
 
         function writeFieldPapersConf() {
-            fs.writeFileSync(FP_CONF_PATH, JSON.stringify(fpConf, null, 2));
+            var fpConfJsonStr = JSON.stringify(fpConf, null, 2);
+            fs.writeFileSync(FP_CONF_PATH, fpConfJsonStr);
             console.log('wrote field papers config: ' + FP_CONF_PATH);
+            console.log(fpConfJsonStr);
         }
 
     });
