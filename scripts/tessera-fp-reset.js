@@ -9,7 +9,7 @@ var TESSERA_CONF_DIR = '/etc/tessera.conf.d';
 var FP_CONF_PATH = '/opt/fp/fp-web/config/providers.json';
 
 // FIXME This should not be hardcoded.
-var POSM_BASE_URL='http://posm.local';
+var POSM_BASE_URL='http://posm.io';
 
 if (typeof argv === 'object') {
     var manifestPath = argv._[0] || argv.m || argv.manifest;
