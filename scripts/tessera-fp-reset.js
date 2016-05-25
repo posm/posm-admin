@@ -8,8 +8,8 @@ var spawn = require('child_process').spawn;
 var TESSERA_CONF_DIR = '/etc/tessera.conf.d';
 var FP_CONF_PATH = '/opt/fp/fp-web/config/providers.json';
 
-// FIXME This should not be hardcoded.
-var POSM_BASE_URL='http://posm.io';
+var POSM_SETTINGS = require('/etc/posm.json');
+var POSM_BASE_URL = POSM_SETTINGS.posm_base_url || 'http://posm.io';
 
 if (typeof argv === 'object') {
     var manifestPath = argv._[0] || argv.m || argv.manifest;
