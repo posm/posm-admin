@@ -8,8 +8,10 @@ var spawn = require('child_process').spawn;
 var TESSERA_CONF_DIR = '/etc/tessera.conf.d';
 var FP_CONF_PATH = '/opt/fp/fp-web/config/providers.json';
 
-// FIXME This should not be hardcoded.
-var POSM_BASE_URL='http://posm.io';
+var POSM_SETTINGS = require('/etc/posm.json');
+var POSM_BASE_URL = POSM_SETTINGS.posm_base_url || 'http://posm.io';
+
+var ROOT_CHANGE_FP_CENTER_SH = __dirname + '/root_change-fp-center.sh';
 
 if (typeof argv === 'object') {
     var manifestPath = argv._[0] || argv.m || argv.manifest;
@@ -99,13 +101,15 @@ function tesseraFieldPapersReset(manifestPath, cb) {
             });
             tesseraProc.stderr.on('close', function (code) {
 
-                // Restart field papers
-                var fpProc = spawn('sudo', ['service', 'fp-web', 'restart']);
+                // Set Field Papers center and restart
+                var fpCenterScriptAndArgsArr = changeFpCenterScriptAndArgs(manifest);
+                var fpCenterScriptAndArgsStr = fpCenterScriptAndArgsArr.join(' ');
+                var fpProc = spawn('sudo', fpCenterScriptAndArgsArr);
                 fpProc.stdout.on('data', function (data) {
-                    consoleCb(data, 'sudo service fp-web restart');
+                    consoleCb(data, fpCenterScriptAndArgsStr);
                 });
                 fpProc.stderr.on('data', function (data) {
-                    consoleCb(data, 'sudo service fp-web restart');
+                    consoleCb(data, fpCenterScriptAndArgsStr);
                 });
                 fpProc.stderr.on('close', function (code) {
                     var msg = 'Completed resetting configs for tessera and field papers. Reset services.\n==> tessera-fp-reset.js: END';
@@ -133,6 +137,7 @@ function tesseraFieldPapersReset(manifestPath, cb) {
             var confPath = TESSERA_CONF_DIR + '/' + fileName + '.json';
             fs.writeFileSync(confPath, confJSON);
             console.log('wrote tessera config: ' + confPath);
+            console.log(confJSON);
         }
 
         function buildFieldPapersConf(manifest, filePath) {
@@ -146,10 +151,20 @@ function tesseraFieldPapersReset(manifestPath, cb) {
         }
 
         function writeFieldPapersConf() {
-            fs.writeFileSync(FP_CONF_PATH, JSON.stringify(fpConf, null, 2));
+            var fpConfJsonStr = JSON.stringify(fpConf, null, 2);
+            fs.writeFileSync(FP_CONF_PATH, fpConfJsonStr);
             console.log('wrote field papers config: ' + FP_CONF_PATH);
+            console.log(fpConfJsonStr);
         }
 
     });
 
+}
+
+function changeFpCenterScriptAndArgs(manifest) {
+    var bbox = manifest.bbox;
+    var lat = (bbox[1] + bbox[3]) / 2;
+    var lng = (bbox[0] + bbox[2]) / 2;
+    // Zoom of 10 is default for OpenStreetMap Website
+    return [ROOT_CHANGE_FP_CENTER_SH, 10, lat, lng];
 }
