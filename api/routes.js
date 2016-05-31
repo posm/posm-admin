@@ -9,6 +9,7 @@ var renderdb = require('./controllers/render-db');
 var atlasDeploy = require('./controllers/atlas-deploy');
 var activateAOI = require('./controllers/activate-aoi');
 var backupData = require('./controllers/backup-data');
+var networkConfig = require('./controllers/network-config');
 
 /**
  * Takes a socket io instance so we have a hold of it.
@@ -100,6 +101,10 @@ module.exports = function(io) {
     router.route('/backup-data')
         .get(backupData(io))
         .post(backupData(io));
+
+    router.route('/network-config/:config')
+        .get(networkConfig(io))
+        .post(networkConfig(io));
 
 	return router;
 };

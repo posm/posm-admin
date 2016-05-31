@@ -35,7 +35,7 @@ statusUtility.init = function (cb) {
 
             // reset any processes stopped midway through
             Object.keys(status).forEach(function(val){
-                if (val == 'backup-data' || val == 'aoi-deploy' || val == 'atlas-deploy' || val == 'render-db') {
+                if (val == 'backup-data' || val == 'aoi-deploy' || val == 'atlas-deploy' || val == 'render-db' || val == 'network-config') {
                     if(status[val].initialized && !status[val].complete){
                         statusUtility.resetProcess(val);
                     }
@@ -72,7 +72,7 @@ statusUtility.registerProcess = function (name, childProcesses) {
             // check for child processes
             if (childProcesses) {
                 childProcesses.forEach(function (n) {
-                    status[name][n] = {initialized: false, error: false, msg: '', complete: false};
+                    status[name][n] = {initialized: false, error: false, msg: '', complete: false, value:""};
                 });
             }
         }
@@ -133,7 +133,7 @@ statusUtility.resetProcess = function (name, childProcesses) {
             // check for child processes
             if (childProcesses) {
                 childProcesses.forEach(function (n) {
-                    status[name][n] = {initialized: false, error: false, msg: '', complete: false};
+                    status[name][n] = {initialized: false, error: false, msg: '', complete: false, value:""};
                 });
             }
         }
