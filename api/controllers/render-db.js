@@ -9,7 +9,6 @@ module.exports = function (io) {
     // register status
     statusUtility.registerProcess('render-db', ['api2pbf', 'pbf2render', 'restartTessera']);
 
-
     function api2pbf() {
         var renderdbApi2PbfProc = spawn('sudo', ['-u', 'osm', renderdbApi2PbfSh]);
 

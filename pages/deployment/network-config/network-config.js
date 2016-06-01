@@ -15,7 +15,6 @@ $(function () {
         showProgressSpinner(status[deployment]);
         updateDeploySubNav(status[deployment]);
         addTextFieldOnClickEvents(status[deployment]);
-
     });
 
     $('#action-btn').click(function (evt) {
@@ -91,10 +90,7 @@ $(function () {
                 POSM.updateNavBarStatusIcon('complete');
                 updateDeploySubNav(iomsg.status);
 
-                // var manifest = iomsg.manifest;
-                // if (manifest) {
-                //     receiveManifest(manifest);
-                // }
+
             } else {
                 updateSupportMessage('There was a problem with fetching and unpacking the HOT Export tar.gz.');
                 POSM.updateNavBarStatusIcon(null,'error');
@@ -105,14 +101,30 @@ $(function () {
 
     // hide spinner and disable action button
     function showProgressSpinner (status) {
-        if(status.initialized){
-            $("#render-db-progress-spinner").show();
-            // disable star button
-            $("#action-btn").prop("disabled", true);
-        } else {
-            $("#render-db-progress-spinner").hide();
-            $("#action-btn").prop("disabled", false);
-        }
+        var initializedTask = getSelectedNetworkConfig();
+
+        //if(status[initializedTask].initialized === true){
+        //    $("#network-config-progress-spinner").show();
+        //    // disable start button
+        //    $("#action-btn").prop("disabled", true);
+        //} else {
+        //    $("#network-config-progress-spinner").hide();
+        //    $("#action-btn").prop("disabled", false);
+        //}
+
+        // loop through sub tasks
+        subTasks.forEach(function(task){
+            if(status[task].initialized === true){
+                initializedTask = task;
+                $("#network-config-progress-spinner").show();
+                // disable start button
+                $("#action-btn").prop("disabled", true);
+            }
+            if((typeof initializedTask === "string" && status[initializedTask].complete) || typeof initializedTask === "undefined"){
+                $("#network-config-progress-spinner").hide();
+                $("#action-btn").prop("disabled", false);
+            }
+        })
     }
 
     // update status message above url input
@@ -140,15 +152,7 @@ $(function () {
                 }
 
             })
-        })
-
-        //$(".deploy-sub-nav li").each(function (i,o) {
-        //    if (status[o.id]) {
-        //        var icon_text = (status[id].initialized) ? 'compare_arrows' : 'brightness_1';
-        //        icon_text = (status[id].complete) ? 'check_circle' : icon_text;
-        //        $(o.childNodes[0]).text(icon_text);
-        //    }
-        //});
+        });
     }
 
     // get selected radio button, return config name
@@ -178,7 +182,7 @@ $(function () {
     function addTextFieldOnClickEvents(status) {
 
         subTasks.forEach(function(task){
-            var value = status[task].value
+            var value = status[task].value;
             if(task !== 'network-mode'){
                 $('#' + task + '-textfield').click(function(){
                     // find the corresponding radio button and check

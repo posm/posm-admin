@@ -95,7 +95,7 @@ $(function () {
     function showProgressSpinner (status) {
         if(status.initialized){
             $("#render-db-progress-spinner").show();
-            // disable star button
+            // disable start button
             $("#action-btn").prop("disabled", true);
         } else {
             $("#render-db-progress-spinner").hide();

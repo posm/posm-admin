@@ -15,16 +15,13 @@ module.exports = function (io) {
 
     return function (req, res, next) {
 
-        //reset status
-        statusUtility.resetProcess('network-config', ['network-mode', 'ssid', 'wpa-passphrase', 'wpa']);
-
-        if(req.params.config === 'ssid'){
+        if (req.params.config === 'ssid') {
             changeSSID();
-        } else if (req.params.config === 'network-mode'){
+        } else if (req.params.config === 'network-mode') {
             changeNetworkMode();
-        } else if (req.params.config === 'wpa'){
+        } else if (req.params.config === 'wpa') {
             changeWPA();
-        } else if (req.params.config === 'wpa-passphrase'){
+        } else if (req.params.config === 'wpa-passphrase') {
             changeWPAPassphrase()
         } else {
             res.status(400).json({
@@ -34,14 +31,21 @@ module.exports = function (io) {
         }
 
         function changeNetworkMode() {
-            if(typeof req.query.value !== "string"){
+            if (typeof req.query.value !== "string") {
                 res.status(400).json({
                     status: 400,
                     msg: 'You must provide a value query param in the request URL'
                 });
                 return;
+            } else {
+                res.status(201).json({
+                    status: 201,
+                    msg: 'Changing Network Mode..'
+                });
             }
 
+            //reset status
+            statusUtility.resetChildProcess('network-config', 'network-mode');
             var mode = req.query.value;
             var changeNetworkModeProc = spawn('sudo', [changeNetworkModeSh, mode]);
 
@@ -65,8 +69,8 @@ module.exports = function (io) {
             });
 
             changeNetworkModeProc.stdout.on('close', function (data) {
-                statusUtility.update('network-config', 'network-mode', {complete: true, error: false, value: mode});
-                statusUtility.update('network-config', '', {error: false});
+                statusUtility.update('network-config', 'network-mode', {complete: true, error: false, value: mode, initialized: false});
+                statusUtility.update('network-config', '', {error: false, initialized: false});
                 alertSocket(data);
             });
 
@@ -82,14 +86,21 @@ module.exports = function (io) {
 
         function changeSSID() {
 
-            if(typeof req.query.value !== "string"){
+            if (typeof req.query.value !== "string") {
                 res.status(400).json({
                     status: 400,
                     msg: 'You must provide a value query param in the request URL'
                 });
                 return;
+            } else {
+                res.status(201).json({
+                    status: 201,
+                    msg: 'Changing SSID..'
+                });
             }
 
+            //reset status
+            statusUtility.resetChildProcess('network-config', 'ssid');
             var ssid = req.query.value;
             var changeSSIDProc = spawn('sudo', [changeSSIDSh, ssid]);
 
@@ -107,14 +118,19 @@ module.exports = function (io) {
             }
 
             changeSSIDProc.stdout.on('data', function (data) {
-                statusUtility.update('network-config', '', {initialized: true, error: false, msg: 'Changing SSID', value: ssid});
-                statusUtility.update('network-config', 'ssid', {initialized: true, error: false});
+                statusUtility.update('network-config', '', {initialized: true, error: false, msg: 'Changing SSID'});
+                statusUtility.update('network-config', 'ssid', {initialized: true, error: false, value: ssid});
                 alertSocket(data);
             });
 
             changeSSIDProc.stdout.on('close', function (data) {
-                statusUtility.update('network-config', 'ssid', {complete: true, error: false, value: ssid});
-                statusUtility.update('network-config', '', {error: false});
+                statusUtility.update('network-config', 'ssid', {
+                    complete: true,
+                    error: false,
+                    value: ssid,
+                    initialized: false
+                });
+                statusUtility.update('network-config', '', {error: false, initialized: false});
                 alertSocket(data);
             });
 
@@ -129,14 +145,21 @@ module.exports = function (io) {
 
         function changeWPAPassphrase() {
 
-            if(typeof req.query.value !== "string"){
+            if (typeof req.query.value !== "string") {
                 res.status(400).json({
                     status: 400,
                     msg: 'You must provide a value query param in the request URL'
                 });
                 return;
+            } else {
+                res.status(201).json({
+                    status: 201,
+                    msg: 'Changing WPA Passphrase..'
+                });
             }
 
+            //reset status
+            statusUtility.resetChildProcess('network-config', 'wpa-passphrase');
             var passphrase = req.query.value;
             var changeNetworkModeProc = spawn('sudo', [changeWPApPassphraseSh, passphrase]);
 
@@ -154,14 +177,14 @@ module.exports = function (io) {
             }
 
             changeNetworkModeProc.stdout.on('data', function (data) {
-                statusUtility.update('network-config', '', {initialized: true, error: false, msg: 'Changing WPA Passphrase', value: passphrase});
-                statusUtility.update('network-config', 'wpa-passphrase', {initialized: true, error: false});
+                statusUtility.update('network-config', '', {initialized: true, error: false, msg: 'Changing WPA Passphrase'});
+                statusUtility.update('network-config', 'wpa-passphrase', {initialized: true, error: false, value: passphrase});
                 alertSocket(data);
             });
 
             changeNetworkModeProc.stdout.on('close', function (data) {
-                statusUtility.update('network-config', 'wpa-passphrase', {complete: true, error: false, value: passphrase});
-                statusUtility.update('network-config', '', {error: false});
+                statusUtility.update('network-config', 'wpa-passphrase', {complete: true, error: false, value: passphrase, initialized: false});
+                statusUtility.update('network-config', '', {error: false, initialized: false});
                 alertSocket(data);
             });
 
@@ -176,7 +199,7 @@ module.exports = function (io) {
 
         function changeWPA() {
 
-            if(typeof req.query.value !== "string"){
+            if (typeof req.query.value !== "string") {
                 res.status(400).json({
                     status: 400,
                     msg: 'You must provide a value query param in the request URL'
@@ -189,6 +212,8 @@ module.exports = function (io) {
                 });
             }
 
+            //reset status
+            statusUtility.resetChildProcess('network-config', 'wpa');
             var wpa = req.query.value;
             var changeNetworkModeProc = spawn('sudo', [changeWPASh, wpa]);
 
@@ -206,17 +231,17 @@ module.exports = function (io) {
             }
 
             changeNetworkModeProc.stdout.on('data', function (data) {
-                statusUtility.update('network-config', '', {initialized: true, error: false, msg: 'Changing WPA', value: wpa});
-                statusUtility.update('network-config', 'wpa', {initialized: true, error: false});
+                statusUtility.update('network-config', '', {initialized: true, error: false, msg: 'Changing WPA'});
+                statusUtility.update('network-config', 'wpa', {initialized: true, error: false, value: wpa});
                 alertSocket(data);
             });
 
             changeNetworkModeProc.stdout.on('close', function (data) {
                 var status = statusUtility.getStatus('network-config');
                 // check for missing wpa value error
-                if(!status['wpa'].error) {
-                    statusUtility.update('network-config', 'wpa', {complete: true, error: false, value: wpa});
-                    statusUtility.update('network-config', '', {error: false});
+                if (!status['wpa'].error) {
+                    statusUtility.update('network-config', 'wpa', {complete: true, error: false, value: wpa, initialized: false});
+                    statusUtility.update('network-config', '', {error: false, initialized: false});
                 }
                 alertSocket(data);
             });
