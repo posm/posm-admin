@@ -70,7 +70,30 @@ POSM.updateNavBarStatusIcon = function(status, icon) {
 $(function () {
     // POSM.deployment.updateLinksWithDeployment();
     POSM.deployment.updateDeploymentStatus();
-});
+
+    $('#reset-status').click(function (evt) {
+        $.post('/posm-admin/status-reset')
+            .done(function (data) {
+
+                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                    message: data.msg,
+                    timeout: 5000,
+                    actionText: 'Cancel'
+                });
+            })
+            .error(function(err){
+                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                    message: err.responseText,
+                    timeout: 5000,
+                    actionText: 'Cancel'
+                });
+
+                updateSupportMessage(JSON.parse(err.responseText).msg);
+                POSM.updateNavBarStatusIcon(null,'error_outline');
+
+            });
+        evt.preventDefault();
+    });});
 
 // Add check icon indicating current page on left menu
 jQuery(window).ready(function () {

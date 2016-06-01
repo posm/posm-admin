@@ -1,0 +1,82 @@
+---
+layout: default
+title: Network Configuration
+---
+
+<div class="mdl-grid demo-content">
+    <div class="top-card mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+        <div class="mdl-card__title mdl-card--expand posm-grey">
+            <h2 class="mdl-card__title-text">Network Configuration</h2>
+        </div>
+        <div id="supporting-msg-div" class="mdl-card__supporting-text mdl-color-text--grey-600">
+            Update the following network settings
+            <div id="network-config-progress-spinner" class="mdl-spinner mdl-js-spinner is-active"></div>
+            &nbsp;
+            <div id="supporting-msg-txt"></div>
+        </div>
+
+        <div class="deploy-sub-nav">
+
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="network-mode">
+                <input id="network-mode" type="radio" class="mdl-radio__button" name="options" value="">
+                <span class="mdl-radio__label">Switch between bridged & captive mode (network-only; restarts nginx)</span>
+            </label>
+
+            <div class="sub-task">
+                <label for="network-mode-switch" class="mdl-switch mdl-js-switch">
+                    <input type="checkbox" id="network-mode-switch" class="mdl-switch__input">
+                    <span class="mdl-switch__label">Bridge/Captive</span>
+                </label>
+            </div>
+
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ssid">
+                <input id="ssid" type="radio" class="mdl-radio__button" name="options" value="">
+                <span class="mdl-radio__label">Change SSID (restarts posm wifi)</span>
+            </label>
+
+            <div class="sub-task mdl-textfield mdl-js-textfield">
+                <i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>
+                <input class="mdl-textfield__input" type="text" id="ssid-textfield">
+                <label class="mdl-textfield__label" id="ssid-textfield-label">
+                    SSID
+                </label>
+            </div>
+
+
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="wpa-passphrase">
+                <input id="wpa-passphrase" type="radio" class="mdl-radio__button" name="options" value="">
+                <span class="mdl-radio__label">Change WPA passphrase</span>
+            </label>
+
+            <div class="sub-task mdl-textfield mdl-js-textfield">
+                <i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>
+                <input class="mdl-textfield__input" type="text" id="wpa-passphrase-textfield">
+                <label class="mdl-textfield__label" id="wpa-passphrase-textfield-label">
+                    WPA passphrase
+                </label>
+            </div>
+
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="wpa">
+                <input id="wpa" type="radio" class="mdl-radio__button" name="options" value="">
+                <span class="mdl-radio__label">Change WPA</span>
+            </label>
+
+            <div class="sub-task mdl-textfield mdl-js-textfield">
+                <i class="mdl-color-text--grey-300 material-icons" role="presentation">brightness_1</i>
+                <input class="mdl-textfield__input" type="text" id="wpa-textfield">
+                <label class="mdl-textfield__label" id="wpa-textfield-label">
+                    WPA
+                </label>
+            </div>
+
+        </div>
+
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="action-btn" type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect">Submit</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="network-config.js"></script>
+<link rel="stylesheet" href="network-config.css">
