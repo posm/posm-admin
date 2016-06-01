@@ -14,66 +14,37 @@ $(function () {
         showProgressSpinner(status[deployment]);
         updateDeploySubNav(status[deployment]);
 
-        status[deployment].forEach(function (obj) {
-
-            console.log(obj);
-            //// get parent div
-            //var $deployContent = $("#deploy-content");
-            //
-            //// create label, add classes and attributes
-            //var $label = $("<label></label>");
-            //$label.addClass("deploy-list mdl-radio mdl-js-radio mdl-js-ripple-effect");
-            //$label.attr("for", obj.name);
-            //
-            //// create input, add classes & attributes
-            //// activeAOI is checked
-            //var $input = (obj.name == status.activeAOI) ? $("<input checked>") : $("<input>");
-            //$input.addClass("mdl-radio__button");
-            //$input.attr("id", obj.name).attr("name", "aoi-deploy").attr("type", "radio");
-            //
-            //// create span, add classes & attributes
-            //var $span = $("<span></span>");
-            //$span.addClass("mdl-radio__label").html(obj.label + ' (' + obj.name + ')');
-            //
-            //// add input and span to label
-            //$label.append($input);
-            //$label.append($span);
-            //
-            //// add label to parent div after 2nd child
-            //$deployContent.children(":eq(2)").after($label);
-            //// notify mdl-lite to update dom
-            //componentHandler.upgradeDom("MaterialRadio", "mdl-radio");
-        });
-
     });
 
     $('#action-btn').click(function (evt) {
-        $.post('/posm-admin/render-db')
-            .done(function (data) {
-
-                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
-                    message: data.msg,
-                    timeout: 3000,
-                    actionHandler: function (event) {
-                        // TODO Cancel
-                    },
-                    actionText: 'Cancel'
-                });
-            })
-            .error(function(err){
-                $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
-                    message: JSON.parse(err.responseText).msg,
-                    timeout: 3000,
-                    actionHandler: function (event) {
-                        // TODO Cancel
-                    },
-                    actionText: 'Cancel'
-                });
-
-                updateSupportMessage(JSON.parse(err.responseText).msg);
-                POSM.updateNavBarStatusIcon(null,'error_outline');
-
-            });
+        var cfg = getSelectedNetworkConfig();
+        console.log(cfg);
+        //$.post('/posm-admin/render-db')
+        //    .done(function (data) {
+        //
+        //        $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+        //            message: data.msg,
+        //            timeout: 3000,
+        //            actionHandler: function (event) {
+        //                // TODO Cancel
+        //            },
+        //            actionText: 'Cancel'
+        //        });
+        //    })
+        //    .error(function(err){
+        //        $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+        //            message: JSON.parse(err.responseText).msg,
+        //            timeout: 3000,
+        //            actionHandler: function (event) {
+        //                // TODO Cancel
+        //            },
+        //            actionText: 'Cancel'
+        //        });
+        //
+        //        updateSupportMessage(JSON.parse(err.responseText).msg);
+        //        POSM.updateNavBarStatusIcon(null,'error_outline');
+        //
+        //    });
         evt.preventDefault();
     });
 
@@ -151,6 +122,19 @@ $(function () {
                 $(o.childNodes[0]).text(icon_text);
             }
         });
+    }
+
+    // get selected radio button
+    function getSelectedNetworkConfig() {
+        var checkedRadio;
+
+        $(":radio").each(function (index, value) {
+            if ($(value).parent().hasClass("is-checked")) {
+                checkedRadio = value.id;
+            }
+        });
+
+        return checkedRadio;
     }
 
 });
