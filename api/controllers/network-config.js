@@ -34,15 +34,15 @@ module.exports = function (io) {
         }
 
         function changeNetworkMode() {
-            if(typeof req.body.mode !== "string"){
+            if(typeof req.query.value !== "string"){
                 res.status(400).json({
                     status: 400,
-                    msg: 'You must provide a mode property in the request body'
+                    msg: 'You must provide a value query param in the request URL'
                 });
                 return;
             }
 
-            var mode = req.body.mode;
+            var mode = req.query.value;
             var changeNetworkModeProc = spawn('sudo', [changeNetworkModeSh, mode]);
 
             function alertSocket(data) {
@@ -82,15 +82,15 @@ module.exports = function (io) {
 
         function changeSSID() {
 
-            if(typeof req.body.ssid !== "string"){
+            if(typeof req.query.value !== "string"){
                 res.status(400).json({
                     status: 400,
-                    msg: 'You must provide a ssid property in the request body'
+                    msg: 'You must provide a value query param in the request URL'
                 });
                 return;
             }
 
-            var ssid = req.body.ssid;
+            var ssid = req.query.value;
             var changeSSIDProc = spawn('sudo', [changeSSIDSh, ssid]);
 
             function alertSocket(data) {
@@ -129,15 +129,15 @@ module.exports = function (io) {
 
         function changeWPAPassphrase() {
 
-            if(typeof req.body.passphrase !== "string"){
+            if(typeof req.query.value !== "string"){
                 res.status(400).json({
                     status: 400,
-                    msg: 'You must provide a passphrase property in the request body'
+                    msg: 'You must provide a value query param in the request URL'
                 });
                 return;
             }
 
-            var passphrase = req.body.passphrase;
+            var passphrase = req.query.value;
             var changeNetworkModeProc = spawn('sudo', [changeWPApPassphraseSh, passphrase]);
 
             function alertSocket(data) {
@@ -176,15 +176,20 @@ module.exports = function (io) {
 
         function changeWPA() {
 
-            if(typeof req.body.wpa !== "string"){
+            if(typeof req.query.value !== "string"){
                 res.status(400).json({
                     status: 400,
-                    msg: 'You must provide a wpa property in the request body'
+                    msg: 'You must provide a value query param in the request URL'
                 });
                 return;
+            } else {
+                res.status(201).json({
+                    status: 201,
+                    msg: 'Changing the WPA password..'
+                });
             }
 
-            var wpa = req.body.wpa;
+            var wpa = req.query.value;
             var changeNetworkModeProc = spawn('sudo', [changeWPASh, wpa]);
 
             function alertSocket(data) {
@@ -207,8 +212,12 @@ module.exports = function (io) {
             });
 
             changeNetworkModeProc.stdout.on('close', function (data) {
-                statusUtility.update('network-config', 'wpa', {complete: true, error: false, value: wpa});
-                statusUtility.update('network-config', '', {error: false});
+                var status = statusUtility.getStatus('network-config');
+                // check for missing wpa value error
+                if(!status['wpa'].error) {
+                    statusUtility.update('network-config', 'wpa', {complete: true, error: false, value: wpa});
+                    statusUtility.update('network-config', '', {error: false});
+                }
                 alertSocket(data);
             });
 

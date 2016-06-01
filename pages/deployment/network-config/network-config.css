@@ -22,6 +22,7 @@ label.mdl-radio {
 
 .sub-task {
     margin: 10px 0 10px 24px !important;
+    display: flex;
 }
 
 .deploy-sub-nav {
