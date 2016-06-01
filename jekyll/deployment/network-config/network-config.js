@@ -42,8 +42,9 @@ $(function () {
 
                 });
         } else {
+            var errorMsg = typeof value === "undefined" ? 'Please Toggle Captive/Bridge Switch' : 'Please select the radio button corresponding to your Network Config change';
             $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
-                message: "Please select the radio button corresponding to your Network Config change",
+                message: errorMsg,
                 timeout: 4000,
                 actionText: 'Cancel'
             });
@@ -53,8 +54,7 @@ $(function () {
 
     // process network/captive toggle
     $('#network-mode-switch').click(function (evt){
-        var networkMode = getNetworkMode();
-        $('.mdl-switch__label').html(networkMode);
+        setNetworkMode();
     });
 
     // listen for stdout on posm
@@ -177,13 +177,28 @@ $(function () {
 
         $(":checkbox").each(function (index, value) {
             if ($(value).parent().hasClass("is-checked")) {
-                networkMode = 'bridge';
+                networkMode = 'Bridge';
             } else {
-                networkMode = 'captive';
+                networkMode = 'Captive';
             }
         });
 
         return networkMode;
+    }
+
+    function setNetworkMode() {
+        var networkMode;
+
+        $(":checkbox").each(function (index, value) {
+            // is-checked class is not appended so assign opposite valu
+            if ($(value).parent().hasClass("is-checked")) {
+                networkMode = 'Captive';
+            } else {
+                networkMode = 'Bridge';
+            }
+        });
+
+        $('.mdl-switch__label').html(networkMode);
     }
 
     function getConfigValue(cfg){
@@ -192,7 +207,7 @@ $(function () {
         if(cfg === 'wpa' || cfg === 'wpa-passphrase' || cfg === 'ssid'){
             value = $('#' + cfg + '-textfield').val();
         } else if (cfg === 'network-mode') {
-            value = getNetworkMode();
+            value = ($('.mdl-switch__label').html() == 'Bridge/Captive') ? undefined : getNetworkMode().toLowerCase();
         }
 
         return value;

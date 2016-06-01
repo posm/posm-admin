@@ -101,7 +101,7 @@ module.exports = function (io) {
 
             //reset status
             statusUtility.resetChildProcess('network-config', 'ssid');
-            var ssid = req.query.value;
+            var ssid = req.query.value.toLowerCase();
             var changeSSIDProc = spawn('sudo', [changeSSIDSh, ssid]);
 
             function alertSocket(data) {
