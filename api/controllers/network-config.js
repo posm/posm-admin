@@ -124,12 +124,7 @@ module.exports = function (io) {
             });
 
             changeSSIDProc.stdout.on('close', function (data) {
-                statusUtility.update('network-config', 'ssid', {
-                    complete: true,
-                    error: false,
-                    value: ssid,
-                    initialized: false
-                });
+                statusUtility.update('network-config', 'ssid', {complete: true, error: false, value: ssid, initialized: false});
                 statusUtility.update('network-config', '', {error: false, initialized: false});
                 alertSocket(data);
             });

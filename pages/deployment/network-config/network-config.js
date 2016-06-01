@@ -103,24 +103,20 @@ $(function () {
     function showProgressSpinner (status) {
         var initializedTask = getSelectedNetworkConfig();
 
-        //if(status[initializedTask].initialized === true){
-        //    $("#network-config-progress-spinner").show();
-        //    // disable start button
-        //    $("#action-btn").prop("disabled", true);
-        //} else {
-        //    $("#network-config-progress-spinner").hide();
-        //    $("#action-btn").prop("disabled", false);
-        //}
-
         // loop through sub tasks
         subTasks.forEach(function(task){
-            if(status[task].initialized === true){
-                initializedTask = task;
-                $("#network-config-progress-spinner").show();
-                // disable start button
-                $("#action-btn").prop("disabled", true);
-            }
-            if((typeof initializedTask === "string" && status[initializedTask].complete) || typeof initializedTask === "undefined"){
+            if(status[task]) {
+                if (status[task].initialized === true) {
+                    initializedTask = task;
+                    $("#network-config-progress-spinner").show();
+                    // disable start button
+                    $("#action-btn").prop("disabled", true);
+                }
+                if ((typeof initializedTask === "string" && status[initializedTask].complete) || typeof initializedTask === "undefined") {
+                    $("#network-config-progress-spinner").hide();
+                    $("#action-btn").prop("disabled", false);
+                }
+            } else {
                 $("#network-config-progress-spinner").hide();
                 $("#action-btn").prop("disabled", false);
             }

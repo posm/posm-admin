@@ -33,8 +33,6 @@ statusUtility.init = function (cb) {
                 status = {"activeAOI": '', "initialized": false, "error": false, "msg": '', "aoi-list":[], "hard-disks":[]};
             }
 
-            //TODO check if status does not have every subtask; if so, completely reset
-
             // reset any processes stopped midway through
             Object.keys(status).forEach(function(val){
                 if (val == 'backup-data' || val == 'aoi-deploy' || val == 'atlas-deploy' || val == 'render-db' || val == 'network-config') {
@@ -75,6 +73,16 @@ statusUtility.registerProcess = function (name, childProcesses) {
             if (childProcesses) {
                 childProcesses.forEach(function (n) {
                     status[name][n] = {initialized: false, error: false, msg: '', complete: false, value:""};
+                });
+            }
+        } else if (status[name]){
+            // check for child processes
+            if (childProcesses) {
+                childProcesses.forEach(function (n) {
+                    // add child processes if they do not exist
+                    if(!status[name][n]) {
+                        status[name][n] = {initialized: false, error: false, msg: '', complete: false, value: ""};
+                    }
                 });
             }
         }
