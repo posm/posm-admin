@@ -19,12 +19,19 @@ title: Network Configuration
 
             <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="network-mode">
                 <input id="network-mode" type="radio" class="mdl-radio__button" name="options" value="">
-                <span class="mdl-radio__label">Switch between bridged & captive mode (network-only)</span>
+                <span class="mdl-radio__label">Switch between bridged & captive mode (network-only; restarts posm wifi)</span>
             </label>
+
+            <div class="sub-task">
+                <label for="network-mode-switch" class="mdl-switch mdl-js-switch">
+                    <input type="checkbox" id="network-mode-switch" class="mdl-switch__input">
+                    <span class="mdl-switch__label">Bridge/Captive</span>
+                </label>
+            </div>
 
             <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="ssid">
                 <input id="ssid" type="radio" class="mdl-radio__button" name="options" value="">
-                <span class="mdl-radio__label">Change SSID (This will knock you off posm wifi)</span>
+                <span class="mdl-radio__label">Change SSID (restarts posm wifi)</span>
             </label>
 
             <div class="sub-task mdl-textfield mdl-js-textfield">

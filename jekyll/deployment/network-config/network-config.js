@@ -28,28 +28,33 @@ $(function () {
                     $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
                         message: data.msg,
                         timeout: 3000,
-                        actionHandler: function (event) {
-                            // TODO Cancel
-                        },
                         actionText: 'Cancel'
                     });
                 })
                 .error(function (err) {
                     $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
                         message: JSON.parse(err.responseText).msg,
-                        timeout: 3000,
-                        actionHandler: function (event) {
-                            // TODO Cancel
-                        },
-                        actionText: 'Cancel'
+                        timeout: 3000
                     });
 
                     updateSupportMessage(JSON.parse(err.responseText).msg);
                     POSM.updateNavBarStatusIcon(null, 'error_outline');
 
                 });
+        } else {
+            $('#snackbar').get(0).MaterialSnackbar.showSnackbar({
+                message: "Please select the radio button corresponding to your Network Config change",
+                timeout: 4000,
+                actionText: 'Cancel'
+            });
         }
         evt.preventDefault();
+    });
+
+    // process network/captive toggle
+    $('#network-mode-switch').click(function (evt){
+        var networkMode = getNetworkMode();
+        $('.mdl-switch__label').html(networkMode);
     });
 
     // listen for stdout on posm
@@ -134,19 +139,21 @@ $(function () {
         $(":radio").each(function(index,value){
             var id = value.id;
             $(".sub-task").each(function(index,value){
-                var icon = value.children[0];
-                var inputId = value.children[1].id.replace("-textfield", "");
+                // skip wifi bridge switch
+                if(index !== 0) {
+                    var icon = value.children[0];
+                    var inputId = value.children[1].id.replace("-textfield", "");
 
-                if (status[id] && inputId == id){
-                    var iconType;
+                    if (status[id] && inputId == id) {
+                        var iconType;
 
-                    if(status[id].error) iconType = 'error_outline';
-                    if(status[id].initialized) iconType = 'compare_arrows';
-                    if(status[id].complete) iconType = 'check_circle';
+                        if (status[id].error) iconType = 'error_outline';
+                        if (status[id].initialized) iconType = 'compare_arrows';
+                        if (status[id].complete) iconType = 'check_circle';
 
-                    $(icon).text(iconType);
+                        $(icon).text(iconType);
+                    }
                 }
-
             })
         });
     }
@@ -164,11 +171,28 @@ $(function () {
         return checkedRadio;
     }
 
+    // get selected radio button, return config name
+    function getNetworkMode() {
+        var networkMode;
+
+        $(":checkbox").each(function (index, value) {
+            if ($(value).parent().hasClass("is-checked")) {
+                networkMode = 'bridge';
+            } else {
+                networkMode = 'captive';
+            }
+        });
+
+        return networkMode;
+    }
+
     function getConfigValue(cfg){
         var value;
 
         if(cfg === 'wpa' || cfg === 'wpa-passphrase' || cfg === 'ssid'){
             value = $('#' + cfg + '-textfield').val();
+        } else if (cfg === 'network-mode') {
+            value = getNetworkMode();
         }
 
         return value;
