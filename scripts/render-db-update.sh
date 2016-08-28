@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eo pipefail
+
 scripts_dir=/opt/admin/posm-admin/scripts/
 
 echo "==> render-db-update.sh: Dumping API DB and updating Render DB (used by cron)."
