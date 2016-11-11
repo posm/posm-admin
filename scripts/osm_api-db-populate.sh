@@ -1,6 +1,8 @@
 #!/bin/bash
 # args: aoi dir
 
+set -eo pipefail
+
 if [ $(whoami) != "osm" ]; then
   >&2 echo $0 is intended to run as osm
   exit 1

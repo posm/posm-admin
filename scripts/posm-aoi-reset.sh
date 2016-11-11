@@ -12,6 +12,8 @@
 # Example Usage:
 # /opt/admin/posm-admin/scripts/posm-aoi-reset.sh huaquillas
 
+set -eo pipefail
+
 scripts_dir=/opt/admin/posm-admin/scripts/
 
 aoi_name=$1

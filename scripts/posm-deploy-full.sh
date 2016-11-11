@@ -13,6 +13,8 @@
 # Example Usage:
 # /opt/admin/posm-admin/scripts/posm-deploy-full.sh http://spatialserver.spatialdev.com/omk/samples/huaquillas-sm.tar.gz
 
+set -eo pipefail
+
 hot_export_url=$1
 
 scripts_dir=/opt/admin/posm-admin/scripts/

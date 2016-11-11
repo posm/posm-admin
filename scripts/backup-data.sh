@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 scripts_dir=/opt/admin/posm-admin/scripts
 backups_dir=/opt/data/backups
 timestamp=`date +%Y%m%d-%H%M:%S`

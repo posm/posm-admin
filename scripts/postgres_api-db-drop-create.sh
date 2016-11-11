@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eo pipefail
+
 if [ $(whoami) != "postgres" ]; then
   >&2 echo $0 is intended to run as postgres
   exit 1
