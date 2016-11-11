@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 api_db_dumps_dir=/opt/data/api-db-dumps/
 
 if [ -z "$1" ]; then

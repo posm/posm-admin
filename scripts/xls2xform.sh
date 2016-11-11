@@ -2,6 +2,9 @@
 # $1 - xls2xform.py in pyxform
 # $2 - aoi dir
 # $3 - OMK forms dir
+
+set -eo pipefail
+
 for xlsx in $(find $2 -iname '*.xlsx')
 do
     echo "==> xls2xform.sh: Converting XLSX to XForm XML."

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 aoi_dir_path=$1
 write_path=$2
 

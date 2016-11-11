@@ -3,6 +3,8 @@
 # example
 # /opt/admin/posm-admin/scripts/root_fp-production-db-backup.sh /opt/data/backups/fieldpapers
 
+set -eo pipefail
+
 timestamp=`date +%Y%m%d-%H%M:%S`
 backup_path=/opt/data/backups
 

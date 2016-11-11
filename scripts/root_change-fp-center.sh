@@ -3,6 +3,8 @@
 # Change DEFAULT_CENTER in fp-web's upstart
 # intended to be run as root
 
+set -eo pipefail
+
 if [ $(whoami) != "root" ]; then
   >&2 echo $0 is intended to run as root
   exit 1

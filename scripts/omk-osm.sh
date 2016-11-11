@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 # $1 - the path of the deployment
 deployment_dir=$1
 manifest_path=$1/manifest.json
