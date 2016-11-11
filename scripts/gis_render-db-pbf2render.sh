@@ -15,7 +15,7 @@ fi
 db=gis
 temp_db=gis_temp
 
-mem=$(awk 'NR == 1 { print int($2*.9/1024) } ' /proc/meminfo)
+mem=$(awk 'NR == 3 { print int($2*.9/1024) } ' /proc/meminfo)
 
 echo "==> gis_render-db-pbf2render.sh: Building Render DB from PBF dump via osm2pgsql."
 echo "      Using PBF: "$dump_path
