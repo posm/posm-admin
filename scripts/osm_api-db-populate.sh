@@ -21,7 +21,7 @@ echo
 for pbf in $(find $1 -iname '*.pbf' | head -1); do
 	osmosis --read-pbf-fast $pbf \
   		--log-progress \
-  		--write-apidb password=openstreetmap database=osm validateSchemaVersion=no
+  		--write-apidb authFile=/etc/osmosis/osm.properties validateSchemaVersion=no
   echo "osmosis import with $pbf"
 done
 
