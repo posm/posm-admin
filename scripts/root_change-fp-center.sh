@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Change DEFAULT_CENTER in fp-web's upstart
 # intended to be run as root

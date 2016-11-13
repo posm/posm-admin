@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # example
 # sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-backup.sh /opt/data/backups/osm

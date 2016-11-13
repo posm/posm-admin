@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Change OSM_ID_KEY in osm-web's upstart
 # intended to be run as root
