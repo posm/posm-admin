@@ -21,7 +21,7 @@ echo
 for pbf in $(find $1 -iname '*.pbf' | head -1); do
 	osmosis --read-pbf-fast $pbf \
   		--log-progress \
-  		--write-apidb password=openstreetmap database=osm validateSchemaVersion=no
+  		--write-apidb authFile=/etc/osmosis/osm.properties validateSchemaVersion=no
   echo "osmosis import with $pbf"
 done
 
@@ -31,6 +31,17 @@ psql -d osm -c "select setval('current_ways_id_seq', (select max(way_id) from wa
 psql -d osm -c "select setval('current_relations_id_seq', (select max(relation_id) from relations))"
 psql -d osm -c "select setval('users_id_seq', (select max(id) from users))"
 echo "==> api-db-populate.sh: Sequences set."
+
+# reset minutely replication
+rm -rf /opt/data/osm/replication/minute/*
+
+# initialize minutely replication
+osmosis \
+  --replicate-apidb \
+    authFile=/etc/osmosis/osm.properties \
+    allowIncorrectSchemaVersion=true \
+  --write-replication \
+    workingDirectory=/opt/data/osm/replication/minute
 
 # re-create a ClientApplication entry for iD
 echo "==> creating credentials for iD"

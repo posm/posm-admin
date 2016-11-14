@@ -18,9 +18,7 @@ echo ''
 echo '==> osm_omk-osm.sh: Creating buildings OSM XML for OpenMapKit'
 echo ''
 osmosis --read-apidb \
-            database=osm \
-            user=osm \
-            password=openstreetmap \
+            authFile=/etc/osmosis/osm.properties
             validateSchemaVersion=no \
     --tf accept-ways building=* \
     --used-node \
