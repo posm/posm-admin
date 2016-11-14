@@ -32,6 +32,17 @@ psql -d osm -c "select setval('current_relations_id_seq', (select max(relation_i
 psql -d osm -c "select setval('users_id_seq', (select max(id) from users))"
 echo "==> api-db-populate.sh: Sequences set."
 
+# reset minutely replication
+rm -rf /opt/data/osm/replication/minute/*
+
+# initialize minutely replication
+osmosis \
+  --replicate-apidb \
+    authFile=/etc/osmosis/osm.properties \
+    allowIncorrectSchemaVersion=true \
+  --write-replication \
+    workingDirectory=/opt/data/osm/replication/minute
+
 # re-create a ClientApplication entry for iD
 echo "==> creating credentials for iD"
 posm_base_url=$(jq -r .posm_base_url /etc/posm.json)
