@@ -26,7 +26,6 @@ osm2pgsql \
     --hstore-add-index \
     --extra-attributes \
     --slim \
-    --unlogged \
     --database=$(jq -r .osm_carto_pg_dbname /etc/posm.json) \
     -C $mem \
     --number-processes $(nproc) $dump_path
