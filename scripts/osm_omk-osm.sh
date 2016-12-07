@@ -18,7 +18,7 @@ echo ''
 echo '==> osm_omk-osm.sh: Creating buildings OSM XML for OpenMapKit'
 echo ''
 osmosis --read-apidb \
-            authFile=/etc/osmosis/osm.properties
+            authFile=/etc/osmosis/osm.properties \
             validateSchemaVersion=no \
     --tf accept-ways building=* \
     --used-node \
@@ -30,9 +30,7 @@ echo ''
 echo '==> osm_omk-osm.sh: Creating POIs OSM XML for OpenMapKit'
 echo ''
 osmosis --read-apidb \
-            database=osm \
-            user=osm \
-            password=openstreetmap \
+            authFile=/etc/osmosis/osm.properties \
             validateSchemaVersion=no \
     --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \
     --bounding-box left=$left bottom=$bottom right=$right top=$top completeRelations=yes completeWays=yes \
