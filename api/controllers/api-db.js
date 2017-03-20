@@ -14,7 +14,7 @@ module.exports = function (io, deploymentsStatus, deployName) {
 		var deployment = deployName || req.body.deployment || req.query.deployment || 'undefined';
 
 		// sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
-		var apidbDropCreateProc = spawn('sudo', ['-u', 'postgres', apidbDropCreateSh]);
+		var apidbDropCreateProc = spawn('sudo', ['-u', 'postgres', '-i', apidbDropCreateSh]);
 
 		function alertSocket(data) {
 			io.emit('deployments/' + deployment, {
@@ -34,7 +34,7 @@ module.exports = function (io, deploymentsStatus, deployName) {
         });
 
         apidbDropCreateProc.stdout.on('close', function (code) {
-            var apidbInitProc = spawn('sudo', ['-u', 'osm', apidbInitSh]);
+            var apidbInitProc = spawn('sudo', ['-u', 'osm', '-i', apidbInitSh]);
             function alertSocket(data) {
             	io.emit('deployments/' + deployment, {
 	                controller: 'api-db',
@@ -84,7 +84,7 @@ module.exports = function (io, deploymentsStatus, deployName) {
 		var deployment = deployName || req.body.deployment || req.query.deployment || 'undefined';
 		var deploymentContentsDir = settings.deploymentsDir + '/' + deployment + '/contents';
 
-		var apidbPopulateProc = spawn('sudo', ['-u', 'osm', apidbPopulateSh, deploymentContentsDir]);
+		var apidbPopulateProc = spawn('sudo', ['-u', 'osm', '-i', apidbPopulateSh, deploymentContentsDir]);
 		
 		function alertSocket(data) {
 			io.emit('deployments/' + deployment, {

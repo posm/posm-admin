@@ -10,7 +10,7 @@ module.exports = function (io) {
     statusUtility.registerProcess('render-db', ['api2pbf', 'pbf2render', 'restartTessera']);
 
     function api2pbf() {
-        var renderdbApi2PbfProc = spawn('sudo', ['-u', 'osm', renderdbApi2PbfSh]);
+        var renderdbApi2PbfProc = spawn('sudo', ['-u', 'osm', '-i', renderdbApi2PbfSh]);
 
         function alertSocket(data) {
             var status = statusUtility.getStatus('render-db');
@@ -51,7 +51,7 @@ module.exports = function (io) {
     }
 
     function pbf2render() {
-        var renderdbPbf2RenderProc = spawn('sudo', ['-u', 'gis', renderdbPbf2RenderSh]);
+        var renderdbPbf2RenderProc = spawn('sudo', ['-u', 'gis', '-i', renderdbPbf2RenderSh]);
 
         function alertSocket(data) {
             var status = statusUtility.getStatus('render-db');
