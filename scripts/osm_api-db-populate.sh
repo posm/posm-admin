@@ -11,7 +11,7 @@ fi
 set -a
 
 source /opt/osm/osm-web/.env
-
+export HOME=/opt/osm
 set +a
 
 echo "==> api-db-populate.sh: Populating API DB and setting sequences."
