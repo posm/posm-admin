@@ -129,7 +129,7 @@ function tesseraFieldPapersReset(manifestPath, cb) {
 
         function writeTesseraConf(manifest, manifestPath, filePath, protocol) {
             var fileName = path.parse(filePath).base.split('.')[0];
-            var k = 'tiles/' + manifest.name + '/' + fileName;
+            var k = '/tiles/' + manifest.name + '/' + fileName;
             var v = protocol + '://' + path.parse(manifestPath).dir + '/' + filePath;
             var conf = {};
             conf[k] = v;
