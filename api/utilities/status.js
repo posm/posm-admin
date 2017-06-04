@@ -192,6 +192,11 @@ statusUtility.updateAOIList = function() {
     var AOIList = [];
     // loop through aoi directory
     fs.readdir(AOI_DIR, function(err, files){
+        if (err) {
+          console.warn(err.stack);
+          return;
+        }
+
         files.forEach(function(name, i){
             // find manifest file
             fs.readFile(path.join(AOI_DIR, name, 'manifest.json'), function (err, data) {
