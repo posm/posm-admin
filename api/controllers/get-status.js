@@ -37,7 +37,7 @@ module.exports = function (io) {
                     wpa_passphrase: config.posm_wpa_passphrase,
                     channel: config.posm_wifi_channel,
                     "80211n": !!config.posm_wifi_80211n,
-                    wpa: config.posm_wifi_wpa === 2,
+                    wpa: parseInt(config.posm_wifi_wpa) === 2,
                 },
                 hostname: config.posm_hostname,
                 fqdn: config.posm_fqdn
