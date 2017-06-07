@@ -7,6 +7,7 @@ var AOI_DIR = '/opt/data/aoi';
 var path = require('path');
 var njds = require('nodejs-disks');
 
+var POSM_CONFIG = process.env.POSM_CONFIG || "/etc/posm.json";
 
 /**
  * Look for status.json file on disk
@@ -235,5 +236,56 @@ statusUtility.getHardDisks = function (){
         );
     });
 };
+
+/**
+ * Get status according to /etc/posm.json (or equivalent).
+ */
+statusUtility.getPOSMStatus = function(callback) {
+    return fs.readFile(POSM_CONFIG, "utf-8", function(err, data) {
+        if (err) {
+            return callback(err);
+        }
+
+        var config;
+        try {
+            config = JSON.parse(data);
+        } catch (err) {
+            return callback(err);
+        }
+
+        var status = statusUtility.getStatus();
+
+        status.network = {
+            wan: {
+                iface: config.posm_wan_netif
+            },
+            lan: {
+                iface: config.posm_lan_netif,
+                ip: config.posm_lan_ip
+            },
+            wlan: {
+                iface: config.posm_wlan_netif,
+                ip: config.posm_wlan_ip
+            },
+            wifi: {
+                ssid: config.posm_ssid,
+                wpa_passphrase: config.posm_wpa_passphrase,
+                channel: config.posm_wifi_channel,
+                "80211n": !!config.posm_wifi_80211n,
+                wpa: parseInt(config.posm_wifi_wpa) === 2,
+            },
+            hostname: config.posm_hostname,
+            fqdn: config.posm_fqdn,
+            // TODO expose network mode
+            bridged: false
+        };
+
+        status.osm = {
+            fqdn: config.osm_fqdn
+        };
+
+        return callback(null, status);
+    });
+}
 
 module.exports = statusUtility;

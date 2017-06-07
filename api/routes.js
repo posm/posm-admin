@@ -103,8 +103,7 @@ module.exports = function(io) {
         .get(backupData(io))
         .post(backupData(io));
 
-    router.route('/network-config/:config')
-        .get(networkConfig(io))
+    router.route('/network-config')
         .post(networkConfig(io));
 
     router.route('/status-reset')
