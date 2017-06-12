@@ -19,7 +19,7 @@ if [ $(whoami) != "gis" ]; then
 fi
 
 echo
-echo '==> $0: Creating POSM MBTiles for OpenMapKit.'
+echo "==> $0: Creating POSM MBTiles for OpenMapKit."
 echo '      path: '$path
 echo "      bbox: ${left} ${bottom} ${right} ${top}"
 echo '      Min Zoom: '$DEFAULT_MIN_ZOOM
