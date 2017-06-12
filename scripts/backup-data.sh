@@ -25,11 +25,10 @@ echo "==> Compressing omk data and backing up to $backups_dir/omk"
 sudo -u omk $scripts_dir/omk_backup.sh
 
 echo "==> Backing up imagery $backups_dir/imagery"
-cp -alf /opt/data/imagery/* ${backup_path}/imagery
+cp -alf /opt/data/imagery/* ${backups_dir}/imagery
 
 echo "==> Backing up OpenDroneMap data to $backups_dir/opendronemap"
-cp -alf /opt/data/opendronemap/* ${backup_path}/opendronemap
+cp -alf /opt/data/opendronemap/* ${backups_dir}/opendronemap
 
-# copy AOIs
 echo "==> Backing up AOIs to $backups_dir/aoi"
-cp -alf /opt/data/aoi/* $backup_path/aoi
+cp -alf /opt/data/aoi/* ${backups_dir}/aoi
