@@ -6,7 +6,7 @@ scripts_dir=/opt/admin/posm-admin/scripts
 backups_dir=/opt/data/backups
 
 # create backup dirs if necessary
-sudo $script_dir/root_initialize-backups.sh
+sudo $scripts_dir/root_initialize-backups.sh
 
 # back up osm api database
 sudo -u osm $scripts_dir/osm_api-db-backup.sh $backups_dir/osm
