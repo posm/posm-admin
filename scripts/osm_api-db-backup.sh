@@ -20,6 +20,6 @@ output="apidb-$(date +%Y%m%d%H%M%S).sql.gz"
 pg_dump osm | gzip > "${backup_path}/${output}"
 
 # link PBF dumps
-cp -alf /opt/data/api-db-dumps/ $backup_path
+cp -alf /opt/data/api-db-dumps/* ${backup_path}
 
 echo "==> $0 END"
