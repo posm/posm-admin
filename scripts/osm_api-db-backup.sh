@@ -22,7 +22,4 @@ pg_dump osm | gzip > "${backup_path}/${output}"
 # link PBF dumps
 cp -alf /opt/data/api-db-dumps/* $backup_path
 
-# copy AOIs
-cp -alf /opt/data/aoi/* $backup_path
-
 echo "==> $0 END"

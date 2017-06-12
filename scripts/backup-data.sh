@@ -29,3 +29,7 @@ cp -alf /opt/data/imagery/* ${backup_path}/imagery
 
 echo "==> Backing up OpenDroneMap data to $backups_dir/opendronemap"
 cp -alf /opt/data/opendronemap/* ${backup_path}/opendronemap
+
+# copy AOIs
+echo "==> Backing up AOIs to $backups_dir/aoi"
+cp -alf /opt/data/aoi/* $backup_path/aoi
