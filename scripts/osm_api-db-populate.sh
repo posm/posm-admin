@@ -14,7 +14,7 @@ source /opt/osm/osm-web/.env
 export HOME=/opt/osm
 set +a
 
-echo "==> api-db-populate.sh: Populating API DB and setting sequences."
+echo "==> $0: Populating API DB and setting sequences."
 echo "      aoi dir: $1"
 echo
 
@@ -66,5 +66,5 @@ echo "      lat: $lat"
 echo "      lng: $lng"
 psql -c "update users set home_lat=${lat}, home_lon=${lng} where display_name='POSM'"
 
-echo "==> api-db-populate.sh: END"
+echo "==> $0: END"
 echo

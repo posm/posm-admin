@@ -7,7 +7,7 @@ set -eo pipefail
 
 for xlsx in $(find $2 -iname '*.xlsx')
 do
-    echo "==> xls2xform.sh: Converting XLSX to XForm XML."
+    echo "==> $0: Converting XLSX to XForm XML."
     echo "      xlsx:  "$xlsx
 
     # Copy the xlsx file into the forms dir
@@ -24,5 +24,5 @@ do
     python $1 $xlsx $xml
 done
 
-echo "==> xls2xform.sh: END"
+echo "==> $0: END"
 echo

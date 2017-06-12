@@ -7,7 +7,7 @@ if [ $(whoami) != "root" ]; then
   exit 1
 fi
 
-echo "==> root_change-ssid.sh: Changing SSID."
+echo "==> $0: Changing SSID."
 echo
 
 if [[ $1 == "" ]]; then
@@ -22,5 +22,5 @@ sed -ri "s/^(ssid2=).*/\1\"${new_ssid}\"/" /etc/hostapd/hostapd.conf
 
 killall -HUP hostapd
 
-echo "==> root_change-ssid.sh: END."
+echo "==> $0: END."
 echo

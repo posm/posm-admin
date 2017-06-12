@@ -4,6 +4,11 @@ set -eo pipefail
 
 api_db_dumps_dir=/opt/data/api-db-dumps/
 
+if [ $(whoami) != "gis" ]; then
+  >&2 echo $0 is intended to run as gis
+  exit 1
+fi
+
 if [ -z "$1" ]; then
     # no file name argument, using file with latest timestamp
     # file in dumps dir with latest timestamp
@@ -16,7 +21,7 @@ fi
 
 mem=$(awk 'NR == 3 { print int($2*.9/1024) } ' /proc/meminfo)
 
-echo "==> gis_render-db-pbf2render.sh: Building Render DB from PBF dump via osm2pgsql."
+echo "==> $0: Building Render DB from PBF dump via osm2pgsql."
 echo "      Using PBF: "$dump_path
 echo "      Populating DB: "$db
 
@@ -33,5 +38,5 @@ osm2pgsql \
 cp /opt/data/osm/replication/minute/000/000/000.state.txt /opt/data/osm/state.txt
 
 echo
-echo "==> gis_render-db-pbf2render.sh: END"
+echo "==> $0: END"
 echo

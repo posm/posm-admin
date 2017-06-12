@@ -18,7 +18,7 @@ scripts_dir=/opt/admin/posm-admin/scripts/
 
 aoi_name=$1
 aoi_dir=/opt/data/aoi/$aoi_name
-echo "==> posm-aoi-reset.sh"
+echo "==> $0"
 echo "      aoi name: "$aoi_name
 
 # Activate aoi

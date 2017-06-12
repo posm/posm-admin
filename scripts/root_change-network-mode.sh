@@ -7,7 +7,7 @@ if [ $(whoami) != "root" ]; then
   exit 1
 fi
 
-echo "==> root_change-network-mode.sh: Changing Network Mode."
+echo "==> $0: Changing Network Mode."
 echo
 
 if [[ $1 == "" ]]; then
@@ -28,5 +28,5 @@ case "$1" in
     ;;
 esac
 
-echo "==> root_change-network-mode.sh: END."
+echo "==> $0: END."
 echo

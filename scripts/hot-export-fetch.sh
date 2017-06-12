@@ -4,12 +4,12 @@
 
 set -eo pipefail
 
-echo "==> hot-export-fetch.sh : Fetching and unpacking HOT Export into a temporary directory."
+echo "==> $0: Fetching and unpacking HOT Export into a temporary directory."
 echo "      temp dir: "$2
 echo
 
 mkdir -p $2
 curl -fL $1 | tar xzf - -C $2
 
-echo "==> hot-export-fetch.sh : END"
+echo "==> $0: END"
 echo

@@ -13,8 +13,13 @@ POSM_MAPNIK_XML=/opt/gis/posm-carto/project.xml
 DEFAULT_MIN_ZOOM=13
 DEFAULT_MAX_ZOOM=22
 
+if [ $(whoami) != "gis" ]; then
+  >&2 echo $0 is intended to run as gis
+  exit 1
+fi
+
 echo
-echo '==> gis_omk-posm-mbtiles.sh: Creating POSM MBTiles for OpenMapKit.'
+echo '==> $0: Creating POSM MBTiles for OpenMapKit.'
 echo '      path: '$path
 echo "      bbox: ${left} ${bottom} ${right} ${top}"
 echo '      Min Zoom: '$DEFAULT_MIN_ZOOM
@@ -32,5 +37,5 @@ tl copy \
 uri_path=$(python -c "import urllib, sys; print urllib.quote(sys.argv[1])" "${path}")
 mv "${uri_path}" "${path}"
 
-echo "==> gis_omk-posm-mbtiles.sh: END"
+echo "==> $0: END"
 echo

@@ -5,6 +5,11 @@ set -eo pipefail
 scripts_dir=/opt/admin/posm-admin/scripts
 backups_dir=/opt/data/backups
 
+if [ $(whoami) != "posm-admin" ]; then
+  >&2 echo $0 is intended to run as posm-admin
+  exit 1
+fi
+
 # create backup dirs if necessary
 sudo $scripts_dir/root_initialize-backups.sh
 

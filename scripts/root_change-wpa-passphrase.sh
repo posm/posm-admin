@@ -7,7 +7,7 @@ if [ $(whoami) != "root" ]; then
   exit 1
 fi
 
-echo "==> root_change-wpa-passphrase.sh: Changing WPA passphrase."
+echo "==> $0: Changing WPA passphrase."
 echo
 
 if [[ $1 == "" ]]; then
@@ -22,5 +22,5 @@ sed -ri "s/^(wpa_passphrase=).*/\1${new_passphrase}/" /etc/hostapd/hostapd.conf
 
 killall -HUP hostapd
 
-echo "==> root_change-wpa-passphrase.sh: END."
+echo "==> $0: END."
 echo

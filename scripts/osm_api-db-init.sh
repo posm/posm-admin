@@ -10,7 +10,7 @@ if [ $(whoami) != "osm" ]; then
   exit 1
 fi
 
-echo "==> api-db-init.sh : Initializing API DB with rake db:migrate."
+echo "==> $0: Initializing API DB with rake db:migrate."
 echo
 
 set -a
@@ -21,5 +21,5 @@ set +a
 
 cd /opt/osm/osm-web && bundle exec rake db:migrate
 
-echo "==> api-db-init.sh : END"
+echo "==> $0: END"
 echo

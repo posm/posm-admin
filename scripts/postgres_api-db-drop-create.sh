@@ -7,7 +7,7 @@ if [ $(whoami) != "postgres" ]; then
   exit 1
 fi
 
-echo "==> api-db-drop-create.sh: Dropping and re-creating the API DB."
+echo "==> $0: Dropping and re-creating the API DB."
 echo
 
 # Drops connections to database that might prevent us from recreating the db.
