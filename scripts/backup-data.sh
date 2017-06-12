@@ -4,7 +4,9 @@ set -eo pipefail
 
 scripts_dir=/opt/admin/posm-admin/scripts
 backups_dir=/opt/data/backups
-timestamp=`date +%Y%m%d-%H%M:%S`
+
+# create backup dirs if necessary
+sudo $script_dir/root_initialize-backups.sh
 
 # back up osm api database
 sudo -u osm $scripts_dir/osm_api-db-backup.sh $backups_dir/osm
@@ -15,4 +17,4 @@ sudo $scripts_dir/root_fp-production-db-backup.sh $backups_dir/fieldpapers
 
 # zip up omk data & save to backup directory
 echo "==> Compressing omk data and backing up to $backups_dir/omk"
-tar -zcf $backups_dir/omk/$timestamp.tar.gz /opt/omk/OpenMapKitServer/data/
+sudo -u omk tar zcf $scripts_dir/omk_backup.sh
