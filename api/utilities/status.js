@@ -1,3 +1,4 @@
+var async = require("async");
 var fs = require('fs');
 var statusUtility = {};
 var path = require('path');
@@ -237,10 +238,7 @@ statusUtility.getHardDisks = function (){
     });
 };
 
-/**
- * Get status according to /etc/posm.json (or equivalent).
- */
-statusUtility.getPOSMStatus = function(callback) {
+statusUtility.getNetworkStatus = function(callback) {
     return fs.readFile(POSM_CONFIG, "utf-8", function(err, data) {
         if (err) {
             return callback(err);
@@ -253,9 +251,7 @@ statusUtility.getPOSMStatus = function(callback) {
             return callback(err);
         }
 
-        var status = statusUtility.getStatus();
-
-        status.network = {
+        const status = {
             wan: {
                 iface: config.posm_wan_netif
             },
@@ -286,6 +282,86 @@ statusUtility.getPOSMStatus = function(callback) {
 
         return callback(null, status);
     });
-}
+};
+
+statusUtility.getOSMStatus = function(callback) {
+  return fs.readFile(POSM_CONFIG, "utf-8", function(err, data) {
+      if (err) {
+          return callback(err);
+      }
+
+      var config;
+      try {
+          config = JSON.parse(data);
+      } catch (err) {
+          return callback(err);
+      }
+
+      const status = {
+          fqdn: config.osm_fqdn
+      };
+
+      return callback(null, status);
+  });
+};
+
+statusUtility.getDeployments = function(callback) {
+    return fs.readdir(DEPLOYMENTS_DIR, function(err, entries) {
+        if (err) {
+            return callback(err);
+        }
+
+        return async.filterLimit(entries, 10, function(entry, done) {
+            return fs.stat(path.join(DEPLOYMENTS_DIR, entry), function(err, stats) {
+              if (err) {
+                  return done(err);
+              }
+
+                return done(null, stats.isDirectory());
+            })
+        }, function(err, results) {
+            if (err) {
+              return callback(err);
+            }
+
+            return async.mapLimit(results, 10, function(deployment, done) {
+                return fs.readFile(path.join(DEPLOYMENTS_DIR, deployment, "manifest.json"), "utf-8", function(err, data) {
+                    if (err) {
+                        return callback(err);
+                    }
+
+                    try {
+                        return done(null, JSON.parse(data));
+                    } catch (err) {
+                        return done(err);
+                    }
+                });
+            }, callback);
+        });
+    });
+};
+
+/**
+ * Get POSM status.
+ */
+statusUtility.getPOSMStatus = function(callback) {
+    var status = statusUtility.getStatus();
+
+    return async.parallel({
+        deployments: statusUtility.getDeployments,
+        network: statusUtility.getNetworkStatus,
+        osm: statusUtility.getOSMStatus
+    }, function(err, statuses) {
+        if (err) {
+            return callback(err);
+        }
+
+        status.deployments = statuses.deployments;
+        status.network = statuses.network;
+        status.osm = statuses.osm;
+
+        return callback(null, status);
+    });
+};
 
 module.exports = statusUtility;
