@@ -23,3 +23,9 @@ sudo $scripts_dir/root_fp-production-db-backup.sh $backups_dir/fieldpapers
 # zip up omk data & save to backup directory
 echo "==> Compressing omk data and backing up to $backups_dir/omk"
 sudo -u omk $scripts_dir/omk_backup.sh
+
+echo "==> Backing up imagery $backups_dir/imagery"
+cp -alf /opt/data/imagery/* ${backup_path}/imagery
+
+echo "==> Backing up OpenDroneMap data to $backups_dir/opendronemap"
+cp -alf /opt/data/opendronemap/* ${backup_path}/opendronemap

@@ -12,8 +12,9 @@ fi
 echo "==> $0: Initializing backup directories..."
 echo
 
-mkdir -p ${backups_dir}/{fieldpapers,omk,osm}
+mkdir -p ${backups_dir}/{fieldpapers,imagery,omk,opendronemap,osm}
 chown fp:fp ${backups_dir}/fieldpapers
+chown posm-admin:posm-admin ${backups_dir}/{imagery,opendronemap}
 chown omk:omk ${backups_dir}/omk
 chown osm:osm ${backups_dir}/osm
 
