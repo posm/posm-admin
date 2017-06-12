@@ -7,7 +7,7 @@ backups_dir=/opt/data/backups
 timestamp=`date +%Y%m%d-%H%M:%S`
 
 # back up osm api database
-sudo -u postgres $scripts_dir/postgres_api-db-backup.sh $backups_dir/osm
+sudo -u osm $scripts_dir/osm_api-db-backup.sh $backups_dir/osm
 
 # back up field papers production database, atlas & snapshots
 echo "==> Backing up field papers production data, atlas & snapshots to $backups_dir/fieldpapers"
