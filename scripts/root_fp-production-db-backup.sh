@@ -5,7 +5,7 @@
 
 set -eo pipefail
 
-timestamp=`date +%Y%m%d-%H%M:%S`
+timestamp=$(date +%Y%m%d%H%M%S)
 backup_path=/opt/data/backups
 
 echo '==> root_fp-production-db-backup.sh'
@@ -22,7 +22,7 @@ mysqldump -uroot -pposm fieldpapers_production | gzip > $backup_path/$timestamp/
 
 echo '=> Copying field paper atlases & snapshots ...'
 # copy fp data into $backup_path/fieldpapers/
-cp -a /opt/fp/data/. $backup_path/$timestamp
+cp -al /opt/fp/data/ $backup_path/$timestamp
 
 echo "==> root_fp-production-db-backup.sh: END"
 echo
