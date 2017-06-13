@@ -50,7 +50,7 @@ function changeBridgedNetworkMode(bridged, callback) {
   var mode = "captive";
 
   if (bridged) {
-    mode = "bridged";
+    mode = "bridge";
   }
 
   console.log("Changing network mode to " + mode);
@@ -115,6 +115,9 @@ function markAsDone(io) {
 }
 
 module.exports = function(io) {
+  // register status
+  statusUtility.registerProcess('network-config');
+
   return function(req, res, next) {
     var tasks = [];
 
@@ -166,9 +169,16 @@ module.exports = function(io) {
         );
       }
 
+      // reset status
+      statusUtility.update("network-config", "", {
+        initialized: true,
+      });
+
       // run tasks in series so they don't conflict
       return async.series(tasks, function(err) {
         markAsDone(io);
+        // reset status
+        statusUtility.resetProcess("network-config");
 
         if (err) {
           return next(err);

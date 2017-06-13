@@ -267,13 +267,12 @@ statusUtility.getNetworkStatus = function(callback) {
                 ssid: config.posm_ssid,
                 wpa_passphrase: config.posm_wpa_passphrase,
                 channel: config.posm_wifi_channel,
-                "80211n": !!config.posm_wifi_80211n,
+                "80211n": config.posm_wifi_80211n === "1",
                 wpa: parseInt(config.posm_wifi_wpa) === 2,
             },
             hostname: config.posm_hostname,
             fqdn: config.posm_fqdn,
-            // TODO expose network mode
-            bridged: false
+            bridged: config.posm_network_bridged === "1"
         };
 
         status.osm = {
