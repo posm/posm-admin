@@ -10,7 +10,7 @@ if [ $(whoami) != "osm" ]; then
 fi
 
 timestamp_pbf() {
-    date +'%FT%TZ.pbf'
+    date +'%Y%m%d%H%M%S.pbf'
 }
 
 if [ -z "$1" ]; then
