@@ -7,8 +7,10 @@ var DEPLOYMENTS_DIR = '/opt/data/deployments';
 var AOI_DIR = '/opt/data/aoi';
 var path = require('path');
 var njds = require('nodejs-disks');
+var recursive = require("recursive-readdir");
 
 var POSM_CONFIG = process.env.POSM_CONFIG || "/etc/posm.json";
+var PUBLIC_FILES_DIR = path.resolve("/opt/data/public");
 
 /**
  * Look for status.json file on disk
@@ -340,6 +342,18 @@ statusUtility.getDeployments = function(callback) {
     });
 };
 
+statusUtility.getPublicFiles = function(callback) {
+  return recursive(PUBLIC_FILES_DIR, function(err, paths) {
+    if (err) {
+      return callback(err);
+    }
+
+    return callback(null, paths.map(function(x) {
+      return x.replace(PUBLIC_FILES_DIR, "");
+    }));
+  });
+}
+
 /**
  * Get POSM status.
  */
@@ -349,7 +363,8 @@ statusUtility.getPOSMStatus = function(callback) {
     return async.parallel({
         deployments: statusUtility.getDeployments,
         network: statusUtility.getNetworkStatus,
-        osm: statusUtility.getOSMStatus
+        osm: statusUtility.getOSMStatus,
+        publicFiles: statusUtility.getPublicFiles
     }, function(err, statuses) {
         if (err) {
             return callback(err);
@@ -358,6 +373,7 @@ statusUtility.getPOSMStatus = function(callback) {
         status.deployments = statuses.deployments;
         status.network = statuses.network;
         status.osm = statuses.osm;
+        status.publicFiles = statuses.publicFiles;
 
         return callback(null, status);
     });
