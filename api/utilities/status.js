@@ -189,32 +189,38 @@ function writeStatusToDisk(cb) {
     });
 }
 
+statusUtility.getAOIs = function(callback) {
+  var parse = function(file, done) {
+    return async.waterfall([
+      async.apply(fs.readFile, file),
+      async.asyncify(JSON.parse)
+    ], done);
+  };
+
+  var ignoreFunc = function(file, stats) {
+    return !stats.isDirectory() && path.basename(file) !== "manifest.json";
+  };
+
+  return async.waterfall([
+    async.apply(recursive, AOI_DIR, [ignoreFunc]),
+    function(paths, done) {
+      return async.mapLimit(paths, 10, parse, done);
+    }
+  ], callback);
+};
+
 /**
- * Loop through aoi directory, open up manifest file, get name & add to aoi-list array in status
+ * Loop through aoi directory, open up manifest file, & add to aoi-list array in status
  */
 statusUtility.updateAOIList = function() {
-    var AOIList = [];
-    // loop through aoi directory
-    fs.readdir(AOI_DIR, function(err, files){
-        if (err) {
-          console.warn(err.stack);
-          return;
-        }
+  return statusUtility.getAOIs(function(err, aois) {
+    if (err) {
+      return console.warn(err.stack);
+    }
 
-        files.forEach(function(name, i){
-            // find manifest file
-            fs.readFile(path.join(AOI_DIR, name, 'manifest.json'), function (err, data) {
-                if(err){
-                    console.error('Manifest.json does not exist');
-                } else {
-                    var manifest = JSON.parse(data);
-                    AOIList.push({name: name, label: manifest.title});
-                    // update status
-                    statusUtility.update('','',{"aoi-list": AOIList});
-                }
-            });
-        });
-    });
+    // update status
+    statusUtility.update('', '', {"aoi-list": aois});
+  });
 };
 
 /**
