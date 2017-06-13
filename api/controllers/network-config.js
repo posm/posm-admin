@@ -89,6 +89,31 @@ function changeWPAPassphrase(passphrase, callback) {
   );
 }
 
+function sendMessage(io, status) {
+    if (io == null) {
+      return;
+    }
+
+    io.emit("network-config", {
+        status: {
+            running: true,
+            msg: status
+        }
+    });
+}
+
+function markAsDone(io) {
+    if (io == null) {
+      return;
+    }
+
+    io.emit("network-config", {
+        status: {
+            running: false
+        }
+    });
+}
+
 module.exports = function(io) {
   return function(req, res, next) {
     var tasks = [];
@@ -102,7 +127,10 @@ module.exports = function(io) {
         req.body.bridged != null &&
         req.body.bridged !== status.network.bridged
       ) {
-        tasks.push(changeBridgedNetworkMode.bind(null, req.body.bridged));
+        tasks.push(
+          async.asyncify(sendMessage.bind(null, io, "Setting bridge status...")),
+          changeBridgedNetworkMode.bind(null, req.body.bridged)
+        );
       }
 
       if (
@@ -110,7 +138,10 @@ module.exports = function(io) {
         req.body.wifi.ssid != null &&
         req.body.wifi.ssid !== status.network.wifi.ssid
       ) {
-        tasks.push(changeSSID.bind(null, req.body.wifi.ssid));
+        tasks.push(
+          async.asyncify(sendMessage.bind(null, io, "Updating SSID...")),
+          changeSSID.bind(null, req.body.wifi.ssid)
+        );
       }
 
       if (
@@ -118,7 +149,10 @@ module.exports = function(io) {
         req.body.wifi.wpa != null &&
         req.body.wifi.wpa !== status.network.wifi.wpa
       ) {
-        tasks.push(changeWPA.bind(null, req.body.wifi.wpa));
+        tasks.push(
+          async.asyncify(sendMessage.bind(null, io, "Setting WPA mode...")),
+          changeWPA.bind(null, req.body.wifi.wpa)
+        );
       }
 
       if (
@@ -127,12 +161,15 @@ module.exports = function(io) {
         req.body.wifi.wpa_passphrase !== status.network.wifi.wpa_passphrase
       ) {
         tasks.push(
+          async.asyncify(sendMessage.bind(null, io, "Setting WPA passphrase...")),
           changeWPAPassphrase.bind(null, req.body.wifi.wpa_passphrase)
         );
       }
 
       // run tasks in series so they don't conflict
       return async.series(tasks, function(err) {
+        markAsDone(io);
+
         if (err) {
           return next(err);
         }
