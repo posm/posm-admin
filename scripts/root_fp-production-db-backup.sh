@@ -11,7 +11,6 @@ if [ $(whoami) != "root" ]; then
 fi
 
 timestamp=$(date +%Y%m%d%H%M%S)
-backup_path=/opt/data/backups
 
 echo "==> $0"
 
