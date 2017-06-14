@@ -18,7 +18,7 @@ echo "==> $0: Populating API DB and setting sequences."
 echo "      aoi dir: $1"
 echo
 
-for pbf in $(find $1 -iname '*.pbf' | head -1); do
+for pbf in $(find $1 -iname '*.pbf' | sort | tail -1); do
 	osmosis --read-pbf-fast $pbf \
   		--log-progress \
   		--write-apidb authFile=/etc/osmosis/osm.properties validateSchemaVersion=no
