@@ -349,14 +349,18 @@ statusUtility.getDeployments = function(callback) {
 };
 
 statusUtility.getPublicFiles = function(callback) {
-  return recursive(PUBLIC_FILES_DIR, function(err, paths) {
+  var ignoreFunc = function(file, stats) {
+    return path.basename(file)[0] === ".";
+  };
+
+  return recursive(PUBLIC_FILES_DIR, [ignoreFunc], function(err, paths) {
     if (err) {
       return callback(err);
     }
 
     return callback(null, paths.map(function(x) {
       return x.replace(PUBLIC_FILES_DIR, "");
-    }));
+    }).sort());
   });
 }
 
