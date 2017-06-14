@@ -22,7 +22,7 @@ echo "==> $0"
 echo "      aoi name: "$aoi_name
 
 # Activate aoi
-curl -f --data "aoi_name=$aoi_name" "$(jq -r .posm_base_url /etc/posm.json)/posm-admin/status/activate-aoi"
+curl -f --data "aoi_name=$aoi_name" "http://localhost/posm-admin/status/activate-aoi"
 
 # Drop and create API DB
 # sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
