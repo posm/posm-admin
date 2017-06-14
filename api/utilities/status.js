@@ -359,7 +359,7 @@ statusUtility.getPublicFiles = function(callback) {
     }
 
     return callback(null, paths.map(function(x) {
-      return x.replace(PUBLIC_FILES_DIR, "");
+      return x.replace(PUBLIC_FILES_DIR + "/", "");
     }).sort());
   });
 }
