@@ -37,7 +37,7 @@ echo
 $scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
 
 # Activate aoi
-curl -f --data "aoi_name=$aoi_name" "http://localhost/posm-admin/status/activate-aoi"
+curl -f --data "aoi_name=$aoi_name" -H "Host: $(jq -r .posm_fqdn /etc/posm.json)" "http://localhost/posm-admin/status/activate-aoi"
 
 # Drop and create API DB
 # sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
