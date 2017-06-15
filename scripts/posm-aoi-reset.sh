@@ -34,6 +34,7 @@ sudo -u osm $scripts_dir/osm_api-db-init.sh
 
 # Populate API DB
 # sudo -u osm /opt/admin/posm-admin/scripts/osm_api-db-populate.sh /opt/data/aoi/huaquillas
+# TODO this reloads data for the AOI rather than using a backup
 sudo -u osm $scripts_dir/osm_api-db-populate.sh $aoi_dir
 
 # Dump API DB to a PBF (Osmosis)
