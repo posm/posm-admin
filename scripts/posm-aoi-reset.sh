@@ -18,11 +18,11 @@ scripts_dir=/opt/admin/posm-admin/scripts/
 
 aoi_name=$1
 aoi_dir=/opt/data/aoi/$aoi_name
-echo "==> posm-aoi-reset.sh"
+echo "==> $0"
 echo "      aoi name: "$aoi_name
 
 # Activate aoi
-curl -f --data "aoi_name=$aoi_name" "$(jq -r .posm_base_url /etc/posm.json)/posm-admin/status/activate-aoi"
+curl -f --data "aoi_name=$aoi_name" -H "Host: $(jq -r .posm_fqdn /etc/posm.json)" "http://localhost/posm-admin/status/activate-aoi"
 
 # Drop and create API DB
 # sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
@@ -34,6 +34,7 @@ sudo -u osm $scripts_dir/osm_api-db-init.sh
 
 # Populate API DB
 # sudo -u osm /opt/admin/posm-admin/scripts/osm_api-db-populate.sh /opt/data/aoi/huaquillas
+# TODO this reloads data for the AOI rather than using a backup
 sudo -u osm $scripts_dir/osm_api-db-populate.sh $aoi_dir
 
 # Dump API DB to a PBF (Osmosis)

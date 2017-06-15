@@ -5,10 +5,14 @@
 
 set -eo pipefail
 
-timestamp=`date +%Y%m%d-%H%M:%S`
-backup_path=/opt/data/backups
+if [ $(whoami) != "root" ]; then
+  >&2 echo $0 is intended to run as root
+  exit 1
+fi
 
-echo '==> root_fp-production-db-backup.sh'
+timestamp=$(date +%Y%m%d%H%M%S)
+
+echo "==> $0"
 
 backup_path=$1
 
@@ -22,7 +26,7 @@ mysqldump -uroot -pposm fieldpapers_production | gzip > $backup_path/$timestamp/
 
 echo '=> Copying field paper atlases & snapshots ...'
 # copy fp data into $backup_path/fieldpapers/
-cp -a /opt/fp/data/. $backup_path/$timestamp
+cp -alf /opt/fp/data/ $backup_path/$timestamp
 
-echo "==> root_fp-production-db-backup.sh: END"
+echo "==> $0: END"
 echo

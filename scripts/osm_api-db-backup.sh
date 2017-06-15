@@ -5,7 +5,12 @@
 
 set -eo pipefail
 
-echo '==> osm_api-db-backup.sh'
+if [ $(whoami) != "osm" ]; then
+  >&2 echo $0 is intended to run as osm
+  exit 1
+fi
+
+echo "==> $0"
 
 backup_path=$1
 
@@ -15,8 +20,6 @@ output="apidb-$(date +%Y%m%d%H%M%S).sql.gz"
 pg_dump osm | gzip > "${backup_path}/${output}"
 
 # link PBF dumps
-for dump in /opt/data/api-db-dumps/*; do
-  ln $dump $backup_path
-done
+cp -alf /opt/data/api-db-dumps/. $backup_path
 
-echo "==> osm_api-db-backup.sh END"
+echo "==> $0 END"

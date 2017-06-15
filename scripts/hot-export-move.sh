@@ -5,7 +5,7 @@
 
 set -eo pipefail
 
-echo "==> hot-export-move.sh: Moving deployment from temporary directory to the deployments directory."
+echo "==> $0: Moving deployment from temporary directory to the deployments directory."
 echo "      temp dir:       "$1
 echo "      deployment dir: "$2
 echo
@@ -15,5 +15,5 @@ mkdir -p $2
 mv $1/* $2
 rm -rf $1
 
-echo "==> hot-export-move.sh: END"
+echo "==> $0: END"
 echo

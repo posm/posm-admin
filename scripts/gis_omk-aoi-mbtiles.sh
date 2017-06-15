@@ -12,6 +12,11 @@ top=$6
 
 POSM_MAPNIK_XML=/opt/gis/posm-carto/project.xml
 
+if [ $(whoami) != "gis" ]; then
+  >&2 echo $0 is intended to run as gis
+  exit 1
+fi
+
 cut_bbox() {
     aoi_path=$1
     fname=$(basename "$aoi_path")
@@ -19,7 +24,7 @@ cut_bbox() {
     write_file="${write_path} ${aoi_name}.mbtiles"
 
     echo
-    echo '==> gis_omk-aoi-mbtiles.sh: Creating AOI MBTiles Extract for OpenMapKit.'
+    echo "==> $0: Creating AOI MBTiles Extract for OpenMapKit."
     echo '      $aoi_path: '$aoi_path
     echo '      $write_file: '$write_file
     echo "      bbox: ${left} ${bottom} ${right} ${top}"
@@ -41,5 +46,5 @@ do
 	cut_bbox $aoi
 done
 
-echo "==> gis_omk-aoi-mbtiles.sh: END"
+echo "==> $0: END"
 echo

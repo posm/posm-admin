@@ -14,11 +14,11 @@ source /opt/osm/osm-web/.env
 export HOME=/opt/osm
 set +a
 
-echo "==> api-db-populate.sh: Populating API DB and setting sequences."
+echo "==> $0: Populating API DB and setting sequences."
 echo "      aoi dir: $1"
 echo
 
-for pbf in $(find $1 -iname '*.pbf' | head -1); do
+for pbf in $(find $1 -iname '*.pbf' | sort | tail -1); do
 	osmosis --read-pbf-fast $pbf \
   		--log-progress \
   		--write-apidb authFile=/etc/osmosis/osm.properties validateSchemaVersion=no
@@ -66,5 +66,5 @@ echo "      lat: $lat"
 echo "      lng: $lng"
 psql -c "update users set home_lat=${lat}, home_lon=${lng} where display_name='POSM'"
 
-echo "==> api-db-populate.sh: END"
+echo "==> $0: END"
 echo

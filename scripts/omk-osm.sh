@@ -16,7 +16,7 @@ convert_pbf_to_xml() {
 
     # Buildings
     echo ''
-    echo '==> omk-osm.sh: Creating buildings OSM XML for OpenMapKit'
+    echo "==> $0: Creating buildings OSM XML for OpenMapKit"
     echo ''
     osmosis --read-pbf $1 \
         --tf accept-ways building=* \
@@ -25,7 +25,7 @@ convert_pbf_to_xml() {
 
     # POIs
     echo ''
-    echo '==> omk-osm.sh: Creating POIs OSM XML for OpenMapKit'
+    echo "==> $0: Creating POIs OSM XML for OpenMapKit"
     echo ''
     osmosis --read-pbf $1 \
         --node-key keyList="name,amenity,shop,man_made,office,religion,cuisine,highway,shelter" \ # TODO: find a way to just get any node with a tag
@@ -38,5 +38,5 @@ do
 	convert_pbf_to_xml $pbf
 done
 
-echo "==> omk-osm.sh: END"
+echo "==> $0: END"
 echo

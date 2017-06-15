@@ -4,8 +4,13 @@ set -eo pipefail
 
 api_db_dumps_dir=/opt/data/api-db-dumps/
 
+if [ $(whoami) != "osm" ]; then
+  >&2 echo $0 is intended to run as osm
+  exit 1
+fi
+
 timestamp_pbf() {
-    date +'%FT%TZ.pbf'
+    date +'%Y%m%d%H%M%S.pbf'
 }
 
 if [ -z "$1" ]; then
@@ -16,7 +21,7 @@ else
     file_path=$api_db_dumps_dir$1
 fi
 
-echo "==> osm_render-db-api2pbf.sh: Dumping the API DB to a PBF."
+echo "==> $0: Dumping the API DB to a PBF."
 echo "        pbf dump: $file_path"
 echo
 
@@ -30,5 +35,5 @@ osmosis --read-apidb \
 echo
 echo "PBF dump written to: $file_path"
 echo
-echo "==> osm_render-db-api2pbf.sh: END"
+echo "==> $0: END"
 echo
