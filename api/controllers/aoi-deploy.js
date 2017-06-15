@@ -73,6 +73,7 @@ module.exports = function (io) {
                 complete: true,
                 msg: "The aoi deployment script has been executed."
             });
+            statusUtility.updateAOIList();
             // reset atlas & render db statuses
             statusUtility.resetProcess('render-db');
             statusUtility.resetProcess('atlas-deploy');
