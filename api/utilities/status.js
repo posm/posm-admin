@@ -355,7 +355,7 @@ statusUtility.getPublicFiles = function(callback) {
 
   return recursive(PUBLIC_FILES_DIR, [ignoreFunc], function(err, paths) {
     if (err) {
-      return callback(err);
+      return callback(null, []);
     }
 
     return callback(null, paths.map(function(x) {
