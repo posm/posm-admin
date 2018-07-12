@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Change DEFAULT_CENTER in fp-web's upstart
+# Change DEFAULT_CENTER in fp-web's service definition
 # intended to be run as root
 
 set -eo pipefail
@@ -11,6 +11,7 @@ if [ $(whoami) != "root" ]; then
 fi
 
 # sudo /opt/admin/posm-admin/scripts/root_change-fp-center.sh 2 0.01 20.01
-sed -ri "s/(env DEFAULT_CENTER=)\"?.+\"?$/\1\"${1}\/${2}\/${3}\"/" /etc/init/fp-web.conf
+# TODO use a systemd environment file instead
+sed -ri "s/(Environment=DEFAULT_CENTER=)\"?.+\"?$/\1\"${1}\/${2}\/${3}\"/" /etc/systemd/system/fp-web.service
 
 service fp-web restart
