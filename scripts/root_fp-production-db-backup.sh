@@ -21,7 +21,7 @@ echo '=> Backing up osm api database to: ' $backup_path/$timestamp
 mkdir $backup_path/$timestamp
 
 echo '=> Dumping database...'
-PGPASSWORD=$(jq .fp_pg_pass /etc/posm.json) pg_dump -U fieldpapers -h localhost -d fieldpapers_production | gzip > $backup_path/$timestamp/fp_prod_db.sql.gz
+PGPASSWORD=$(jq -r .fp_pg_pass /etc/posm.json) pg_dump -U fieldpapers -h localhost -d fieldpapers_production | gzip > $backup_path/$timestamp/fp_prod_db.sql.gz
 
 echo '=> Copying field paper atlases & snapshots ...'
 # copy fp data into $backup_path/fieldpapers/
