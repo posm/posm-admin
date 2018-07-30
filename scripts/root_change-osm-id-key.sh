@@ -12,4 +12,5 @@ fi
 
 sed -ri "s/(Environment=OSM_ID_KEY=)\".+\"$/\1\"${1}\"/" /etc/systemd/system/osm-web.service
 
+systemctl daemon-reload
 service osm-web restart

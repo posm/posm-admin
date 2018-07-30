@@ -14,4 +14,5 @@ fi
 # TODO use a systemd environment file instead
 sed -ri "s/(Environment=DEFAULT_CENTER=)\"?.+\"?$/\1\"${1}\/${2}\/${3}\"/" /etc/systemd/system/fp-web.service
 
+systemctl daemon-reload
 service fp-web restart
