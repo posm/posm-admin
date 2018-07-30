@@ -39,7 +39,7 @@ rm -rf /opt/data/osm/replication/minute/*
 osmosis \
   --replicate-apidb \
     authFile=/etc/osmosis/osm.properties \
-    allowIncorrectSchemaVersion=true \
+    validateSchemaVersion=no \
   --write-replication \
     workingDirectory=/opt/data/osm/replication/minute
 

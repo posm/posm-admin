@@ -40,25 +40,19 @@ $scripts_dir/hot-export-move.sh $tmp_dir $aoi_dir
 curl -f --data "aoi_name=$aoi_name" -H "Host: $(jq -r .posm_fqdn /etc/posm.json)" "http://localhost/posm-admin/status/activate-aoi"
 
 # Drop and create API DB
-# sudo -u postgres /opt/admin/posm-admin/scripts/postgres_api-db-drop-create.sh
 sudo -u postgres $scripts_dir/postgres_api-db-drop-create.sh
 
 # Init API DB
-# sudo -u osm /opt/admin/posm-admin/scripts/osm_api-db-init.sh
 sudo -u osm $scripts_dir/osm_api-db-init.sh
 
 # Populate API DB
-# sudo -u osm /opt/admin/posm-admin/scripts/osm_api-db-populate.sh /opt/data/aoi/huaquillas
 sudo -u osm $scripts_dir/osm_api-db-populate.sh $aoi_dir
 
 # Dump API DB to a PBF (Osmosis)
-# sudo -u osm /opt/admin/posm-admin/scripts/osm_render-db-api2pbf.sh
 sudo -u osm $scripts_dir/osm_render-db-api2pbf.sh
 
 # Reset and populate Render DB with latest PBF dump (osm2pgsql)
-# sudo -u gis /opt/admin/posm-admin/scripts/gis_render-db-pbf2render.sh
 sudo -u gis $scripts_dir/gis_render-db-pbf2render.sh
 
 # Reset configs for tessera and field papers. Reset services.
-# /opt/admin/posm-admin/scripts/tessera-fp-reset.js /opt/data/aoi/huaquillas/manifest.json
 $scripts_dir/tessera-fp-reset.js $aoi_dir/manifest.json
