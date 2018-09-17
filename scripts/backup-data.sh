@@ -24,11 +24,15 @@ sudo $scripts_dir/root_fp-production-db-backup.sh $backups_dir/fieldpapers
 echo "==> Compressing omk data and backing up to $backups_dir/omk"
 sudo -u omk $scripts_dir/omk_backup.sh
 
-echo "==> Backing up imagery $backups_dir/imagery"
-cp -alf /opt/data/imagery/. ${backups_dir}/imagery
+if [ -d "/opt/data/imagery" ]; then
+  echo "==> Backing up imagery $backups_dir/imagery"
+  cp -alf /opt/data/imagery/. ${backups_dir}/imagery
+fi
 
-echo "==> Backing up OpenDroneMap data to $backups_dir/opendronemap"
-cp -alf /opt/data/opendronemap/. ${backups_dir}/opendronemap
+if [ -d "/opt/data/opendronemap" ]; then
+  echo "==> Backing up OpenDroneMap data to $backups_dir/opendronemap"
+  cp -alf /opt/data/opendronemap/. ${backups_dir}/opendronemap
+fi
 
 if [ -d "/opt/data/webodm" ]; then
   echo "==> Backing up WebODM"
