@@ -31,13 +31,8 @@ echo "==> Backing up OpenDroneMap data to $backups_dir/opendronemap"
 cp -alf /opt/data/opendronemap/. ${backups_dir}/opendronemap
 
 if [ -d "/opt/data/webodm" ]; then
-  # back up WebODM database
-  echo "==> Backing up WebODM database"
-  sudo -u webodm $scripts_dir/webodm_db-backup.sh $backups_dir/webodm
-
-  # back up WebODM projects
-  echo "==> Backing up WebODM data to $backups_dir/webodm"
-  cp -alf /opt/data/webodm/. ${backups_dir}/webodm
+  echo "==> Backing up WebODM"
+  sudo -u webodm $scripts_dir/webodm_backup.sh $backups_dir/webodm
 fi
 
 echo "==> Backing up AOIs to $backups_dir/aoi"
