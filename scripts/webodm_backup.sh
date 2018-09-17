@@ -13,7 +13,7 @@ backup_path=$1
 
 # back up WebODM projects
 echo "==> Backing up WebODM data to ${backup_path}"
-cp -alf /opt/data/webodm/. "${backup_path}"
+cp -af /opt/data/webodm/. "${backup_path}"
 
 echo '=> Backing up WebODM database to: ' $backup_path
 echo '=> Dumping database...'
