@@ -12,12 +12,14 @@ echo
 
 # Drops connections to database that might prevent us from recreating the db.
 sudo service osm-cgimap stop
+sudo service osm-web stop
 
 # Drops and creates osm database.
 dropdb osm
 createdb --owner='osm' 'osm'
 
 sudo service osm-cgimap start
+sudo service osm-web start
 
 # OSM specific native functions.
 psql -d osm -c "CREATE EXTENSION btree_gist"
