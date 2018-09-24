@@ -10,16 +10,17 @@ fi
 echo "==> $0: Dropping and re-creating the API DB."
 echo
 
-# Drops connections to database that might prevent us from recreating the db.
-sudo service osm-cgimap stop
-sudo service osm-web stop
+# Drops connections to the OSM database that might prevent us from recreating
+# it.
+cat - <<EOF | psql
+SELECT pg_terminate_backend(pid)
+FROM pg_stat_activity
+WHERE datname = 'osm'
+EOF
 
 # Drops and creates osm database.
 dropdb osm
 createdb --owner='osm' 'osm'
-
-sudo service osm-cgimap start
-sudo service osm-web start
 
 # OSM specific native functions.
 psql -d osm -c "CREATE EXTENSION btree_gist"
