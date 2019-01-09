@@ -18,7 +18,7 @@ fi
 new_ssid=$1
 
 jq ". | .posm_ssid |= \"$new_ssid\"" /etc/posm.json | sponge /etc/posm.json
-sed -ri "s/^(ssid=).*/\1\"${new_ssid}\"/" /etc/hostapd/hostapd.conf
+sed -ri "s/^(ssid2=).*/\1\"${new_ssid}\"/" /etc/hostapd/hostapd.conf
 
 killall -HUP hostapd
 
