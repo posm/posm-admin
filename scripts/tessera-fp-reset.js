@@ -62,14 +62,19 @@ function tesseraFieldPapersReset(manifestPath, cb) {
             var contents = manifest.contents;
             for (var filePath in contents) {
                 var properties = contents[filePath];
-                if (typeof properties !== 'object' && typeof properties.type !== 'string') continue;
-                if (properties.type.toLowerCase().indexOf('mbtiles') > -1) {
+                if (typeof properties !== 'object') continue;
+                // NOTE: The property "type" within manifest content is not consistent,
+                // Sometimes it appears as "type" and sometimes it appears as "Type"..
+                // So, try to get the value of both attributes, prioritizing "type".
+                var propertyType = properties.type || properties.Type;
+                if (!propertyType || typeof propertyType !== 'string') continue;
+                if (propertyType.toLowerCase().indexOf('mbtiles') > -1) {
 
                     // handle MBTiles
                     writeTesseraConf(manifest, manifestPath, filePath, 'mbtiles');
                     buildFieldPapersConf(manifest, filePath);
 
-                } else if (properties.type.toLowerCase().indexOf('mapnik/xml') > -1) {
+                } else if (propertyType.toLowerCase().indexOf('mapnik/xml') > -1) {
 
                     // handle Mapnik XML
                     //writeTesseraConf(manifest, manifestPath, filePath, 'mapnik');
